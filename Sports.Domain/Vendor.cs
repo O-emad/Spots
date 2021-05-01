@@ -13,7 +13,7 @@ namespace Spots.Domain
         public int SortOrder { get; set; }
         public string WorkHours { get; set; }
         public string Location { get; set; }
-        public List<Offer> Offers { get; set; }
+        //public List<Offer> Offers { get; set; }
 
     }
 }
