@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sports.Domain
+namespace Spots.Domain
 {
     public class Category
     {
