@@ -11,6 +11,6 @@ namespace Spots.Data
         }
 
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Vendor> Vendors { get; set; }
+        //public DbSet<Vendor> Vendors { get; set; }
     }
 }
