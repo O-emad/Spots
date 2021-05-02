@@ -14,7 +14,8 @@ namespace Spots.APIs.Profiles
         public CategoryProfile()
         {
             CreateMap<Category, CategoryDto>();
-
+            CreateMap<CategoryForCreationDto, Category>();
+            CreateMap<CategoryForUpdateDto, Category>();
         }
     }
 }

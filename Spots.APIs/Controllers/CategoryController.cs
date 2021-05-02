@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Spots.Domain;
 using Spots.DTO;
 using Spots.Services;
 using System;
@@ -65,13 +66,13 @@ namespace Spots.APIs.Controllers
             {
                 return BadRequest($"Category: {category.Name} already exists");
             }
+            _category = mapper.Map<Category>(category);
             if (!string.IsNullOrWhiteSpace(category.SuperCategoryName))
             {
                 var superCategory = repositroy.GetCategoryByName(category.SuperCategoryName);
                 _category.SuperCategory = superCategory;
             }
-            _category.Name = category.Name;
-            _category.Description = category.Description;
+            
 
             repositroy.AddCategory(_category);
             repositroy.Save();
@@ -94,6 +95,7 @@ namespace Spots.APIs.Controllers
                 return BadRequest($"Category: {category.Name} already exists");
             }
             _category = repositroy.GetCategoryById(id);
+            mapper.Map(category, _category);
             if (string.IsNullOrEmpty(category.SuperCategoryName))
             {
                 _category.SuperCategory = null;
@@ -103,8 +105,7 @@ namespace Spots.APIs.Controllers
                 var superCategory = repositroy.GetCategoryByName(category.SuperCategoryName);
                 _category.SuperCategory = superCategory;
             }
-            _category.Name = category.Name;
-            _category.Description = category.Description;
+
 
             repositroy.UpdateCategory(id, _category);
             repositroy.Save();
