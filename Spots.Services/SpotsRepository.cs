@@ -33,6 +33,12 @@ namespace Spots.Services
             return context.Categories.Where(c => c.Id == categoryId).FirstOrDefault();
         }
 
+        public Category GetCategoryByName(string name)
+        {
+            
+            return context.Categories.Where(c => c.Name == name).FirstOrDefault();
+        }
+
         public void UpdateCategory(Guid categoryId, Category category)
         {
             //does nothing for now
@@ -83,5 +89,7 @@ namespace Spots.Services
         {
             return (context.SaveChanges() >= 0);
         }
+
+        
     }
 }

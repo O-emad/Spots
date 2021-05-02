@@ -9,6 +9,7 @@ namespace Spots.Services
     {
         IEnumerable<Category> GetCategories();
         Category GetCategoryById(Guid categoryId);
+        Category GetCategoryByName(string name);
         void AddCategory(Category category);
         void UpdateCategory(Guid categoryId, Category category);
         void DeleteCategory(Category category);

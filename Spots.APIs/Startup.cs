@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
 using Spots.Data;
+using Spots.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,8 @@ namespace Spots.APIs
                 .EnableSensitiveDataLogging();
             });
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddScoped<ISpotsRepositroy, SpotsRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
