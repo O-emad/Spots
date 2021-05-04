@@ -52,6 +52,11 @@ namespace Spots.Services
             return context.Categories.Where(c => c.Id == categoryId).Any();
         }
 
+        public bool IsSuperCategory(Guid categoryId)
+        {
+            return context.Categories.Where(c => c.SuperCategory.Id == categoryId).Any();
+        }
+
 
         public void AddVendor(Vendor vendor)
         {
@@ -63,6 +68,11 @@ namespace Spots.Services
         public Vendor GetVendorById(Guid vendorId)
         {
             return context.Vendors.Where(v => v.Id == vendorId).FirstOrDefault();
+        }
+
+        public Vendor GetVendorByName(string name)
+        {
+            return context.Vendors.Where(v => v.Name == name).FirstOrDefault();
         }
 
         public IEnumerable<Vendor> GetVendors()

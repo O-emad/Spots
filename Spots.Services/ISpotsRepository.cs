@@ -14,9 +14,11 @@ namespace Spots.Services
         void UpdateCategory(Guid categoryId, Category category);
         void DeleteCategory(Category category);
         bool CategoryExists(Guid categoryId);
+        bool IsSuperCategory(Guid categoryId);
 
         IEnumerable<Vendor> GetVendors();
         Vendor GetVendorById(Guid vendorId);
+        Vendor GetVendorByName(string name);
         void AddVendor(Vendor vendor);
         void UpdateVendor(Guid vendorId, Vendor vendor);
         void DeleteVendor(Vendor vendor);

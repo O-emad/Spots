@@ -8,9 +8,12 @@ namespace Spots.Domain
 {
     public class Offer
     {
+        public Guid Id { get; set; }
         public double Value { get; set; }
         public ValueType Type { get; set; }
         public string Description { get; set; }
+        public bool OfferApproved { get; set; }
+        public Guid VendorId { get; set; }
 
     }
 

@@ -31,7 +31,7 @@ namespace Spots.APIs.Controllers
             return Ok(mapper.Map<IEnumerable<CategoryDto>>(categories));
         }
 
-        [HttpGet("id", Name = "GetCategory")]
+        [HttpGet("{id}", Name = "GetCategory")]
         public IActionResult GetCategoryById(Guid id)
         {
             if (repositroy.CategoryExists(id))
@@ -44,25 +44,12 @@ namespace Spots.APIs.Controllers
                 return NotFound();
             }
         }
-        [HttpGet("name")]
-        public IActionResult GetCategoryByName(string name)
-        {
-            var category = repositroy.GetCategoryByName(name);
-            if (category != null)
-            {
-                return Ok(mapper.Map<CategoryDto>(category));
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
 
         [HttpPost]
         public IActionResult CreateCategory([FromBody] CategoryForCreationDto category)
         {
             var _category = repositroy.GetCategoryByName(category.Name);
-            if(_category != null)
+            if (_category != null)
             {
                 return BadRequest($"Category: {category.Name} already exists");
             }
@@ -72,7 +59,7 @@ namespace Spots.APIs.Controllers
                 var superCategory = repositroy.GetCategoryByName(category.SuperCategoryName);
                 _category.SuperCategory = superCategory;
             }
-            
+
 
             repositroy.AddCategory(_category);
             repositroy.Save();
@@ -82,7 +69,7 @@ namespace Spots.APIs.Controllers
 
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public IActionResult UpdateCategory(Guid id, [FromBody] CategoryForUpdateDto category)
         {
             if (!repositroy.CategoryExists(id))
@@ -90,7 +77,7 @@ namespace Spots.APIs.Controllers
                 return NotFound();
             }
             var _category = repositroy.GetCategoryByName(category.Name);
-            if(_category != null)
+            if (_category != null)
             {
                 return BadRequest($"Category: {category.Name} already exists");
             }
@@ -113,13 +100,17 @@ namespace Spots.APIs.Controllers
             return NoContent();
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public IActionResult DeleteCategory(Guid id)
         {
             var category = repositroy.GetCategoryById(id);
-            if(category == null)
+            if (category == null)
             {
                 return NotFound();
+            }
+            if (repositroy.IsSuperCategory(id))
+            {
+                return BadRequest($"Category: {category.Name} is a super category, delete its children first");
             }
             repositroy.DeleteCategory(category);
             repositroy.Save();
