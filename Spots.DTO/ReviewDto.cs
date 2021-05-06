@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spots.Domain
+namespace Spots.DTO
 {
-    public class Review
+    public class ReviewDto
     {
         public Guid Id { get; set; }
         public float ReviewValue { get; set; }

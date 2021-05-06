@@ -27,6 +27,10 @@ namespace Spots.APIs.Controllers
         [HttpGet]
         public IActionResult GetOffers(Guid vendorId)
         {
+            if (!repositroy.VendorExists(vendorId))
+            {
+                return NotFound();
+            }
             var offers = repositroy.GetOffersForVendor(vendorId);
             return Ok(mapper.Map<IEnumerable<OfferDto>>(offers));
         }
@@ -34,6 +38,10 @@ namespace Spots.APIs.Controllers
         [HttpGet("{id}", Name = "GetOffer")]
         public IActionResult GetOffer(Guid vendorId, Guid id)
         {
+            if (!repositroy.VendorExists(vendorId))
+            {
+                return NotFound();
+            }
             var offer = repositroy.GetOfferById(vendorId, id);
             return Ok(mapper.Map<OfferDto>(offer));
         }

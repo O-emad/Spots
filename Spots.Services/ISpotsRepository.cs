@@ -30,6 +30,13 @@ namespace Spots.Services
         void DeleteOffer(Offer offer);
         bool OfferExists(Guid offerId);
 
+        IEnumerable<Review> GetReviewsForVendor(Guid vendorId);
+        Review GetReviewById(Guid vendorId, Guid reviewId);
+        void AddReview(Guid vendorId, Review review);
+        void UpdateReview(Guid vendorId, Guid reviewId, Review review);
+        void DeleteReview(Review review);
+        bool ReviewExists(Guid reviewId);
+
         bool Save();
     }
 }
