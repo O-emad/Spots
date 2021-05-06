@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Spots.Domain;
+
 namespace Spots.DTO
 {
-    public class CategoryDto
+    public class OfferForUpdateDto
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
+        public double Value { get; set; }
+        public ValueType Type { get; set; }
         public string Description { get; set; }
-        public Guid SuperCategoryId { get; set; }
+        //public Guid VendorId { get; set; }
     }
 }

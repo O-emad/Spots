@@ -7,6 +7,6 @@ namespace Spots.Domain
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public Category SuperCategory { get; set; }
+        public Guid SuperCategoryId { get; set; }
     }
 }

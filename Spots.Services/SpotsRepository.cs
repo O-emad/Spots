@@ -54,7 +54,7 @@ namespace Spots.Services
 
         public bool IsSuperCategory(Guid categoryId)
         {
-            return context.Categories.Where(c => c.SuperCategory.Id == categoryId).Any();
+            return context.Categories.Where(c => c.SuperCategoryId == categoryId).Any();
         }
 
 
@@ -93,6 +93,46 @@ namespace Spots.Services
         public bool VendorExists(Guid vendorId)
         {
             return context.Vendors.Where(v => v.Id == vendorId).Any();
+        }
+
+
+        public IEnumerable<Offer> GetOffersForVendor(Guid vendorId)
+        {
+            return context.Offers.Where(o => o.VendorId == vendorId && o.OfferApproved == true);
+
+        }
+
+        public Offer GetOfferById(Guid vendorId, Guid offerId)
+        {
+            return context.Offers.Where(o => o.VendorId == vendorId &&
+            o.OfferApproved == true && o.Id == offerId).FirstOrDefault();
+        }
+
+        public void AddOffer(Guid vendorId, Offer offer)
+        {
+            if(VendorExists(vendorId) && offer != null)
+            {
+                offer.VendorId = vendorId;
+                if (context.Settings.FirstOrDefault().AutomaticOfferApproval)
+                {
+                    offer.OfferApproved = true;
+                }
+                else
+                {
+                    offer.OfferApproved = false;
+                }
+                context.Add<Offer>(offer);
+            }
+        }
+
+        public void DeleteOffer(Offer offer)
+        {
+                context.Remove(offer);   
+        }
+
+        public bool OfferExists(Guid offerId)
+        {
+            return context.Offers.Where(o => o.Id == offerId).Any();
         }
 
         public bool Save()

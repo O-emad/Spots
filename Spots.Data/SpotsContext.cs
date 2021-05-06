@@ -18,5 +18,7 @@ namespace Spots.Data
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
+        public DbSet<Offer> Offers { get; set; }
+        public DbSet<Setting> Settings { get; set; }
     }
 }

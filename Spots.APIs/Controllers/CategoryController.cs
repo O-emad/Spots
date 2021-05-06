@@ -54,10 +54,9 @@ namespace Spots.APIs.Controllers
                 return BadRequest($"Category: {category.Name} already exists");
             }
             _category = mapper.Map<Category>(category);
-            if (!string.IsNullOrWhiteSpace(category.SuperCategoryName))
+            if (repositroy.CategoryExists(category.SuperCategoryId))
             {
-                var superCategory = repositroy.GetCategoryByName(category.SuperCategoryName);
-                _category.SuperCategory = superCategory;
+                _category.SuperCategoryId = category.SuperCategoryId;
             }
 
 
@@ -83,14 +82,17 @@ namespace Spots.APIs.Controllers
             }
             _category = repositroy.GetCategoryById(id);
             mapper.Map(category, _category);
-            if (string.IsNullOrEmpty(category.SuperCategoryName))
+            if (repositroy.CategoryExists(category.SuperCategoryId))
             {
-                _category.SuperCategory = null;
+                if(category.SuperCategoryId == id)
+                {
+                    return BadRequest($"SuperCategory cannot be the exact same category as child");
+                }
+                _category.SuperCategoryId = category.SuperCategoryId;
             }
             else
             {
-                var superCategory = repositroy.GetCategoryByName(category.SuperCategoryName);
-                _category.SuperCategory = superCategory;
+                _category.SuperCategoryId = Guid.Empty;
             }
 
 

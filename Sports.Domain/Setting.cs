@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Spots.Domain
 {
-    public class AdminControl
+    public class Setting
     {
+        public Guid Id { get; set; }
         public bool AutomaticOfferApproval { get; set; }
     }
 }

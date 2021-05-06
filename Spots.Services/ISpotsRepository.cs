@@ -24,6 +24,12 @@ namespace Spots.Services
         void DeleteVendor(Vendor vendor);
         bool VendorExists(Guid vendorId);
 
+        IEnumerable<Offer> GetOffersForVendor(Guid vendorId);
+        Offer GetOfferById(Guid vendorId, Guid offerId);
+        void AddOffer(Guid vendorId, Offer offer);
+        void DeleteOffer(Offer offer);
+        bool OfferExists(Guid offerId);
+
         bool Save();
     }
 }

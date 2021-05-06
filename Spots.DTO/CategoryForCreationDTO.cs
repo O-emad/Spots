@@ -6,6 +6,6 @@ namespace Spots.DTO
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public string SuperCategoryName { get; set; }
+        public Guid SuperCategoryId { get; set; }
     }
 }
