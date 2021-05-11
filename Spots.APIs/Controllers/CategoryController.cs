@@ -28,7 +28,7 @@ namespace Spots.APIs.Controllers
         public IActionResult GetCategories()
         {
             var categories = repositroy.GetCategories();
-            return Ok(mapper.Map<IEnumerable<CategoryDto>>(categories));
+            return Ok(mapper.Map<IEnumerable<Category>>(categories));
         }
 
         [HttpGet("{id}", Name = "GetCategory")]

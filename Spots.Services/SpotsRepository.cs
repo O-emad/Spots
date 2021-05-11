@@ -25,7 +25,7 @@ namespace Spots.Services
         }
         public IEnumerable<Category> GetCategories()
         {
-            return context.Categories;
+            return context.Categories.ToList();
         }
 
         public Category GetCategoryById(Guid categoryId)
@@ -140,6 +140,39 @@ namespace Spots.Services
             return (context.SaveChanges() >= 0);
         }
 
-        
+        public IEnumerable<Review> GetReviewsForVendor(Guid vendorId)
+        {
+            return context.Reviews.Where(r => r.VendorId == vendorId);
+        }
+
+        public Review GetReviewById(Guid vendorId, Guid reviewId)
+        {
+            return context.Reviews.Where(r => r.VendorId == vendorId && r.Id == reviewId).FirstOrDefault();
+        }
+
+        public void AddReview(Guid vendorId, Review review)
+        {
+            if (VendorExists(vendorId) && review != null)
+            {
+                review.VendorId = vendorId;
+                context.Add<Review>(review);
+            }
+        }
+
+        public void UpdateReview(Guid vendorId, Guid reviewId, Review review)
+        {
+
+            review.Updated = true;
+        }
+
+        public void DeleteReview(Review review)
+        {
+            context.Remove(review);
+        }
+
+        public bool ReviewExists(Guid reviewId)
+        {
+            return context.Reviews.Where(r => r.Id == reviewId).Any();
+        }
     }
 }

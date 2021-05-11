@@ -31,12 +31,10 @@ namespace Spots.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("SuperCategoryId")
+                    b.Property<Guid>("SuperCategoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SuperCategoryId");
 
                     b.ToTable("Categories");
                 });
@@ -65,6 +63,29 @@ namespace Spots.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Offers");
+                });
+
+            modelBuilder.Entity("Spots.Domain.Review", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("ReviewValue")
+                        .HasColumnType("real");
+
+                    b.Property<bool>("Updated")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("VendorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Spots.Domain.Setting", b =>
@@ -108,15 +129,6 @@ namespace Spots.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Vendors");
-                });
-
-            modelBuilder.Entity("Spots.Domain.Category", b =>
-                {
-                    b.HasOne("Spots.Domain.Category", "SuperCategory")
-                        .WithMany()
-                        .HasForeignKey("SuperCategoryId");
-
-                    b.Navigation("SuperCategory");
                 });
 #pragma warning restore 612, 618
         }

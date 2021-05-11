@@ -1,0 +1,23 @@
+﻿@model AdminPanel.ViewModels.CategoryIndexViewModel
+
+
+<div class="bottomMarginDefault">
+</div>
+
+<div class="container">
+    @foreach (var item in Model.Categories)
+    {
+        <div class="pull-left col-md-4">
+            <div>
+                @*<img class="thumbnailImage" src="@("https://localhost:44366/images/" + item.FileName)" />*@
+            </div>
+            <div>
+                <div class="h5">@item.Name</div>
+                <div class="bottomMarginDefault">
+                    <a asp-action="EditCategory" asp-controller="Category" asp-route-id="@item.Id">Edit Category</a> |
+                    <a asp-action="DeleteCategory" asp-controller="Category" asp-route-id="@item.Id">Delete Category</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

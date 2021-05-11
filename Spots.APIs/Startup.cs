@@ -1,3 +1,4 @@
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -31,12 +32,7 @@ namespace Spots.APIs
             {
                 opt.ReturnHttpNotAcceptable = true;
             })
-                .AddNewtonsoftJson(opt =>
-                {
-                    opt.SerializerSettings.ContractResolver =
-                    new CamelCasePropertyNamesContractResolver();
-                })
-                .AddXmlDataContractSerializerFormatters();
+                .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
             services.AddDbContext<SpotsContext>(opt =>
             {
                 opt.UseSqlServer(configuration[SpotsConfig.ConnectionStringKey.Replace("__", ":")]
@@ -46,6 +42,13 @@ namespace Spots.APIs
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<ISpotsRepositroy, SpotsRepository>();
+
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(o =>
+                {
+                    o.ApiName = "categoryapi";
+                    o.Authority = "https://localhost:5001/";
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,8 +71,8 @@ namespace Spots.APIs
             }
             app.UseHttpsRedirection();
             app.UseRouting();
-            //app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
