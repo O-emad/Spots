@@ -1,23 +1,211 @@
 ﻿@model AdminPanel.ViewModels.CategoryIndexViewModel
 
+<main class="main-container">
+    <div class="main-content">
 
-<div class="bottomMarginDefault">
-</div>
 
-<div class="container">
-    @foreach (var item in Model.Categories)
-    {
-        <div class="pull-left col-md-4">
-            <div>
-                @*<img class="thumbnailImage" src="@("https://localhost:44366/images/" + item.FileName)" />*@
+        <div class="card">
+            <h4 class="card-title"><strong>Categories</strong></h4>
+
+            <div class="card-body">
+
+                <div class="flexbox mb-20">
+                    <div class="lookup">
+                        <input class="w-200px" type="text" name="s" placeholder="Search">
+                    </div>
+
+
+
+                    <button class="btn btn-float btn-primary" href="#qv-form"
+                            data-provide="tooltip" data-toggle="quickview"
+                            data-original-title="Add New">
+                        <i class="ti-plus"></i>
+                    </button>
+
+
+                </div>
+
+                <table class="table table-separated">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Sort Order</th>
+                            <th class="text-center w-100px">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Categories)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.Id</td>
+                                <td class="text-right table-actions">
+                                    <a class="table-action hover-primary"
+                                       onclick="replaceContentsOfDiv(this.id)"
+                                       id=@item.Id>
+                                        <i class="ti-pencil"></i>
+                                    </a>
+                                    <a class="table-action hover-danger"
+                                       data-target="#modal-small" data-toggle="modal"><i class="ti-trash"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <nav>
+                    <ul class="pagination pagination-circle justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">
+                                <span class="ti-arrow-left"></span>
+                            </a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">4</a></li>
+                        <li class="page-item"><a class="page-link" href="#">5</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">
+                                <span class="ti-arrow-right"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-            <div>
-                <div class="h5">@item.Name</div>
-                <div class="bottomMarginDefault">
-                    <a asp-action="EditCategory" asp-controller="Category" asp-route-id="@item.Id">Edit Category</a> |
-                    <a asp-action="DeleteCategory" asp-controller="Category" asp-route-id="@item.Id">Delete Category</a>
+        </div>
+
+        <div class="modal fade" id="modal-small" tabindex="-1" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Delete Category</h4>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this item</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-bold btn-pure btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-bold btn-pure btn-primary">Delete</button>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <script data-provide="sweetalert">
+
+            function replaceContentsOfDiv(itemid) {
+        $.ajax({
+            url: '@Url.Action("CategoryEditPartialView", "Category")',
+            data: { id: itemid },
+            type: "POST",
+            success: function(data) {
+                $('#placeHolderDiv').html(data);
+            }
+        });
     }
-</div>
+        </script>
+
+        <div id="placeHolderDiv">
+        </div>
+
+        <div id="qv-form" class="quickview quickview-lg">
+            <header class="quickview-header">
+                <p class="quickview-title lead fw-400">Add New Category</p>
+                <span class="close"><i class="ti-close"></i></span>
+            </header>
+
+            <div data-provide="validation" data-disable="false" novalidate="true"
+                 class="quickview-body ps-container ps-theme-default ps-active-y" data-ps-id="4f844987-6360-16bf-6951-634d680f0316">
+
+                <div class="quickview-block form-type-material">
+                    <h6>Category information</h6>
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" required>
+                        <div class="invalid-feedback"></div>
+                        <label class="require"></label>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" class="form-control">
+                        <label>Sort Order</label>
+                    </div>
+
+                    <div class="form-group">
+                        <select class="form-control">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                        </select>
+                        <label>Super Category</label>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea class="form-control" rows="6"></textarea>
+                        <label>Description</label>
+                    </div>
+
+
+                    <div class="input-group form-type-material file-group">
+                        <div class="input-group-input">
+                            <input type="text" class="form-control file-value" readonly="">
+                            <input type="file" multiple="">
+                            <label>Choose file...</label>
+                        </div>
+                        <span class="input-group-append">
+                            <button class="btn btn-light file-browser" type="button"><i class="fa fa-upload"></i></button>
+                        </span>
+                    </div>
+
+
+                </div>
+                <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps-scrollbar-y-rail" style="top: 0px; height: 503px; right: 2px;"><div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 386px;"></div></div>
+            </div>
+
+            <footer class="p-12 text-right">
+                <button class="btn btn-flat btn-secondary" type="button" data-toggle="quickview">Cancel</button>
+                <button class="btn btn-flat btn-primary" type="submit">Add Category</button>
+            </footer>
+        </div>
+
+
+
+
+
+
+
+
+        <div id="qv-category-details" class="quickview quickview-lg">
+            <header class="quickview-header">
+                <p class="quickview-title lead fw-400">Edit Category</p>
+                <span class="close"><i class="ti-close"></i></span>
+            </header>
+
+            <div class="quickview-body ps-container ps-theme-default" data-ps-id="842bc973-6d6e-ed83-e6e9-e2f062be9e58">
+
+                <div class="quickview-block form-type-material">
+
+
+                </div>
+
+                <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;">
+                    <div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;">
+                    </div>
+                    <div class="ps-scrollbar-y-rail" style="top: 0px; right: 2px;">
+                    <div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 0px;"></div>
+                    </div>
+                </div>
+
+                <footer class="p-12 flexlex-justified">
+                    <button class="btn btn-flat btn-secondary" type="button" data-toggle="quickview">Cancel</button>
+                    <button class="btn btn-flat btn-primary" type="submit">Save changes</button>
+                </footer>
+            </div>
+        </div>
+        </div>
+</main>

@@ -42,6 +42,29 @@ namespace AdminPanel.Controllers
                     await JsonSerializer.DeserializeAsync<List<Category>>(responseStream)));
             }
         }
+
+        [HttpPost]
+        public async Task<PartialViewResult> CategoryEditPartialView(Guid id)
+        {
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"/api/category/{id}");
+
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                return PartialView("_CategoryEditQuickView", new CategoryEditViewModel(
+                    await JsonSerializer.DeserializeAsync<Category>(responseStream)));
+            }
+        }
+
+
     }
 
 

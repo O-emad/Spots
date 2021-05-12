@@ -28,7 +28,7 @@ namespace Spots.APIs.Controllers
         public IActionResult GetCategories()
         {
             var categories = repositroy.GetCategories();
-            return Ok(mapper.Map<IEnumerable<Category>>(categories));
+            return Ok(mapper.Map<IEnumerable<CategoryDto>>(categories));
         }
 
         [HttpGet("{id}", Name = "GetCategory")]
@@ -51,7 +51,7 @@ namespace Spots.APIs.Controllers
             var _category = repositroy.GetCategoryByName(category.Name);
             if (_category != null)
             {
-                return BadRequest($"Category: {category.Name} already exists");
+                return Conflict($"Category: {category.Name} already exists");
             }
             _category = mapper.Map<Category>(category);
             if (repositroy.CategoryExists(category.SuperCategoryId))

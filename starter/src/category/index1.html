@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Responsive admin dashboard and web application ui kit. ">
+  <meta name="keywords" content="blank, starter">
+
+  <title>Blank page &mdash; Spots</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,300i" rel="stylesheet">
+
+  <!-- Styles -->
+  <link href="../assets/css/core.min.css" rel="stylesheet">
+  <link href="../assets/css/app.min.css" rel="stylesheet">
+  <link href="../assets/css/style.min.css" rel="stylesheet">
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+  <link rel="icon" href="../assets/img/favicon.png">
+</head>
+
+<body>
+
+  <!-- Preloader -->
+  <div class="preloader">
+    <div class="spinner-dots">
+      <span class="dot1"></span>
+      <span class="dot2"></span>
+      <span class="dot3"></span>
+    </div>
+  </div>
+
+
+  <!-- Sidebar -->
+  <aside class="sidebar sidebar-icons-right sidebar-icons-boxed sidebar-expand-lg">
+    <header class="sidebar-header">
+      <a class="logo-icon" href="../index.html"><img src="../assets/img/logo-icon-light.png" alt="logo icon"></a>
+      <span class="logo">
+        <a href="../index.html"><img src="../assets/img/logo-light.png" alt="logo"></a>
+      </span>
+      <span class="sidebar-toggle-fold"></span>
+    </header>
+
+    <nav class="sidebar-navigation">
+      <ul class="menu">
+
+
+
+        <li class="menu-item">
+          <a class="menu-link" href="../dashboard/index.html">
+            <span class="icon fa fa-home"></span>
+            <span class="title">Dashboard</span>
+          </a>
+        </li>
+
+        <li class="menu-item active">
+          <a class="menu-link" href="../category/index.html">
+            <span class="icon ti-receipt"></span>
+            <span class="title">Category</span>
+          </a>
+        </li>
+
+        <li class="menu-item ">
+          <a class="menu-link" href="../vendor/index.html">
+            <span class="icon fa fa-user"></span>
+            <span class="title">Vendor</span>
+          </a>
+        </li>
+
+        <li class="menu-item ">
+          <a class="menu-link" href="../ads/index.html">
+            <span class="icon fa fa-tv"></span>
+            <span class="title">Ads</span>
+          </a>
+        </li>
+
+        <li class="menu-item ">
+          <a class="menu-link" href="../setting/index.html">
+            <span class="icon ti-settings"></span>
+            <span class="title">Setting</span>
+          </a>
+        </li>
+
+
+      </ul>
+    </nav>
+
+  </aside>
+  <!-- END Sidebar -->
+
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-btn sidebar-toggler"><i>&#9776;</i></span>
+    </div>
+
+    <div class="topbar-right">
+      <ul class="topbar-btns">
+
+        <!-- Notifications -->
+        <li class="dropdown d-none d-md-block">
+          <span class="topbar-btn has-new" data-toggle="dropdown"><i class="ti-bell"></i></span>
+          <div class="dropdown-menu dropdown-menu-right">
+
+            <div class="media-list media-list-hover media-list-divided media-list-xs">
+              <a class="media media-new" href="#">
+                <span class="avatar bg-success"><i class="ti-user"></i></span>
+                <div class="media-body">
+                  <p>New user registered</p>
+                  <time datetime="2018-07-14 20:00">Just now</time>
+                </div>
+              </a>
+
+              <a class="media" href="#">
+                <span class="avatar bg-info"><i class="ti-shopping-cart"></i></span>
+                <div class="media-body">
+                  <p>New order received</p>
+                  <time datetime="2018-07-14 20:00">2 min ago</time>
+                </div>
+              </a>
+
+              <a class="media" href="#">
+                <span class="avatar bg-warning"><i class="ti-face-sad"></i></span>
+                <div class="media-body">
+                  <p>Refund request from <b>Ashlyn Culotta</b></p>
+                  <time datetime="2018-07-14 20:00">24 min ago</time>
+                </div>
+              </a>
+
+              <a class="media" href="#">
+                <span class="avatar bg-primary"><i class="ti-money"></i></span>
+                <div class="media-body">
+                  <p>New payment has made through PayPal</p>
+                  <time datetime="2018-07-14 20:00">53 min ago</time>
+                </div>
+              </a>
+            </div>
+
+            <div class="dropdown-footer">
+              <div class="left">
+                <a href="#">Read all notifications</a>
+              </div>
+
+              <div class="right">
+                <a href="#" data-provide="tooltip" title="Mark all as read"><i class="fa fa-circle-o"></i></a>
+                <a href="#" data-provide="tooltip" title="Update"><i class="fa fa-repeat"></i></a>
+                <a href="#" data-provide="tooltip" title="Settings"><i class="fa fa-gear"></i></a>
+              </div>
+            </div>
+
+          </div>
+        </li>
+        <!-- END Notifications -->
+
+      </ul>
+
+      <div class="topbar-divider"></div>
+
+      <a class="btn btn-xs btn-round btn-success mr-2"
+        href="https://themeforest.net/item/theadmin-responsive-bootstrap-4-admin-dashboard-webapp-template/20475359?license=regular&amp;open_purchase_for_item_id=20475359&amp;purchasable=source&amp;ref=thethemeio">Buy
+        TheAdmin</a>
+
+    </div>
+  </header>
+  <!-- END Topbar -->
+
+
+  <!-- Main container -->
+  <main class="main-container">
+    <div class="main-content">
+
+
+      <div class="card">
+        <h4 class="card-title"><strong>Categories</strong></h4>
+
+        <div class="card-body">
+
+          <div class="flexbox mb-20">
+            <div class="lookup">
+              <input class="w-200px" type="text" name="s" placeholder="Search">
+            </div>
+
+
+
+            <button class="btn btn-float btn-primary" href="#qv-form" title data-provide="tooltip"
+              data-toggle="quickview" data-original-title="Add New"><i class="ti-plus"></i></button>
+
+
+          </div>
+
+          <table class="table table-separated">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Sort Order</th>
+                <th class="text-center w-100px">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Electronics</td>
+                <td>0</td>
+                <td class="text-right table-actions">
+                  <a class="table-action hover-primary" href="#qv-category-details" data-toggle="quickview"><i
+                      class="ti-pencil"></i></a>
+                  <a id="button" class="table-action hover-danger"  data-toggle="modal" data-target = "#modal-small"><i
+                      class="ti-trash"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <nav>
+            <ul class="pagination pagination-circle justify-content-center">
+              <li class="page-item disabled">
+                <a class="page-link" href="#">
+                  <span class="ti-arrow-left"></span>
+                </a>
+              </li>
+              <li class="page-item active">
+                <a class="page-link" href="#">1</a>
+              </li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item"><a class="page-link" href="#">4</a></li>
+              <li class="page-item"><a class="page-link" href="#">5</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#">
+                  <span class="ti-arrow-right"></span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+
+
+      <div class="modal fade" id="modal-small" tabindex="-1" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="myModalLabel">Delete Category</h4>
+              <button type="button" class="close" data-dismiss="modal">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>Are you sure you want to delete this item</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-bold btn-pure btn-secondary" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-bold btn-pure btn-primary">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <div id="qv-form" class="quickview quickview-lg">
+        <header class="quickview-header">
+          <p class="quickview-title lead fw-400">Add New Category</p>
+          <span class="close"><i class="ti-close"></i></span>
+        </header>
+
+        <div data-provide="validation" data-disable="false" novalidate="true"
+          class="quickview-body ps-container ps-theme-default ps-active-y"
+          data-ps-id="4f844987-6360-16bf-6951-634d680f0316">
+
+          <div class="quickview-block form-type-material">
+            <h6>Category information</h6>
+
+            <div class="form-group">
+              <input type="text" class="form-control" required>
+              <div class="invalid-feedback"></div>
+              <label class="require">Name</label>
+            </div>
+
+            <div class="form-group">
+              <input type="text" class="form-control">
+              <label>Sort Order</label>
+            </div>
+
+            <div class="form-group">
+              <select class="form-control">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+              </select>
+              <label>Super Category</label>
+            </div>
+
+            <div class="form-group">
+              <textarea class="form-control" rows="6"></textarea>
+              <label>Description</label>
+            </div>
+
+
+            <div class="input-group form-type-material file-group">
+              <div class="input-group-input">
+                <input type="text" class="form-control file-value" readonly="">
+                <input type="file" multiple="">
+                <label>Choose file...</label>
+              </div>
+              <span class="input-group-append">
+                <button class="btn btn-light file-browser" type="button"><i class="fa fa-upload"></i></button>
+              </span>
+            </div>
+
+
+          </div>
+          <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;">
+            <div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+          </div>
+          <div class="ps-scrollbar-y-rail" style="top: 0px; height: 503px; right: 2px;">
+            <div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 386px;"></div>
+          </div>
+        </div>
+
+        <footer class="p-12 text-right">
+          <button class="btn btn-flat btn-secondary" type="button" data-toggle="quickview">Cancel</button>
+          <button class="btn btn-flat btn-primary" type="submit">Add Category</button>
+        </footer>
+      </div>
+
+
+
+
+      <div id="qv-category-details" class="quickview quickview-lg">
+        <header class="quickview-header">
+          <p class="quickview-title lead fw-400">Edit Category</p>
+          <span class="close"><i class="ti-close"></i></span>
+        </header>
+
+        <div class="quickview-body ps-container ps-theme-default" data-ps-id="842bc973-6d6e-ed83-e6e9-e2f062be9e58">
+
+          <div class="quickview-block form-type-material">
+
+            <div class="form-group do-float">
+              <p>Category Image</p>
+              <img src="../assets/img/apple-touch-icon.png" alt="..." class="rounded">
+            </div>
+
+            <div class="form-group do-float">
+              <input type="text" class="form-control" value="Electronics">
+              <label class="require">Name</label>
+            </div>
+
+            <div class="form-group do-float">
+              <input type="text" class="form-control" value="0">
+              <label>Sort Order</label>
+            </div>
+
+            <div class="form-group do-float">
+              <select class="form-control">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+              </select>
+              <label>Super Category</label>
+            </div>
+
+            <div class="form-group do-float">
+              <textarea class="form-control" rows="5">pla pla pla</textarea>
+              <label>Description</label>
+            </div>
+          </div>
+
+          <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;">
+            <div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;">
+            </div>
+          </div>
+          <div class="ps-scrollbar-y-rail" style="top: 0px; right: 2px;">
+            <div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 0px;">
+            </div>
+          </div>
+        </div>
+
+        <footer class="p-12 flexbox flex-justified">
+          <button class="btn btn-flat btn-secondary" type="button" data-toggle="quickview">Cancel</button>
+          <button class="btn btn-flat btn-primary" type="submit">Save changes</button>
+        </footer>
+      </div>
+
+
+
+      <div id="qv-category-details" class="quickview quickview-lg">
+        <header class="quickview-header">
+          <p class="quickview-title lead fw-400">Edit Category</p>
+          <span class="close"><i class="ti-close"></i></span>
+        </header>
+
+        <div class="quickview-body ps-container ps-theme-default" data-ps-id="842bc973-6d6e-ed83-e6e9-e2f062be9e58">
+
+          <div class="quickview-block form-type-material">
+
+
+          </div>
+
+          <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;">
+            <div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;">
+            </div>
+            </box fdiv>
+            <div class="ps-scrollbar-y-rail" style="top: 0px; right: 2px;">
+              <div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 0px;"></div>
+            </div>
+          </div>
+
+          <footer class="p-12 flexlex-justified">
+            <button class="btn btn-flat btn-secondary" type="button" data-toggle="quickview">Cancel</button>
+            <button class="btn btn-flat btn-primary" type="submit">Save changes</button>
+          </footer>
+        </div>
+
+
+        <div id="card_delete" class="quickview">
+          <div class="card">
+            <header class="card-header">
+              <h4 class="card-title">Card <strong>footer</strong></h4>
+            </header>
+
+            <div class="card-body">
+              <p><code>footer.card-footer</code></p>
+              <p>Credibly harness multidisciplinary ideas via alternative e-commerce. Intrinsicly transition
+                interdependent best practices before resource sucking outsourcing.</p>
+            </div>
+
+            <footer class="card-footer">
+              <button class="btn btn-primary">Submit</button>
+              <button class="btn btn-secondary">Cancel</button>
+            </footer>
+          </div>
+        </div>
+
+      </div>
+      <!--/.main-content -->
+
+
+      <!-- Footer -->
+      <footer class="site-footer">
+        <div class="row">
+          <div class="col-md-6">
+            <p class="text-center text-md-left">Copyright © 2019 <a href="http://thetheme.io/theadmin">TheAdmin</a>. All
+              rights reserved.</p>
+          </div>
+
+          <div class="col-md-6">
+            <ul class="nav nav-primary nav-dotted nav-dot-separated justify-content-center justify-content-md-end">
+              <li class="nav-item">
+                <a class="nav-link" href="../help/articles.html">Documentation</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="../help/faq.html">FAQ</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                  href="https://themeforest.net/item/theadmin-responsive-bootstrap-4-admin-dashboard-webapp-template/20475359?license=regular&amp;open_purchase_for_item_id=20475359&amp;purchasable=source&amp;ref=thethemeio">Purchase
+                  Now</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+      <!-- END Footer -->
+
+  </main>
+  <!-- END Main container -->
+
+
+
+  <!-- Global quickview -->
+  <div id="qv-global" class="quickview" data-url="assets/data/quickview-global.html">
+    <div class="spinner-linear">
+      <div class="line"></div>
+    </div>
+  </div>
+  <!-- END Global quickview -->
+
+
+
+  <!-- Scripts -->
+  <script src="../assets/js/core.min.js"></script>
+  <script src="../assets/js/app.min.js"></script>
+  <script src="../assets/js/script.min.js"></script>
+
+  <script>
+    $('button').on('click', function () {
+      swal({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(function () {
+        swal(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+        );
+      })
+    });
+  </script>
+
+
+</body>
+
+</html>

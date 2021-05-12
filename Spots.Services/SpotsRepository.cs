@@ -25,7 +25,7 @@ namespace Spots.Services
         }
         public IEnumerable<Category> GetCategories()
         {
-            return context.Categories.ToList();
+            return context.Categories;
         }
 
         public Category GetCategoryById(Guid categoryId)
