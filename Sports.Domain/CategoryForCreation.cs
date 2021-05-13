@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Spots.Domain;
-namespace Spots.DTO
+
+namespace Spots.Domain
 {
-    public class CategoryDto
+    public class CategoryForCreation
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public int SortOrder { get; set; }
-        public string ImageUrl { get; set; }
+        public byte[] Bytes{ get; set; }
         public Guid SuperCategoryId { get; set; }
     }
 }

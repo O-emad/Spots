@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Spots.Domain;
 using Spots.DTO;
@@ -13,6 +15,7 @@ namespace Spots.APIs.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+   // [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly IMapper mapper;
@@ -24,13 +27,20 @@ namespace Spots.APIs.Controllers
             this.repositroy = repositroy ?? throw new ArgumentNullException(nameof(repositroy));
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetCategories()
         {
             var categories = repositroy.GetCategories();
-            return Ok(mapper.Map<IEnumerable<CategoryDto>>(categories));
+            return Ok(new ResponseModel() 
+            { 
+                StatusCode = StatusCodes.Status200OK,
+                Message = "",
+                Data = categories
+            });
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}", Name = "GetCategory")]
         public IActionResult GetCategoryById(Guid id)
         {
@@ -48,23 +58,37 @@ namespace Spots.APIs.Controllers
         [HttpPost]
         public IActionResult CreateCategory([FromBody] CategoryForCreationDto category)
         {
+            var response = new ResponseModel();
             var _category = repositroy.GetCategoryByName(category.Name);
-            if (_category != null)
+
+            if (!ModelState.IsValid)
             {
-                return Conflict($"Category: {category.Name} already exists");
+                response.StatusCode = StatusCodes.Status400BadRequest;
+                response.Message = "Invalid Category Format";
+                return BadRequest(response);
             }
+
+            if (_category != null && _category.SuperCategoryId == category.SuperCategoryId)
+            {
+                response.StatusCode = StatusCodes.Status409Conflict;
+                response.Message = $"Category: {category.Name} already exists";
+                return Conflict(response);
+            }
+
+
             _category = mapper.Map<Category>(category);
             if (repositroy.CategoryExists(category.SuperCategoryId))
             {
                 _category.SuperCategoryId = category.SuperCategoryId;
             }
 
-
             repositroy.AddCategory(_category);
             repositroy.Save();
-
             var createdCategoryToReturn = mapper.Map<CategoryDto>(_category);
-            return CreatedAtRoute("GetCategory", new { createdCategoryToReturn.Id }, createdCategoryToReturn);
+            response.StatusCode = StatusCodes.Status201Created;
+            response.Message = $"Category : '{createdCategoryToReturn.Name }' Created Successfully";
+            response.Data = createdCategoryToReturn;
+            return CreatedAtRoute("GetCategory", new { createdCategoryToReturn.Id }, response);
 
         }
 
