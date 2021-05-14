@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Spots.Services\Spots.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>

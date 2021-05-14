@@ -1,0 +1,58 @@
+﻿@model AdminPanel.ViewModels.AddCategoryViewModel
+
+
+    <form asp-action="AddCategory" asp-controller="Category" id="qv-form" class="quickview quickview-lg reveal"
+          method="post" role="form" enctype="multipart/form-data">
+        <header class="quickview-header">
+            <p class="quickview-title lead fw-400">Add New Category</p>
+            <span class="close"><i class="ti-close"></i></span>
+        </header>
+
+        <div data-provide="validation" data-disable="false" novalidate="true"
+             class="quickview-body ps-container ps-theme-default ps-active-y" data-ps-id="4f844987-6360-16bf-6951-634d680f0316">
+
+            <div class="quickview-block form-type-material">
+                <h6>Category information</h6>
+
+                <div class="form-group">
+                    <input asp-for="Name" type ="text" class="form-control" required>
+                    <div class="invalid-feedback"></div>
+                    <label class="require"></label>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="SortOrder" type="number" class="form-control">
+                    <label>Sort Order</label>
+                </div>
+
+                <div class="form-group">
+                    <select class="form-control">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                    <label>Super Category</label>
+                </div>
+
+
+                <div class="input-group form-type-material file-group">
+                    <div class="input-group-input">
+                        <input type="text" class="form-control file-value" readonly="">
+                        <input asp-for="Files" type="file" class="form-control" multiple="" accept=".jpg,.jpeg">
+                        <label>Choose file...</label>
+                    </div>
+                    <span class="input-group-append">
+                        <button class="btn btn-light file-browser" type="button"><i class="fa fa-upload"></i></button>
+                    </span>
+                </div>
+
+
+            </div>
+            <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps-scrollbar-y-rail" style="top: 0px; height: 503px; right: 2px;"><div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 386px;"></div></div>
+        </div>
+
+        <footer class="p-12 text-right">
+            <button class="btn btn-flat btn-secondary" type="button" data-toggle="quickview">Cancel</button>
+            <button class="btn btn-flat btn-primary" type="submit" value="Add category">Add Category</button>
+        </footer>
+    </form>

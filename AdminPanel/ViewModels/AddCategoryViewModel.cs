@@ -12,8 +12,8 @@ namespace AdminPanel.ViewModels
     {
         [Required]
         public string Name { get; set; }
-        public int SortOrder { get; set; }
+        public int SortOrder { get; set; } = 0;
         public List<IFormFile> Files { get; set; } = new List<IFormFile>();
-        public Guid SuperCategoryId { get; set; }
+        public Guid SuperCategoryId { get; set; } = new Guid();
     }
 }

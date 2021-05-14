@@ -2,6 +2,8 @@
 using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 //using Newtonsoft.Json;
 using Spots.Domain;
 using System;
@@ -61,16 +63,30 @@ namespace AdminPanel.Controllers
             };
 
             // take the first (only) file in the Files list
-            var imageFile = addCategoryViewModel.Files.First();
+            var imageFile = addCategoryViewModel.Files.FirstOrDefault();
 
             if (imageFile.Length > 0)
             {
                 using (var fileStream = imageFile.OpenReadStream())
-                using (var ms = new MemoryStream())
                 {
-                    fileStream.CopyTo(ms);
-                    categoryForCreation.Bytes = ms.ToArray();
+                    using (var image = Image.Load(imageFile.OpenReadStream()))
+                    {
+                        image.Mutate(h => h.Resize(300, 300));
+                        using (var ms = new MemoryStream())
+                        {
+                            image.SaveAsJpeg(ms);
+                            categoryForCreation.Bytes = ms.ToArray();
+                        }
+                    }
                 }
+
+
+                //using (var fileStream = imageFile.OpenReadStream())
+                //using (var ms = new MemoryStream())
+                //{
+                //    fileStream.CopyTo(ms);
+                //    categoryForCreation.Bytes = ms.ToArray();
+                //}
             }
 
             // serialize it
@@ -111,6 +127,11 @@ namespace AdminPanel.Controllers
             return RedirectToAction("Index");
         }
 
+        public PartialViewResult CategoryAddPartialView()
+        {
+            return PartialView("_CategoryAddQuickView");
+        }
+
         [HttpPost]
         public async Task<PartialViewResult> CategoryEditPartialView(Guid id)
         {
@@ -131,6 +152,8 @@ namespace AdminPanel.Controllers
                     await JsonSerializer.DeserializeAsync<Category>(responseStream)));
             }
         }
+
+        
 
 
     }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Spots.Domain;
@@ -7,6 +8,7 @@ using Spots.DTO;
 using Spots.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,11 +22,13 @@ namespace Spots.APIs.Controllers
     {
         private readonly IMapper mapper;
         private readonly ISpotsRepositroy repositroy;
+        private readonly IWebHostEnvironment hostEnvironment;
 
-        public CategoryController(IMapper mapper, ISpotsRepositroy repositroy)
+        public CategoryController(IMapper mapper, ISpotsRepositroy repositroy, IWebHostEnvironment hostEnvironment)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.repositroy = repositroy ?? throw new ArgumentNullException(nameof(repositroy));
+            this.hostEnvironment = hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
         }
 
         [AllowAnonymous]
@@ -77,10 +81,26 @@ namespace Spots.APIs.Controllers
 
 
             _category = mapper.Map<Category>(category);
-            if (repositroy.CategoryExists(category.SuperCategoryId))
+            if (!repositroy.CategoryExists(category.SuperCategoryId))
             {
-                _category.SuperCategoryId = category.SuperCategoryId;
+                _category.SuperCategoryId = new Guid();
             }
+
+            // get this environment's web root path (the path
+            // from which static content, like an image, is served)
+            var webRootPath = hostEnvironment.WebRootPath;
+
+            // create the filename
+            string fileName = Guid.NewGuid().ToString() + ".jpg";
+
+            // the full file path
+            var filePath = Path.Combine($"{webRootPath}/images/{fileName}");
+
+            // write bytes and auto-close stream
+            System.IO.File.WriteAllBytes(filePath, category.Bytes);
+
+            // fill out the filename
+            _category.FileName = fileName;
 
             repositroy.AddCategory(_category);
             repositroy.Save();
