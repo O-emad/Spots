@@ -63,14 +63,15 @@ namespace Spots.APIs.Controllers
         public IActionResult CreateCategory([FromBody] CategoryForCreationDto category)
         {
             var response = new ResponseModel();
-            var _category = repositroy.GetCategoryByName(category.Name);
-
+        
             if (!ModelState.IsValid)
             {
                 response.StatusCode = StatusCodes.Status400BadRequest;
                 response.Message = "Invalid Category Format";
                 return BadRequest(response);
             }
+
+            var _category = repositroy.GetCategoryByName(category.Name);
 
             if (_category != null && _category.SuperCategoryId == category.SuperCategoryId)
             {
@@ -113,24 +114,50 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateCategory(Guid id, [FromBody] CategoryForUpdateDto category)
+        public IActionResult UpdateCategory(Guid id, [FromBody] CategoryForUpdateDto category,
+            [FromQuery] bool imageChanged = false)
         {
+            var response = new ResponseModel();
+
+            #region checkvalidityofmodel
+            if (!ModelState.IsValid)
+            {
+                response.StatusCode = StatusCodes.Status400BadRequest;
+                response.Message = "Invalid Category Format";
+                return BadRequest(response);
+            }
+            #endregion
+            #region checkexistanceofcategory
             if (!repositroy.CategoryExists(id))
             {
-                return NotFound();
+                response.StatusCode = StatusCodes.Status404NotFound;
+                response.Message = ($"Category Not Found");
+                return NotFound(response);
             }
-            var _category = repositroy.GetCategoryByName(category.Name);
-            if (_category != null)
+            #endregion
+
+            //redefine this condition
+            #region checkdublication
+            var _category = repositroy.GetCategoryByNameAndSuperCategory(category.Name, category.SuperCategoryId);
+            if (_category != null && _category.Id != id)
             {
-                return BadRequest($"Category: {category.Name} already exists");
+                response.StatusCode = StatusCodes.Status400BadRequest;
+                response.Message = $"Category: {category.Name} already exists";
+                return BadRequest(response);
             }
+            #endregion
+
             _category = repositroy.GetCategoryById(id);
             mapper.Map(category, _category);
+
+            #region checkexistanceofsupercategory
             if (repositroy.CategoryExists(category.SuperCategoryId))
             {
                 if(category.SuperCategoryId == id)
                 {
-                    return BadRequest($"SuperCategory cannot be the exact same category as child");
+                    response.StatusCode = StatusCodes.Status400BadRequest;
+                    response.Message = $"SuperCategory cannot be the exact same category as child";
+                    return BadRequest(response);
                 }
                 _category.SuperCategoryId = category.SuperCategoryId;
             }
@@ -138,11 +165,37 @@ namespace Spots.APIs.Controllers
             {
                 _category.SuperCategoryId = Guid.Empty;
             }
+            #endregion
 
+            #region checkimagechange
+            if (imageChanged)
+            {
+                // get this environment's web root path (the path
+                // from which static content, like an image, is served)
+                var webRootPath = hostEnvironment.WebRootPath;
+
+                var oldImagePath = Path.Combine($"{webRootPath}/images/{_category.FileName}");
+                if ((System.IO.File.Exists(oldImagePath)))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
+                
+                // create the filename
+                string fileName = Guid.NewGuid().ToString() + ".jpg";
+
+                // the full file path
+                var filePath = Path.Combine($"{webRootPath}/images/{fileName}");
+
+                // write bytes and auto-close stream
+                System.IO.File.WriteAllBytes(filePath, category.Bytes);
+
+                // fill out the filename
+                _category.FileName = fileName;
+            }
+            #endregion
 
             repositroy.UpdateCategory(id, _category);
             repositroy.Save();
-
             return NoContent();
         }
 

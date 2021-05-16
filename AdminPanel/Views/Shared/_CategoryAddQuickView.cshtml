@@ -9,7 +9,7 @@
         </header>
 
         <div data-provide="validation" data-disable="false" novalidate="true"
-             class="quickview-body ps-container ps-theme-default ps-active-y" data-ps-id="4f844987-6360-16bf-6951-634d680f0316">
+             class="quickview-body ps-container ps-theme-default ps-active-y">
 
             <div class="quickview-block form-type-material">
                 <h6>Category information</h6>
@@ -17,7 +17,7 @@
                 <div class="form-group">
                     <input asp-for="Name" type ="text" class="form-control" required>
                     <div class="invalid-feedback"></div>
-                    <label class="require"></label>
+                    <label class="require">Category Name</label>
                 </div>
 
                 <div class="form-group">
@@ -56,3 +56,4 @@
             <button class="btn btn-flat btn-primary" type="submit" value="Add category">Add Category</button>
         </footer>
     </form>
+    <div class="app-backdrop backdrop-quickview" data-target="#qv-form"></div>

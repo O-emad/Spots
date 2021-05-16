@@ -39,6 +39,12 @@ namespace Spots.Services
             return context.Categories.Where(c => c.Name == name).FirstOrDefault();
         }
 
+        public Category GetCategoryByNameAndSuperCategory(string name, Guid superCategoryId)
+        {
+            return context.Categories.Where(c => c.Name == name 
+            && c.SuperCategoryId == superCategoryId).FirstOrDefault();
+        }
+
         public void UpdateCategory(Guid categoryId, Category category)
         {
             //does nothing for now
@@ -174,5 +180,7 @@ namespace Spots.Services
         {
             return context.Reviews.Where(r => r.Id == reviewId).Any();
         }
+
+
     }
 }

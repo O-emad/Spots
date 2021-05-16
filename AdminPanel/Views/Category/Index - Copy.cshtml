@@ -1,19 +1,6 @@
 ﻿@model AdminPanel.ViewModels.CategoryIndexViewModel
 
-@if (TempData.ContainsKey("CUD"))
-{
-    if ((bool)TempData["CUD"] == true)
-    {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">×</span>
-        </button>
-        @TempData["Message"]
-    </div>
-    }
-}
-
-<main class="main-co[tainer">
+<main class="main-container">
     <div class="main-content">
 
 
@@ -29,7 +16,7 @@
 
 
 
-                    <button class="btn btn-float btn-primary"
+                    <button class="btn btn-float btn-primary" 
                             data-provide="tooltip" data-toggle="quickview"
                             data-original-title="Add New"
                             onclick="replaceContentsOfCategoryAdd()">
@@ -55,8 +42,8 @@
                                 <td>@item.SortOrder</td>
                                 <td class="text-right table-actions">
                                     <a class="table-action hover-primary"
-                                       asp-action="EditCategory" asp-controller="Category"
-                                       asp-route-id=@item.Id>
+                                       onclick="replaceContentsOfDiv(this.id)"
+                                       id=@item.Id>
                                         <i class="ti-pencil"></i>
                                     </a>
                                     <a class="table-action hover-danger"
@@ -117,7 +104,7 @@
                 </div>
             </div>
         </div>
-
+        
         <script data-provide="sweetalert">
 
             function assertDelete () {
@@ -153,6 +140,9 @@
                 $("#assertDelete").attr("value", itemid);
             }
         </script>
+
+        <div id="placeHolderDiv">
+        </div>
 
         <div id="categoryAddPlaceHolder">
         </div>
