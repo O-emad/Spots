@@ -223,8 +223,9 @@ namespace AdminPanel.Controllers
                     .DeserializeAsync<DeserializedResponseModel>(responseStream);
                 var categoryToBeEdited = deserializedResponse.Data.Where(c => c.Id == id).FirstOrDefault();
                 var viewmodel = new CategoryEditAndCreateViewModel(categoryToBeEdited);
-                deserializedResponse.Data.ToList().Remove(categoryToBeEdited);
-                foreach (var category in deserializedResponse.Data)
+                var selectList = deserializedResponse.Data.ToList();
+                selectList.Remove(categoryToBeEdited);
+                foreach (var category in selectList)
                 {
                     var selectItem = new SelectListItem { Text = category.Name, Value = category.Id.ToString() };
                     viewmodel.Categories.Add(selectItem);
@@ -242,6 +243,7 @@ namespace AdminPanel.Controllers
 
             var editedCategory = new CategoryForCreation()
             {
+                NameAR = categoryEdit.NameAR,
                 Name = categoryEdit.Name,
                 SortOrder = categoryEdit.SortOrder,
                 SuperCategoryId = categoryEdit.SuperCategoryId
