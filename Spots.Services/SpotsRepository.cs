@@ -107,9 +107,32 @@ namespace Spots.Services
             return context.Vendors.Where(v => v.Name == name).FirstOrDefault();
         }
 
-        public IEnumerable<Vendor> GetVendors()
+        public PagedList<Vendor> GetVendors(IndexResourceParameters vendorParameters)
         {
-            return context.Vendors.OrderBy(v => v.SortOrder);
+            if (vendorParameters == null)
+            {
+                throw new ArgumentNullException(nameof(vendorParameters));
+            }
+
+            var collection = context.Vendors as IQueryable<Vendor>;
+
+            #region Filtering
+
+            #endregion
+
+            #region Searching
+            if (!string.IsNullOrWhiteSpace(vendorParameters.SearchQuery))
+            {
+                var searchQuery = vendorParameters.SearchQuery.Trim();
+                collection = collection.Where(c => c.Name.Contains(searchQuery));
+            }
+
+            #endregion
+
+            collection = collection.OrderBy(c => c.SortOrder);
+
+            return PagedList<Vendor>.Create(collection, vendorParameters.PageNumber
+                , vendorParameters.PageSize);
         }
         public void UpdateVendor(Guid vendorId, Vendor vendor)
         {

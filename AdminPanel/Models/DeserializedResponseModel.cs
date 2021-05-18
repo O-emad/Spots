@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace AdminPanel.Models
 {
-    public class DeserializedResponseModel
+    public class DeserializedResponseModel<T>
     {
-            public int StatusCode { get; set; }
-            public string Message { get; set; }
-            public Category[] Data { get; set; }
+        public int StatusCode { get; set; }
+        public string Message { get; set; }
+        public List<T> Data { get; set; } = new List<T>();
     }
 }

@@ -55,7 +55,7 @@ namespace AdminPanel.Controllers
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel>(responseStream);
+                    .DeserializeAsync<DeserializedResponseModel<Category>>(responseStream);
                 var deserializedHeader = JsonSerializer.Deserialize<PaginationHeader>(pagination);
                 return View(new CategoryIndexViewModel(deserializedResponse.Data,deserializedHeader));
             }
@@ -80,7 +80,7 @@ namespace AdminPanel.Controllers
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel>(responseStream);
+                    .DeserializeAsync<DeserializedResponseModel<Category>>(responseStream);
                 var viewmodel = new CategoryEditAndCreateViewModel();
                 foreach (var category in deserializedResponse.Data)
                 {
@@ -221,10 +221,10 @@ namespace AdminPanel.Controllers
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel>(responseStream);
+                    .DeserializeAsync<DeserializedResponseModel<Category>>(responseStream);
                 var categoryToBeEdited = deserializedResponse.Data.Where(c => c.Id == id).FirstOrDefault();
                 var viewmodel = new CategoryEditAndCreateViewModel(categoryToBeEdited);
-                var selectList = deserializedResponse.Data.ToList();
+                var selectList = deserializedResponse.Data;
                 selectList.Remove(categoryToBeEdited);
                 foreach (var category in selectList)
                 {

@@ -18,7 +18,7 @@ namespace Spots.Services
         bool CategoryExists(Guid categoryId);
         bool IsSuperCategory(Guid categoryId);
 
-        IEnumerable<Vendor> GetVendors();
+        PagedList<Vendor> GetVendors(IndexResourceParameters vendorParameters);
         Vendor GetVendorById(Guid vendorId);
         Vendor GetVendorByName(string name);
         void AddVendor(Vendor vendor);

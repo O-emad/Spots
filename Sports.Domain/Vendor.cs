@@ -17,7 +17,7 @@ namespace Spots.Domain
         public string Location { get; set; }
         public float ReviewAverage { get; set; }
         public int ReviewCount { get; set; }
-        public List<Guid> CategoryId { get; set; }
+        public List<Category> Categories { get; set; }
 
     }
 }
