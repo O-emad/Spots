@@ -30,16 +30,11 @@ namespace AdminPanel.Controllers
             this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
-        public void GetPageUrl(string apiUrl)
-        {
-
-
-
-        }
-
         #region List
         public async Task<IActionResult> Index(int pageNumber, string searchQuery)
         {
+            ViewData["category"] = "active";
+            ViewData["searchString"] = (string.IsNullOrEmpty(searchQuery)) ? "" : searchQuery;
             if(pageNumber < 1)
             {
                 pageNumber = 1;
@@ -48,7 +43,7 @@ namespace AdminPanel.Controllers
 
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
-                $"/api/category?pageSize=1&pageNumber={pageNumber}&searchQuery={searchQuery}");
+                $"/api/category?pageSize=15&pageNumber={pageNumber}&searchQuery={searchQuery}");
 
             var response = await httpClient.SendAsync(
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -70,6 +65,7 @@ namespace AdminPanel.Controllers
         #region Create
         public async Task<IActionResult> CreateCategory()
         {
+            ViewData["category"] = "active";
             var httpClient = httpClientFactory.CreateClient("APIClient");
 
             var request = new HttpRequestMessage(
@@ -209,7 +205,7 @@ namespace AdminPanel.Controllers
         public async Task<IActionResult> EditCategory(Guid id)
         {
 
-
+            ViewData["category"] = "active";
             var httpClient = httpClientFactory.CreateClient("APIClient");
 
             var request = new HttpRequestMessage(

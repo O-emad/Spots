@@ -25,7 +25,14 @@
                 <div class="flexbox mb-20">
                     <form method="get" asp-action="Index" class="lookup">
                         <input class="w-200px" type="text" name="searchQuery" placeholder="Search">
+                        @if (!string.IsNullOrEmpty(ViewData["searchString"].ToString()))
+                        {
+                            <a class="w-100px text-right" asp-action="Index">Back to full list</a>
+                        }
+
+
                     </form>
+                    
                     <a class="btn btn-float btn-primary"
                        asp-action="CreateCategory">
                         <i class="ti-plus"></i>
