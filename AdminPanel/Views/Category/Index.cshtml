@@ -4,7 +4,7 @@
 {
     if ((bool)TempData["CUD"] == true)
     {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert @TempData["Type"] alert-dismissible fade show" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">×</span>
         </button>
@@ -13,7 +13,7 @@
     }
 }
 
-<main class="main-co[tainer">
+<main class="main-cotainer">
     <div class="main-content">
 
 
@@ -23,18 +23,13 @@
             <div class="card-body">
 
                 <div class="flexbox mb-20">
-                    <div class="lookup">
-                        <input class="w-200px" type="text" name="s" placeholder="Search">
-                    </div>
-
-
-
-                    <button class="btn btn-float btn-primary"
-                            data-provide="tooltip" data-toggle="quickview"
-                            data-original-title="Add New"
-                            onclick="replaceContentsOfCategoryAdd()">
+                    <form method="get" asp-action="Index" class="lookup">
+                        <input class="w-200px" type="text" name="searchQuery" placeholder="Search">
+                    </form>
+                    <a class="btn btn-float btn-primary"
+                       asp-action="CreateCategory">
                         <i class="ti-plus"></i>
-                    </button>
+                    </a>
 
 
                 </div>
@@ -42,9 +37,9 @@
                 <table class="table table-separated">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Sort Order</th>
-                            <th class="text-center w-100px">Actions</th>
+                            <th class="w-300px">Name</th>
+                            <th class="w-100px">Sort Order</th>
+                            <th class="text-right w-100px">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,10 +54,11 @@
                                        asp-route-id=@item.Id>
                                         <i class="ti-pencil"></i>
                                     </a>
-                                    <a class="table-action hover-danger"
+                                    <a id="deletebutton"
+                                       class="table-action hover-danger"
                                        data-target="#modal-small" data-toggle="modal"
-                                       onclick="onDelete(this.id)"
-                                       id=@item.Id>
+                                       name=@item.Id
+                                       onclick="onDelete(this.name)">
                                         <i class="ti-trash"></i>
                                     </a>
                                 </td>
@@ -72,23 +68,33 @@
                 </table>
                 <nav>
                     <ul class="pagination pagination-circle justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#">
-                                <span class="ti-arrow-left"></span>
-                            </a>
-                        </li>
-                        <li class="page-item active">
-                            <a class="page-link" href="#">1</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">4</a></li>
-                        <li class="page-item"><a class="page-link" href="#">5</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">
-                                <span class="ti-arrow-right"></span>
-                            </a>
-                        </li>
+                        @if (Model.Pagination.previousPageLink != null)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index" asp-route-pageNumber=@(Model.Pagination.currentPage - 1)
+                                   asp-route-searchQuery=@Model.Pagination.searchQuery>
+                                    <span class="ti-arrow-left"></span>
+                                </a>
+                            </li>
+                        }
+                        @for (int i = 1; i <= Model.Pagination.totalPages; ++i)
+                        {
+                            var activePage = (Model.Pagination.currentPage == i) ? "active" : "";
+                            <li class="page-item @activePage">
+                                <a class="page-link" asp-action="Index" asp-Route-pageNumber=@i
+                                   asp-route-searchQuery=@Model.Pagination.searchQuery>@i</a>
+                            </li>
+                        }
+                        @if (Model.Pagination.nextPageLink != null)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index" asp-route-pageNumber=@(Model.Pagination.currentPage + 1)
+                                   asp-route-searchQuery=@Model.Pagination.searchQuery>
+                                    <span class="ti-arrow-right"></span>
+                                </a>
+                            </li>
+                        }
+
                     </ul>
                 </nav>
             </div>
@@ -108,54 +114,21 @@
                     </div>
                     <div class="modal-footer" id="sdsd">
                         <button type="button" class="btn btn-bold btn-pure btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button id="assertDelete" type="button" class="btn btn-bold btn-pure btn-primary"
-                                onclick="assertDelete()"
-                                asp-action="DeleteCategory" asp-controller="Category" asp-route-id="">
+                        <a id="assertDelete" type="submit" class="btn btn-bold btn-pure btn-primary"
+                                asp-action="DeleteCategory" asp-controller="Category">
                             Delete
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <script data-provide="sweetalert">
-
-            function assertDelete () {
-                id = $('#assertDelete').val();
-                newhref = $('#assertDelete').attr('formaction') + '/' + id;
-                window.location.href = newhref;
-            }
-
-            function replaceContentsOfDiv(itemid) {
-        $.ajax({
-            url: '@Url.Action("CategoryEditPartialView", "Category")',
-            data: { id: itemid },
-            type: "GET",
-            success: function(data) {
-                $('#placeHolderDiv').html(data);
-            }
-        });
-            }
-
-            function replaceContentsOfCategoryAdd() {
-        $.ajax({
-            url: '@Url.Action("CategoryAddPartialView", "Category")',
-            type: "POST",
-            success: function (data) {
-                $('#categoryAddPlaceHolder').html(data);
-            }
-
-        });
-            }
-
+        <script>
             function onDelete(itemid) {
-                //var newhref = $("#assertDelete").attr('href') + '/' + itemid;
-                $("#assertDelete").attr("value", itemid);
+                newhref = $('#assertDelete').attr('href') + '/' + itemid;
+                $("#assertDelete").attr("href", newhref);
             }
         </script>
-
-        <div id="categoryAddPlaceHolder">
-        </div>
 
 
     </div>

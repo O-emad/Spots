@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Spots.Services.ResourceParameters;
 using Spots.Data;
 using Spots.Domain;
+using Spots.Services.Helpers;
+
 namespace Spots.Services
 {
     public class SpotsRepository : ISpotsRepositroy
@@ -23,9 +26,32 @@ namespace Spots.Services
                 context.Add<Category>(category);
             }
         }
-        public IEnumerable<Category> GetCategories()
+        public PagedList<Category> GetCategories(IndexResourceParameters categoryParameters)
         {
-            return context.Categories;
+            if(categoryParameters == null)
+            {
+                throw new ArgumentNullException(nameof(categoryParameters));
+            }
+
+            var collection = context.Categories as IQueryable<Category>;
+
+            #region Filtering
+
+            #endregion
+
+            #region Searching
+            if (!string.IsNullOrWhiteSpace(categoryParameters.SearchQuery))
+            {
+                var searchQuery = categoryParameters.SearchQuery.Trim();
+                collection = collection.Where(c => c.Name.Contains(searchQuery));
+            }
+
+            #endregion
+
+            collection = collection.OrderBy(c => c.SortOrder);
+
+            return PagedList<Category>.Create(collection, categoryParameters.PageNumber
+                , categoryParameters.PageSize);
         }
 
         public Category GetCategoryById(Guid categoryId)

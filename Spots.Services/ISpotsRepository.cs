@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using Spots.Services.ResourceParameters;
 using Spots.Domain;
+using Spots.Services.Helpers;
 
 namespace Spots.Services
 {
     public interface ISpotsRepositroy
     {
-        IEnumerable<Category> GetCategories();
+        PagedList<Category> GetCategories(IndexResourceParameters categoryParameters);
         Category GetCategoryById(Guid categoryId);
         Category GetCategoryByName(string name);
         Category GetCategoryByNameAndSuperCategory(string name, Guid superCategoryId);

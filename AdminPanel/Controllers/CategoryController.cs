@@ -1,16 +1,18 @@
 ﻿using AdminPanel.Models;
 using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-//using Newtonsoft.Json;
 using Spots.Domain;
+using Spots.Services.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -28,15 +30,51 @@ namespace AdminPanel.Controllers
             this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
-        #region List
-        public async Task<IActionResult> Index()
+        public void GetPageUrl(string apiUrl)
         {
 
+
+
+        }
+
+        #region List
+        public async Task<IActionResult> Index(int pageNumber, string searchQuery)
+        {
+            if(pageNumber < 1)
+            {
+                pageNumber = 1;
+            }
             var httpClient = httpClientFactory.CreateClient("APIClient");
 
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
-                "/api/category/");
+                $"/api/category?pageSize=1&pageNumber={pageNumber}&searchQuery={searchQuery}");
+
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var pagination = response.Headers.GetValues("MVC-Pagination").FirstOrDefault().ToString();
+            
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer
+                    .DeserializeAsync<DeserializedResponseModel>(responseStream);
+                var deserializedHeader = JsonSerializer.Deserialize<PaginationHeader>(pagination);
+                return View(new CategoryIndexViewModel(deserializedResponse.Data,deserializedHeader));
+            }
+        }
+        #endregion
+
+        #region Create
+        public async Task<IActionResult> CreateCategory()
+        {
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"/api/category/");
 
             var response = await httpClient.SendAsync(
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -47,13 +85,19 @@ namespace AdminPanel.Controllers
             {
                 var deserializedResponse = await JsonSerializer
                     .DeserializeAsync<DeserializedResponseModel>(responseStream);
-                return View(new CategoryIndexViewModel(deserializedResponse.Data));
+                var viewmodel = new CategoryEditAndCreateViewModel();
+                foreach (var category in deserializedResponse.Data)
+                {
+                    var selectItem = new SelectListItem { Text = category.Name, Value = category.Id.ToString() };
+                    viewmodel.Categories.Add(selectItem);
+                }
+                return View(viewmodel);
             }
-        }
-        #endregion
 
-        #region Create
-        public async Task<IActionResult> AddCategory(AddCategoryViewModel addCategoryViewModel)
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCategory(CategoryEditAndCreateViewModel categoryCreate)
         {
             if (!ModelState.IsValid)
             {
@@ -63,36 +107,36 @@ namespace AdminPanel.Controllers
             // create an ImageForCreation instance
             var categoryForCreation = new CategoryForCreation()
             {
-                Name = addCategoryViewModel.Name,
-                SortOrder = addCategoryViewModel.SortOrder,
-                SuperCategoryId = addCategoryViewModel.SuperCategoryId
+                Name = categoryCreate.Name,
+                SortOrder = categoryCreate.SortOrder,
+                SuperCategoryId = categoryCreate.SuperCategoryId
             };
 
             // take the first (only) file in the Files list
-            var imageFile = addCategoryViewModel.Files.FirstOrDefault();
+            var imageFile = categoryCreate.Files.FirstOrDefault();
 
-            if (imageFile.Length > 0)
+            try
             {
-                using (var fileStream = imageFile.OpenReadStream())
+                if (imageFile.Length > 0)
                 {
-                    using (var image = Image.Load(imageFile.OpenReadStream()))
+                    using (var fileStream = imageFile.OpenReadStream())
                     {
-                        image.Mutate(h => h.Resize(300, 300));
-                        using (var ms = new MemoryStream())
+                        using (var image = Image.Load(imageFile.OpenReadStream()))
                         {
-                            image.SaveAsJpeg(ms);
-                            categoryForCreation.Bytes = ms.ToArray();
+                            image.Mutate(h => h.Resize(300, 300));
+                            using (var ms = new MemoryStream())
+                            {
+                                image.SaveAsJpeg(ms);
+                                categoryForCreation.Bytes = ms.ToArray();
+                            }
                         }
                     }
                 }
-
-
-                //using (var fileStream = imageFile.OpenReadStream())
-                //using (var ms = new MemoryStream())
-                //{
-                //    fileStream.CopyTo(ms);
-                //    categoryForCreation.Bytes = ms.ToArray();
-                //}
+            }
+            catch (Exception e)
+            {
+                if (!(e.GetType() == typeof(NullReferenceException)))
+                    throw;
             }
 
             // serialize it
@@ -113,7 +157,7 @@ namespace AdminPanel.Controllers
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
-
+            TempData["Type"] = "alert-success";
             TempData["CUD"] = true;
             TempData["Message"] = "Category Created Successfully";
             return RedirectToAction("Index");
@@ -131,16 +175,40 @@ namespace AdminPanel.Controllers
             var response = await httpClient.SendAsync(
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+                TempData["Type"] = "alert-danger";
+                if (e.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Cannot delete a parent category, Delete children first";
+                }
+                else if(e.StatusCode == HttpStatusCode.NotFound)
+                {
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Category not found";
+                }
+                else
+                {
+                    throw;
+                }
+                return RedirectToAction("Index");
+            }
+            
             TempData["CUD"] = true;
             TempData["Message"] = "Category Deleted Successfully";
+            TempData["Type"] = "alert-success";
             return RedirectToAction("Index");
         }
         #endregion
         #region Edit
         public async Task<IActionResult> EditCategory(Guid id)
         {
-            
+
 
             var httpClient = httpClientFactory.CreateClient("APIClient");
 
@@ -210,7 +278,7 @@ namespace AdminPanel.Controllers
                 if (!(e.GetType() == typeof(NullReferenceException)))
                     throw;
             }
-            
+
 
             // serialize it
             var serializedCategoryForEdit = JsonSerializer.Serialize(editedCategory);
@@ -230,6 +298,7 @@ namespace AdminPanel.Controllers
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
+            TempData["Type"] = "alert-success";
             TempData["CUD"] = true;
             TempData["Message"] = "Category Edited Successfully";
             return RedirectToAction("Index");

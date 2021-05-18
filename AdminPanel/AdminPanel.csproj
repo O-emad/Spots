@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Sports.Domain\Spots.Domain.csproj" />
+    <ProjectReference Include="..\Spots.Services\Spots.Services.csproj" />
   </ItemGroup>
 
 </Project>
