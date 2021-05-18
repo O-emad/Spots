@@ -103,6 +103,7 @@ namespace AdminPanel.Controllers
             // create an ImageForCreation instance
             var categoryForCreation = new CategoryForCreation()
             {
+                NameAR = categoryCreate.NameAR,
                 Name = categoryCreate.Name,
                 SortOrder = categoryCreate.SortOrder,
                 SuperCategoryId = categoryCreate.SuperCategoryId

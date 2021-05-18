@@ -12,5 +12,6 @@ namespace Spots.DTO
         public int SortOrder { get; set; }
         public string WorkHours { get; set; }
         public string Location { get; set; }
+        public List<Guid> CategoryId { get; set; }
     }
 }

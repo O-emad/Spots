@@ -26,6 +26,7 @@ namespace AdminPanel.Controllers
 
         public async Task<IActionResult> Index()
         {
+            ViewData["home"] = "active";
             await WriteOutIdentityInformation();
             return View();
         }

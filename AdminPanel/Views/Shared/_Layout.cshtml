@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Responsive admin dashboard">
     <meta name="keywords" content="blank, starter">
-
+    
     <title>Blank page &mdash; Spots</title>
 
     <!-- Fonts -->
@@ -34,13 +34,14 @@
 
 
     <!-- Sidebar -->
-    <aside class="sidebar sidebar-icons-right sidebar-icons-boxed sidebar-expand-lg">
-        <header class="sidebar-header">
-            <a class="logo-icon" href="~/index.html"><img src="@("https://localhost:44308/images/"+"spots-logo.png")" alt="logo icon"></a>
+    <aside class="sidebar sidebar-icons-right sidebar-icons-boxed sidebar-expand-lg sidebar-color-yellow
+           sidebar-dark">
+        <header class="sidebar-header" style="background-color: #fff">
+            <a class="logo-icon" asp-controller="Home" asp-action="Index"><img src="~/img/spots-logo.png" alt="logo icon"></a>
             <span class="logo">
-                <a href="~/index.html"><img src="~/img/logo-light.png" alt="logo"></a>
+                <a asp-controller="Home" asp-action="Index"><img src="~/img/logo.png" alt="logo"></a>
             </span>
-            <span class="sidebar-toggle-fold"></span>
+            <span class="sidebar-toggle-fold "></span>
         </header>
 
         <nav class="sidebar-navigation">
@@ -48,7 +49,7 @@
 
 
 
-                <li class="menu-item ">
+                <li class="menu-item @ViewData["home"]">
                     <a class="menu-link" asp-controller="Home" asp-action="Index">
                         <span class="icon fa fa-home"></span>
                         <span class="title">Dashboard</span>
