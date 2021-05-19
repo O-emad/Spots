@@ -21,5 +21,6 @@ namespace Spots.Data
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Setting> Settings { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Ad> Ads { get; set; }
     }
 }

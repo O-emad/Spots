@@ -20,6 +20,7 @@ namespace Spots.Services
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        #region Category
         public void AddCategory(Category category)
         {
             if(category != null)
@@ -93,7 +94,9 @@ namespace Spots.Services
             return context.Categories.Where(c => c.SuperCategoryId == categoryId).Any();
         }
 
+        #endregion
 
+        #region Vendor
         public void AddVendor(Vendor vendor)
         {
             if(vendor != null)
@@ -171,13 +174,14 @@ namespace Spots.Services
             context.Remove(vendor);
         }
 
-        
-
         public bool VendorExists(Guid vendorId)
         {
             return context.Vendors.Where(v => v.Id == vendorId).Any();
         }
 
+        #endregion
+
+        #region Offer
 
         public IEnumerable<Offer> GetOffersForVendor(Guid vendorId)
         {
@@ -218,10 +222,9 @@ namespace Spots.Services
             return context.Offers.Where(o => o.Id == offerId).Any();
         }
 
-        public bool Save()
-        {
-            return (context.SaveChanges() >= 0);
-        }
+        #endregion
+
+        #region Review
 
         public IEnumerable<Review> GetReviewsForVendor(Guid vendorId)
         {
@@ -258,6 +261,65 @@ namespace Spots.Services
             return context.Reviews.Where(r => r.Id == reviewId).Any();
         }
 
+        #endregion
 
+        #region Ad
+
+        public PagedList<Ad> GetAds(IndexResourceParameters adParameters)
+        {
+            if(adParameters == null)
+            {
+                throw new ArgumentNullException(nameof(adParameters));
+            }
+
+            var collection = context.Ads as IQueryable<Ad>;
+
+            #region filtering
+
+            #endregion
+
+            #region searching
+            if (!string.IsNullOrWhiteSpace(adParameters.SearchQuery))
+            {
+                var searchQuery = adParameters.SearchQuery.Trim();
+                collection = collection.Where(c => c.Name.Contains(searchQuery));
+            }
+            #endregion
+
+            collection = collection.OrderBy(c => c.SortOrder);
+
+            return PagedList<Ad>.Create(collection, adParameters.PageNumber,
+                adParameters.PageSize, adParameters.IncludeAll);
+        }
+
+        public Ad GetAdById(Guid id)
+        {
+            return context.Ads.Where(a => a.Id == id).FirstOrDefault();
+        }
+
+        public bool AdExists(Guid id)
+        {
+            return context.Ads.Where(a=>a.Id == id).Any();
+        }
+
+        public void AddAd(Ad ad)
+        {
+            if (ad != null)
+            {
+                context.Add<Ad>(ad);
+            }
+        }
+
+        public void DeleteAd(Ad ad)
+        {
+            context.Remove(ad);
+        }
+
+        #endregion
+
+        public bool Save()
+        {
+            return (context.SaveChanges() >= 0);
+        }
     }
 }

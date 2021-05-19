@@ -39,6 +39,12 @@ namespace Spots.Services
         void DeleteReview(Review review);
         bool ReviewExists(Guid reviewId);
 
+        PagedList<Ad> GetAds(IndexResourceParameters adParameters);
+        Ad GetAdById(Guid id);
+        public bool AdExists(Guid id);
+        public void AddAd(Ad ad);
+        public void DeleteAd(Ad ad);
+
         bool Save();
     }
 }
