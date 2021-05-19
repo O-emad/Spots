@@ -204,8 +204,15 @@ namespace Spots.APIs.Controllers
             #endregion
 
             _vendor = repositroy.GetVendorById(id);
-            mapper.Map(vendor, _vendor);
+            //.Map(vendor, _vendor);    
+            {
+                _vendor.Name = vendor.Name;
+                _vendor.Location = vendor.Location;
+                _vendor.OpenAt = vendor.OpenAt;
+                _vendor.CloseAt = vendor.CloseAt;
+                _vendor.SortOrder = vendor.SortOrder;
 
+            }
             #region checkimagechange
             if (imageChanged && vendor.ProfileBytes != null)
             {
@@ -258,7 +265,7 @@ namespace Spots.APIs.Controllers
             }
             #endregion
 
-            repositroy.UpdateVendor(id, _vendor);
+            repositroy.UpdateVendor(id, _vendor, vendor.Categories);
             repositroy.Save();
             return NoContent();
         }

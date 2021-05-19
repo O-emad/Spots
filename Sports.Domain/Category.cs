@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Spots.Domain
 {
@@ -10,5 +11,6 @@ namespace Spots.Domain
         public int SortOrder { get; set; }
         public string FileName { get; set; }
         public Guid SuperCategoryId { get; set; }
+        public List<Vendor> Vendors { get; set; }
     }
 }

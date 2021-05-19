@@ -211,7 +211,7 @@ namespace AdminPanel.Controllers
 
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
-                $"/api/category/");
+                $"/api/category?includeAll=true");
 
             var response = await httpClient.SendAsync(
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);

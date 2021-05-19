@@ -251,35 +251,11 @@ namespace AdminPanel.Controllers
             }
 
             var newSelectedCategories = new List<Category>();
-            //{new Category
-            //{
-            //    Name = "HD29",
-            //    SortOrder = 1,
-            //    SuperCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000000")
-            //} } ;
-            var httpClient = httpClientFactory.CreateClient("APIClient");
-
-            var request = new HttpRequestMessage(
-                HttpMethod.Get,
-                $"/api/category?includeAll=true");
-
-            var response = await httpClient.SendAsync(
-               request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
-
-            response.EnsureSuccessStatusCode();
-            var categories = new List<Category>();
-            using (var responseStream = await response.Content.ReadAsStreamAsync())
-            {
-                var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel<Category>>(responseStream);
-                categories = deserializedResponse.Data;
-            }
-
-            if (categories != null)
+            if (VendorModel != null && VendorEdit.SelectedCategories != null)
             {
                 foreach (var selectedCategoryId in VendorEdit.SelectedCategories)
                 {
-                    var selectedCategory = categories.Where(c => c.Id == selectedCategoryId).FirstOrDefault();
+                    var selectedCategory = VendorModel.Categories.Where(c => c.Id == selectedCategoryId).FirstOrDefault();
                     newSelectedCategories.Add(selectedCategory);
                 }
             }
@@ -351,18 +327,18 @@ namespace AdminPanel.Controllers
             // serialize it
             var serializedVendorForEdit = JsonSerializer.Serialize(editedVendor);
 
-             httpClient = httpClientFactory.CreateClient("APIClient");
+             var httpClient = httpClientFactory.CreateClient("APIClient");
 
-             request = new HttpRequestMessage(
+             var request = new HttpRequestMessage(
                 HttpMethod.Put,
                 $"/api/vendor/{id}?imageChanged={imageChanged}");
 
-            request.Content = new StringContent(
+             request.Content = new StringContent(
                 serializedVendorForEdit,
                 System.Text.Encoding.Unicode,
                 "application/json");
 
-             response = await httpClient.SendAsync(
+            var response = await httpClient.SendAsync(
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();

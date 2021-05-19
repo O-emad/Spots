@@ -103,11 +103,21 @@ namespace Spots.Services
         }
         public Vendor GetVendorById(Guid vendorId)
         {
-            return context.Vendors.Where(v => v.Id == vendorId).Include(v=>v.Categories).FirstOrDefault();
+            var vendor =  context.Vendors.Include(v => v.Categories).Where(v => v.Id == vendorId).FirstOrDefault();
+            return vendor;
+            //var vendor = context.Vendors.Where(v => v.Id == vendorId).FirstOrDefault();
+            //vendor.Categories = GetCategoriesForVendor(vendorId).ToList();
+            //return vendor;
+        }
+
+        public IEnumerable<Category> GetCategoriesForVendor(Guid vendorId)
+        {
+            return context.Categories.Where(c => c.Vendors.Where(v => v.Id == vendorId).FirstOrDefault().Id == vendorId);
         }
 
         public Vendor GetVendorByName(string name)
         {
+            
             return context.Vendors.Where(v => v.Name == name).FirstOrDefault();
         }
 
@@ -133,15 +143,28 @@ namespace Spots.Services
 
             #endregion
 
-            collection = (IQueryable<Vendor>)collection.OrderBy(c => c.SortOrder)
-                .Include(v=>v.Categories);
+            collection = (IQueryable<Vendor>)collection.OrderBy(c => c.SortOrder);
+      //          .Include(v=>v.Categories);
 
             return PagedList<Vendor>.Create(collection, vendorParameters.PageNumber
                 , vendorParameters.PageSize,vendorParameters.IncludeAll);
         }
-        public void UpdateVendor(Guid vendorId, Vendor vendor)
+        public void UpdateVendor(Guid vendorId, Vendor vendor, IEnumerable<Category> categories)
         {
-            //does nothing for now
+            var categoryWithVendor = context.Categories
+                .Include(c => c.Vendors)
+                .Where(c=>c.Vendors.Any(v=>v.Id == vendorId))
+                .ToList();
+            foreach(var category in categoryWithVendor)
+            {
+                category.Vendors.Remove(vendor);
+            }
+            var vend = GetVendorById(vendorId);
+            foreach(var category in categories)
+            {
+                var cat = context.Categories.Where(c => c.Id == category.Id).FirstOrDefault();
+                vend.Categories.Add(cat);
+            }
         }
         public void DeleteVendor(Vendor vendor)
         {

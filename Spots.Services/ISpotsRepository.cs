@@ -22,7 +22,7 @@ namespace Spots.Services
         Vendor GetVendorById(Guid vendorId);
         Vendor GetVendorByName(string name);
         void AddVendor(Vendor vendor);
-        void UpdateVendor(Guid vendorId, Vendor vendor);
+        void UpdateVendor(Guid vendorId, Vendor vendor, IEnumerable<Category> categories);
         void DeleteVendor(Vendor vendor);
         bool VendorExists(Guid vendorId);
 
