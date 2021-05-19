@@ -32,7 +32,9 @@ namespace Spots.APIs
             {
                 opt.ReturnHttpNotAcceptable = true;
             })
-                .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
+                .AddJsonOptions(opts => {
+                    opts.JsonSerializerOptions.PropertyNamingPolicy = null;
+                } );
             services.AddDbContext<SpotsContext>(opt =>
             {
                 opt.UseSqlServer(configuration[SpotsConfig.ConnectionStringKey.Replace("__", ":")]

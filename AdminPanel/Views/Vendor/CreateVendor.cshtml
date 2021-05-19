@@ -2,60 +2,75 @@
 
 <main class="main-container">
     <div class="main-content">
-        <form class="card form-type-combine" method="post"  asp-action="CreateVendor" role="form" enctype="multipart/form-data">
+        <form class="card" method="post" asp-action="CreateVendor" role="form" enctype="multipart/form-data">
             <h4 class="card-title"><strong>Create Vendor</strong></h4>
 
-            <div class="card-body">
-                <div class="form-group">
-                    <label class="require">Name</label>
-                    <input type="text" class="form-control" asp-for="Name" required>
-                    <div class="invalid-feedback"></div>
-                </div>
-
-
-                <div class="form-group">
-                    <label>Sort Order</label>
-                    <input type="text" class="form-control" asp-for="SortOrder">
-                </div>
-
-                <div class="form-group">
-                    <label>WorkHours</label>
-                    <input type="text" class="form-control" asp-for="WorkHours">
-                </div>
-
-                <div class="form-group">
-                    <label>Location</label>
-                    <input type="text" class="form-control" asp-for="Location">
-                </div>
-
-                <div class="form-group">
-                    <label>Profile Image</label>
-                    <div class="input-group file-group">
-                        <div class="input-group-input do-float">
-                            <input type="text" class="form-control file-value" readonly="">
-                            <input asp-for="ProfileFile" type="file" class="form-control" multiple="" accept=".jpg,.jpeg">
-                            <label>Choose file...</label>
+            <div class="card-body form-type-combine">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="require">Name</label>
+                            <input type="text" class="form-control" asp-for="Name" required>
+                            <div class="invalid-feedback"></div>
                         </div>
-                        <span class="input-group-append">
-                            <button class="btn btn-light file-browser" type="button"><i class="fa fa-upload"></i></button>
-                        </span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Banner Image</label>
-                    <div class="input-group file-group">
-                        <div class="input-group-input do-float">
-                            <input type="text" class="form-control file-value" readonly="">
-                            <input asp-for="BannerFile" type="file" class="form-control" multiple="" accept=".jpg,.jpeg">
-                            <label>Choose file...</label>
+
+
+                        <div class="form-group">
+                            <label>Sort Order</label>
+                            <input type="text" class="form-control" asp-for="SortOrder">
                         </div>
-                        <span class="input-group-append">
-                            <button class="btn btn-light file-browser" type="button"><i class="fa fa-upload"></i></button>
-                        </span>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Open At</label>
+                                    <input class="form-control" asp-for="OpenAt" type="time">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Close At</label>
+                                    <input class="form-control" asp-for="CloseAt" type="time">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" class="form-control" asp-for="Location">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Profile Image</label>
+                            <div class="input-group file-group">
+                                <div class="input-group-input do-float">
+                                    <input type="text" class="form-control file-value" readonly="">
+                                    <input asp-for="ProfileFile" type="file" class="form-control" multiple="" accept=".jpg,.jpeg">
+                                    <label>Choose file...</label>
+                                </div>
+                                <span class="input-group-append">
+                                    <button class="btn btn-light file-browser" type="button"><i class="fa fa-upload"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Banner Image</label>
+                            <div class="input-group file-group">
+                                <div class="input-group-input do-float">
+                                    <input type="text" class="form-control file-value" readonly="">
+                                    <input asp-for="BannerFile" type="file" class="form-control" multiple="" accept=".jpg,.jpeg">
+                                    <label>Choose file...</label>
+                                </div>
+                                <span class="input-group-append">
+                                    <button class="btn btn-light file-browser" type="button"><i class="fa fa-upload"></i></button>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-                
+
 
             <footer class="card-footer text-right">
                 <a class="btn btn-secondary" asp-action="Index">Cancel</a>

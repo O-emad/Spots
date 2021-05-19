@@ -7,6 +7,7 @@ using Spots.Services.ResourceParameters;
 using Spots.Data;
 using Spots.Domain;
 using Spots.Services.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace Spots.Services
 {
@@ -49,9 +50,12 @@ namespace Spots.Services
             #endregion
 
             collection = collection.OrderBy(c => c.SortOrder);
-
+            if (categoryParameters.IncludeAll)
+            {
+                collection = collection.AsNoTracking();
+            }
             return PagedList<Category>.Create(collection, categoryParameters.PageNumber
-                , categoryParameters.PageSize);
+                , categoryParameters.PageSize,categoryParameters.IncludeAll);
         }
 
         public Category GetCategoryById(Guid categoryId)
@@ -99,7 +103,7 @@ namespace Spots.Services
         }
         public Vendor GetVendorById(Guid vendorId)
         {
-            return context.Vendors.Where(v => v.Id == vendorId).FirstOrDefault();
+            return context.Vendors.Where(v => v.Id == vendorId).Include(v=>v.Categories).FirstOrDefault();
         }
 
         public Vendor GetVendorByName(string name)
@@ -129,10 +133,11 @@ namespace Spots.Services
 
             #endregion
 
-            collection = collection.OrderBy(c => c.SortOrder);
+            collection = (IQueryable<Vendor>)collection.OrderBy(c => c.SortOrder)
+                .Include(v=>v.Categories);
 
             return PagedList<Vendor>.Create(collection, vendorParameters.PageNumber
-                , vendorParameters.PageSize);
+                , vendorParameters.PageSize,vendorParameters.IncludeAll);
         }
         public void UpdateVendor(Guid vendorId, Vendor vendor)
         {

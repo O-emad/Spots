@@ -10,6 +10,7 @@ using Spots.Services.Helpers;
 using Spots.Services.ResourceParameters;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -75,64 +76,215 @@ namespace Spots.APIs.Controllers
             });
         }
 
-        [HttpGet("{id}", Name ="GetVendor")]
+        [HttpGet("{id}", Name = "GetVendor")]
         public IActionResult GetVendorById(Guid id)
         {
             if (repositroy.VendorExists(id))
             {
                 var vendor = repositroy.GetVendorById(id);
-                return Ok(mapper.Map<VendorDto>(vendor));
+                var vendors = new List<Vendor>();
+                vendors.Add(vendor);
+                return Ok(new ResponseModel()
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "",
+                    Data = mapper.Map<IEnumerable<VendorDto>>(vendors).ToList()
+                });;
             }
             else
             {
-                return NotFound();
+                return NotFound(new ResponseModel()
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Vendor Not Found",
+                    Data = new { }
+                });
             }
         }
 
         [HttpPost]
-        public IActionResult CreateVendor([FromBody]VendorForCreationDto vendor)
+        public IActionResult CreateVendor([FromBody] VendorForCreationDto vendor)
         {
-            var _vendor = repositroy.GetVendorByName(vendor.Name);
-            if(_vendor != null)
+            var response = new ResponseModel();
+
+            if (!ModelState.IsValid)
             {
-                return BadRequest($"Vendor: {vendor.Name} already exists");
+                response.StatusCode = StatusCodes.Status400BadRequest;
+                response.Message = "Invalid Vendor Format";
+                return BadRequest(response);
             }
+
+            var _vendor = repositroy.GetVendorByName(vendor.Name);
+
+            if (_vendor != null)
+            {
+                response.StatusCode = StatusCodes.Status409Conflict;
+                response.Message = $"Vendor: {vendor.Name} already exists";
+                return Conflict(response);
+            }
+
+
             _vendor = mapper.Map<Vendor>(vendor);
+
+            if (vendor.ProfileBytes != null)
+            {
+                // get this environment's web root path (the path
+                // from which static content, like an image, is served)
+                var webRootPath = hostEnvironment.WebRootPath;
+
+                // create the filename
+                string fileName = Guid.NewGuid().ToString() + ".jpg";
+
+                // the full file path
+                var filePath = Path.Combine($"{webRootPath}/images/{fileName}");
+
+                // write bytes and auto-close stream
+                System.IO.File.WriteAllBytes(filePath, vendor.ProfileBytes);
+                // fill out the filename
+                _vendor.ProfilePicFileName = fileName;
+            }
+            if (vendor.BannerBytes != null)
+            {
+                // get this environment's web root path (the path
+                // from which static content, like an image, is served)
+                var webRootPath = hostEnvironment.WebRootPath;
+
+                // create the filename
+                string fileName = Guid.NewGuid().ToString() + ".jpg";
+
+                // the full file path
+                var filePath = Path.Combine($"{webRootPath}/images/{fileName}");
+
+                // write bytes and auto-close stream
+                System.IO.File.WriteAllBytes(filePath, vendor.BannerBytes);
+                // fill out the filename
+                _vendor.BannerPicFileName = fileName;
+            }
             repositroy.AddVendor(_vendor);
             repositroy.Save();
-
-            var CreatedVendorToReturn = mapper.Map<VendorDto>(_vendor);
-            return CreatedAtRoute("GetVendor", new { CreatedVendorToReturn.Id }, CreatedVendorToReturn);
+            var createdVendorToReturn = mapper.Map<VendorDto>(_vendor);
+            response.StatusCode = StatusCodes.Status201Created;
+            response.Message = $"Vendor : '{createdVendorToReturn.Name }' Created Successfully";
+            response.Data = createdVendorToReturn;
+            return CreatedAtRoute("GetVendor", new { createdVendorToReturn.Id }, response);
         }
 
 
         [HttpPut("{id}")]
-        public IActionResult UpdateVendor(Guid id, [FromBody]VendorForUpdateDto vendor)
+        public IActionResult UpdateVendor(Guid id, [FromBody] VendorForUpdateDto vendor, 
+            [FromQuery] bool imageChanged = false)
         {
+
+            var response = new ResponseModel();
+
+            #region checkvalidityofmodel
+            if (!ModelState.IsValid)
+            {
+                response.StatusCode = StatusCodes.Status400BadRequest;
+                response.Message = "Invalid Vendor Format";
+                return BadRequest(response);
+            }
+            #endregion
+            #region checkexistanceofcategory
             if (!repositroy.VendorExists(id))
             {
-                return NotFound();
+                response.StatusCode = StatusCodes.Status404NotFound;
+                response.Message = ($"Vendor Not Found");
+                return NotFound(response);
             }
+            #endregion
+            #region checkdublication
             var _vendor = repositroy.GetVendorByName(vendor.Name);
-            if (_vendor != null)
+            if (_vendor != null && _vendor.Id != id)
             {
-                return BadRequest($"Vendor: {vendor.Name} already exists");
+                response.StatusCode = StatusCodes.Status400BadRequest;
+                response.Message = $"Vendor: {vendor.Name} already exists";
+                return BadRequest(response);
             }
+            #endregion
+
             _vendor = repositroy.GetVendorById(id);
             mapper.Map(vendor, _vendor);
+
+            #region checkimagechange
+            if (imageChanged && vendor.ProfileBytes != null)
+            {
+                // get this environment's web root path (the path
+                // from which static content, like an image, is served)
+                var webRootPath = hostEnvironment.WebRootPath;
+
+                var oldImagePath = Path.Combine($"{webRootPath}/images/{_vendor.ProfilePicFileName}");
+                if ((System.IO.File.Exists(oldImagePath)))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
+
+                // create the filename
+                string fileName = Guid.NewGuid().ToString() + ".jpg";
+
+                // the full file path
+                var filePath = Path.Combine($"{webRootPath}/images/{fileName}");
+
+                // write bytes and auto-close stream
+                System.IO.File.WriteAllBytes(filePath, vendor.ProfileBytes);
+
+                // fill out the filename
+                _vendor.ProfilePicFileName = fileName;
+            }
+
+            if (imageChanged && vendor.BannerBytes != null)
+            {
+                // get this environment's web root path (the path
+                // from which static content, like an image, is served)
+                var webRootPath = hostEnvironment.WebRootPath;
+
+                var oldImagePath = Path.Combine($"{webRootPath}/images/{_vendor.BannerPicFileName}");
+                if ((System.IO.File.Exists(oldImagePath)))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
+
+                // create the filename
+                string fileName = Guid.NewGuid().ToString() + ".jpg";
+
+                // the full file path
+                var filePath = Path.Combine($"{webRootPath}/images/{fileName}");
+
+                // write bytes and auto-close stream
+                System.IO.File.WriteAllBytes(filePath, vendor.BannerBytes);
+
+                // fill out the filename
+                _vendor.BannerPicFileName = fileName;
+            }
+            #endregion
+
             repositroy.UpdateVendor(id, _vendor);
             repositroy.Save();
             return NoContent();
-
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteVendor(Guid id)
         {
+            var response = new ResponseModel();
             var vendor = repositroy.GetVendorById(id);
             if (vendor == null)
             {
-                return NotFound();
+                response.StatusCode = StatusCodes.Status404NotFound;
+                response.Message = "Vendor to be deleted not found !";
+                return NotFound(response);
+            }
+            var webRootPath = hostEnvironment.WebRootPath;
+
+            var imagePath = Path.Combine($"{webRootPath}/images/{vendor.ProfilePicFileName}");
+            if ((System.IO.File.Exists(imagePath)))
+            {
+                System.IO.File.Delete(imagePath);
+            }
+            imagePath = Path.Combine($"{webRootPath}/images/{vendor.BannerPicFileName}");
+            if ((System.IO.File.Exists(imagePath)))
+            {
+                System.IO.File.Delete(imagePath);
             }
             repositroy.DeleteVendor(vendor);
             repositroy.Save();

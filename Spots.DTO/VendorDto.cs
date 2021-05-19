@@ -15,9 +15,11 @@ namespace Spots.DTO
         public string BannerPicFileName { get; set; }
         public int SortOrder { get; set; }
         public string WorkHours { get; set; }
+        public DateTime OpenAt { get; set; }
+        public DateTime CloseAt { get; set; }
         public string Location { get; set; }
         public float ReviewAverage { get; set; }
         public int ReviewCount { get; set; }
-        public List<Guid> CategoryId { get; set; }
+        public List<Category> Categories { get; set; }
     }
 }

@@ -24,9 +24,13 @@ namespace Spots.Services.Helpers
             AddRange(items);
         }
 
-        public static PagedList<T> Create(IQueryable<T> source, int pageNmber, int pageSize)
+        public static PagedList<T> Create(IQueryable<T> source, int pageNmber, int pageSize, bool includeAll)
         {
             var count = source.Count();
+            if (includeAll)
+            {
+                return new PagedList<T>(source.ToList(), count, 1, count+1);
+            }
             var items = source.Skip((pageNmber - 1) * pageSize).Take(pageSize).ToList();
             return new PagedList<T>(items, count, pageNmber, pageSize);
         }

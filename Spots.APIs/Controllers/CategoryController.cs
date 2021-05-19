@@ -74,7 +74,7 @@ namespace Spots.APIs.Controllers
             {
                 StatusCode = StatusCodes.Status200OK,
                 Message = "",
-                Data = categories.ToArray()
+                Data = categories.ToList()
             });
         }
 

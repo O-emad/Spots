@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Spots.Data;
 
 namespace Spots.Data.Migrations
 {
     [DbContext(typeof(SpotsContext))]
-    partial class SpotsContextModelSnapshot : ModelSnapshot
+    [Migration("20210518152634_addingworktimeforvendor")]
+    partial class addingworktimeforvendor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,8 +124,8 @@ namespace Spots.Data.Migrations
                     b.Property<string>("BannerPicFileName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CloseAt")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("CloseAt")
+                        .HasColumnType("time");
 
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
@@ -131,8 +133,8 @@ namespace Spots.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("OpenAt")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("OpenAt")
+                        .HasColumnType("time");
 
                     b.Property<string>("ProfilePicFileName")
                         .HasColumnType("nvarchar(max)");

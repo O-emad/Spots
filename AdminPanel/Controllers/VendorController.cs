@@ -24,9 +24,10 @@ namespace AdminPanel.Controllers
     public class VendorController : Controller
     {
         private readonly IHttpClientFactory httpClientFactory;
-
+        private VendorModel VendorModel;
         public VendorController(IHttpClientFactory httpClientFactory)
         {
+            this.VendorModel = VendorModel.Instance;
             this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
@@ -62,247 +63,315 @@ namespace AdminPanel.Controllers
         }
         #endregion
 
-       // #region Create
+        #region Create
         public IActionResult CreateVendor()
         {
             ViewData["vendor"] = "active";
-            //var httpClient = httpClientFactory.CreateClient("APIClient");
-
-            //var request = new HttpRequestMessage(
-            //    HttpMethod.Get,
-            //    $"/api/category/");
-
-            //var response = await httpClient.SendAsync(
-            //    request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
-
-            //response.EnsureSuccessStatusCode();
-
-            //using (var responseStream = await response.Content.ReadAsStreamAsync())
-            //{
-            //    var deserializedResponse = await JsonSerializer
-            //        .DeserializeAsync<DeserializedResponseModel<Vendor>>(responseStream);
-            //    var viewmodel = new VendorEditAndCreateViewModel();
-            //    foreach (var Vendor in deserializedResponse.Data)
-            //    {
-            //        var selectItem = new SelectListItem { Text = Vendor.Name, Value = Vendor.Id.ToString() };
-            //        viewmodel.Categories.Add(selectItem);
-            //    }
-            //    return View(viewmodel);
-            //}
             return  View(new VendorEditAndCreateViewModel());
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> CreateVendor(VendorEditAndCreateViewModel VendorCreate)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View();
-        //    }
+        [HttpPost]
+        public async Task<IActionResult> CreateVendor(VendorEditAndCreateViewModel VendorCreate)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
 
-        //    // create an ImageForCreation instance
-        //    var VendorForCreation = new VendorForCreation()
-        //    {
-        //        NameAR = VendorCreate.NameAR,
-        //        Name = VendorCreate.Name,
-        //        SortOrder = VendorCreate.SortOrder,
-        //        SuperVendorId = VendorCreate.SuperVendorId
-        //    };
+            var VendorForCreation = new VendorForCreation()
+            {
+                Name = VendorCreate.Name,
+                Location = VendorCreate.Location,
+                SortOrder = VendorCreate.SortOrder,
+                CloseAt = VendorCreate.CloseAt,
+                OpenAt = VendorCreate.OpenAt,
+            };
 
-        //    // take the first (only) file in the Files list
-        //    var imageFile = VendorCreate.Files.FirstOrDefault();
+            // take the first (only) file in the Files list
+            var profileImageFile = VendorCreate.ProfileFile.FirstOrDefault();
 
-        //    try
-        //    {
-        //        if (imageFile.Length > 0)
-        //        {
-        //            using (var fileStream = imageFile.OpenReadStream())
-        //            {
-        //                using (var image = Image.Load(imageFile.OpenReadStream()))
-        //                {
-        //                    image.Mutate(h => h.Resize(300, 300));
-        //                    using (var ms = new MemoryStream())
-        //                    {
-        //                        image.SaveAsJpeg(ms);
-        //                        VendorForCreation.Bytes = ms.ToArray();
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        if (!(e.GetType() == typeof(NullReferenceException)))
-        //            throw;
-        //    }
+            try
+            {
+                if (profileImageFile.Length > 0)
+                {
+                    using (var fileStream = profileImageFile.OpenReadStream())
+                    {
+                        using (var image = Image.Load(profileImageFile.OpenReadStream()))
+                        {
+                            image.Mutate(h => h.Resize(300, 300));
+                            using (var ms = new MemoryStream())
+                            {
+                                image.SaveAsJpeg(ms);
+                                VendorForCreation.ProfileBytes = ms.ToArray();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                if (!(e.GetType() == typeof(NullReferenceException)))
+                    throw;
+            }
 
-        //    // serialize it
-        //    var serializedVendorForCreation = JsonSerializer.Serialize(VendorForCreation);
+            var bannerImageFile = VendorCreate.BannerFile.FirstOrDefault();
 
-        //    var httpClient = httpClientFactory.CreateClient("APIClient");
+            try
+            {
+                if (bannerImageFile.Length > 0)
+                {
+                    using (var fileStream = bannerImageFile.OpenReadStream())
+                    {
+                        using (var image = Image.Load(bannerImageFile.OpenReadStream()))
+                        {
+                            image.Mutate(h => h.Resize(900, 300));
+                            using (var ms = new MemoryStream())
+                            {
+                                image.SaveAsJpeg(ms);
+                                VendorForCreation.BannerBytes = ms.ToArray();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                if (!(e.GetType() == typeof(NullReferenceException)))
+                    throw;
+            }
+            // serialize it
+            var serializedVendorForCreation = JsonSerializer.Serialize(VendorForCreation);
 
-        //    var request = new HttpRequestMessage(
-        //        HttpMethod.Post,
-        //        $"/api/Vendor");
+            var httpClient = httpClientFactory.CreateClient("APIClient");
 
-        //    request.Content = new StringContent(
-        //        serializedVendorForCreation,
-        //        System.Text.Encoding.Unicode,
-        //        "application/json");
+            var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                $"/api/vendor");
 
-        //    var response = await httpClient.SendAsync(
-        //        request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            request.Content = new StringContent(
+                serializedVendorForCreation,
+                System.Text.Encoding.Unicode,
+                "application/json");
 
-        //    response.EnsureSuccessStatusCode();
-        //    TempData["Type"] = "alert-success";
-        //    TempData["CUD"] = true;
-        //    TempData["Message"] = "Vendor Created Successfully";
-        //    return RedirectToAction("Index");
-        //}
-        //#endregion
-        //#region Delete
-        //public async Task<IActionResult> DeleteVendor(Guid id)
-        //{
-        //    var httpClient = httpClientFactory.CreateClient("APIClient");
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-        //    var request = new HttpRequestMessage(
-        //        HttpMethod.Delete,
-        //        $"/api/Vendor/{id}");
+            response.EnsureSuccessStatusCode();
+            TempData["Type"] = "alert-success";
+            TempData["CUD"] = true;
+            TempData["Message"] = "Vendor Created Successfully";
+            return RedirectToAction("Index");
+        }
+        #endregion
+        #region Delete
+        public async Task<IActionResult> DeleteVendor(Guid id)
+        {
+            var httpClient = httpClientFactory.CreateClient("APIClient");
 
-        //    var response = await httpClient.SendAsync(
-        //        request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            var request = new HttpRequestMessage(
+                HttpMethod.Delete,
+                $"/api/vendor/{id}");
 
-        //    try
-        //    {
-        //        response.EnsureSuccessStatusCode();
-        //    }
-        //    catch (HttpRequestException e)
-        //    {
-        //        TempData["Type"] = "alert-danger";
-        //        if (e.StatusCode == HttpStatusCode.BadRequest)
-        //        {
-        //            TempData["CUD"] = true;
-        //            TempData["Message"] = "Cannot delete a parent Vendor, Delete children first";
-        //        }
-        //        else if (e.StatusCode == HttpStatusCode.NotFound)
-        //        {
-        //            TempData["CUD"] = true;
-        //            TempData["Message"] = "Vendor not found";
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //        return RedirectToAction("Index");
-        //    }
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-        //    TempData["CUD"] = true;
-        //    TempData["Message"] = "Vendor Deleted Successfully";
-        //    TempData["Type"] = "alert-success";
-        //    return RedirectToAction("Index");
-        //}
-        //#endregion
-        //#region Edit
-        //public async Task<IActionResult> EditVendor(Guid id)
-        //{
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+                TempData["Type"] = "alert-danger";
+                if (e.StatusCode == HttpStatusCode.NotFound)
+                {
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Vendor not found";
+                }
+                else
+                {
+                    throw;
+                }
+                return RedirectToAction("Index");
+            }
 
-        //    ViewData["Vendor"] = "active";
-        //    var httpClient = httpClientFactory.CreateClient("APIClient");
+            TempData["CUD"] = true;
+            TempData["Message"] = "Vendor Deleted Successfully";
+            TempData["Type"] = "alert-success";
+            return RedirectToAction("Index");
+        }
+        #endregion
+        #region Edit
+        public async Task<IActionResult> EditVendor(Guid id)
+        {
 
-        //    var request = new HttpRequestMessage(
-        //        HttpMethod.Get,
-        //        $"/api/Vendor/");
+            ViewData["vendor"] = "active";
+            var httpClient = httpClientFactory.CreateClient("APIClient");
 
-        //    var response = await httpClient.SendAsync(
-        //        request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"/api/vendor/{id}");
 
-        //    response.EnsureSuccessStatusCode();
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-        //    using (var responseStream = await response.Content.ReadAsStreamAsync())
-        //    {
-        //        var deserializedResponse = await JsonSerializer
-        //            .DeserializeAsync<DeserializedResponseModel>(responseStream);
-        //        var VendorToBeEdited = deserializedResponse.Data.Where(c => c.Id == id).FirstOrDefault();
-        //        var viewmodel = new VendorEditAndCreateViewModel(VendorToBeEdited);
-        //        var selectList = deserializedResponse.Data.ToList();
-        //        selectList.Remove(VendorToBeEdited);
-        //        foreach (var Vendor in selectList)
-        //        {
-        //            var selectItem = new SelectListItem { Text = Vendor.Name, Value = Vendor.Id.ToString() };
-        //            viewmodel.Categories.Add(selectItem);
-        //        }
-        //        return View(viewmodel);
-        //    }
-        //}
-        //[HttpPost]
-        //public async Task<IActionResult> EditVendor(VendorEditAndCreateViewModel VendorEdit, Guid id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View();
-        //    }
+            response.EnsureSuccessStatusCode();
+            var vendor = new Vendor();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer
+                    .DeserializeAsync<DeserializedResponseModel<Vendor>>(responseStream);
+                vendor = deserializedResponse.Data.FirstOrDefault();
+                
+            }
+            request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"/api/category?includeAll=true");
 
-        //    var editedVendor = new VendorForCreation()
-        //    {
-        //        NameAR = VendorEdit.NameAR,
-        //        Name = VendorEdit.Name,
-        //        SortOrder = VendorEdit.SortOrder,
-        //        SuperVendorId = VendorEdit.SuperVendorId
-        //    };
+             response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-        //    // take the first (only) file in the Files list
-        //    var imageFile = VendorEdit.Files.FirstOrDefault();
-        //    var imageChanged = false;
-        //    try
-        //    {
-        //        if (imageFile.Length > 0)
-        //        {
-        //            imageChanged = true;
-        //            using (var fileStream = imageFile.OpenReadStream())
-        //            {
-        //                using (var image = Image.Load(imageFile.OpenReadStream()))
-        //                {
-        //                    image.Mutate(h => h.Resize(300, 300));
-        //                    using (var ms = new MemoryStream())
-        //                    {
-        //                        image.SaveAsJpeg(ms);
-        //                        editedVendor.Bytes = ms.ToArray();
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        if (!(e.GetType() == typeof(NullReferenceException)))
-        //            throw;
-        //    }
+            response.EnsureSuccessStatusCode();
+            var multiselect = new List<Category>();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer
+                    .DeserializeAsync<DeserializedResponseModel<Category>>(responseStream);
+                 multiselect = deserializedResponse.Data;
+            }
+            var viewmodel = new VendorEditAndCreateViewModel(vendor,multiselect);
+            VendorModel.Categories = multiselect;
+            return View(viewmodel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditVendor(VendorEditAndCreateViewModel VendorEdit, Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            var newSelectedCategories = new List<Category>();
+            //{new Category
+            //{
+            //    Name = "HD29",
+            //    SortOrder = 1,
+            //    SuperCategoryId = Guid.Parse("00000000-0000-0000-0000-000000000000")
+            //} } ;
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"/api/category?includeAll=true");
+
+            var response = await httpClient.SendAsync(
+               request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+            var categories = new List<Category>();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer
+                    .DeserializeAsync<DeserializedResponseModel<Category>>(responseStream);
+                categories = deserializedResponse.Data;
+            }
+
+            if (categories != null)
+            {
+                foreach (var selectedCategoryId in VendorEdit.SelectedCategories)
+                {
+                    var selectedCategory = categories.Where(c => c.Id == selectedCategoryId).FirstOrDefault();
+                    newSelectedCategories.Add(selectedCategory);
+                }
+            }
+            
+            var editedVendor = new VendorForCreation()
+            {
+                Name = VendorEdit.Name,
+                Location = VendorEdit.Location,
+                SortOrder = VendorEdit.SortOrder,
+                CloseAt = VendorEdit.CloseAt,
+                OpenAt = VendorEdit.OpenAt,
+                Categories = newSelectedCategories
+            };
+
+            var profileImageFile = VendorEdit.ProfileFile.FirstOrDefault();
+            var imageChanged = false;
+            try
+            {
+                if (profileImageFile.Length > 0)
+                {
+                    imageChanged = true;
+                    using (var fileStream = profileImageFile.OpenReadStream())
+                    {
+                        using (var image = Image.Load(profileImageFile.OpenReadStream()))
+                        {
+                            image.Mutate(h => h.Resize(300, 300));
+                            using (var ms = new MemoryStream())
+                            {
+                                image.SaveAsJpeg(ms);
+                                editedVendor.ProfileBytes = ms.ToArray();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                if (!(e.GetType() == typeof(NullReferenceException)))
+                    throw;
+            }
+
+            var bannerImageFile = VendorEdit.BannerFile.FirstOrDefault();
+            try
+            {
+                if (bannerImageFile.Length > 0)
+                {
+                    imageChanged = true;
+                    using (var fileStream = bannerImageFile.OpenReadStream())
+                    {
+                        using (var image = Image.Load(bannerImageFile.OpenReadStream()))
+                        {
+                            image.Mutate(h => h.Resize(900, 300));
+                            using (var ms = new MemoryStream())
+                            {
+                                image.SaveAsJpeg(ms);
+                                editedVendor.BannerBytes = ms.ToArray();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                if (!(e.GetType() == typeof(NullReferenceException)))
+                    throw;
+            }
 
 
-        //    // serialize it
-        //    var serializedVendorForEdit = JsonSerializer.Serialize(editedVendor);
+            // serialize it
+            var serializedVendorForEdit = JsonSerializer.Serialize(editedVendor);
 
-        //    var httpClient = httpClientFactory.CreateClient("APIClient");
+             httpClient = httpClientFactory.CreateClient("APIClient");
 
-        //    var request = new HttpRequestMessage(
-        //        HttpMethod.Put,
-        //        $"/api/Vendor/{id}?imageChanged={imageChanged}");
+             request = new HttpRequestMessage(
+                HttpMethod.Put,
+                $"/api/vendor/{id}?imageChanged={imageChanged}");
 
-        //    request.Content = new StringContent(
-        //        serializedVendorForEdit,
-        //        System.Text.Encoding.Unicode,
-        //        "application/json");
+            request.Content = new StringContent(
+                serializedVendorForEdit,
+                System.Text.Encoding.Unicode,
+                "application/json");
 
-        //    var response = await httpClient.SendAsync(
-        //        request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+             response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-        //    response.EnsureSuccessStatusCode();
-        //    TempData["Type"] = "alert-success";
-        //    TempData["CUD"] = true;
-        //    TempData["Message"] = "Vendor Edited Successfully";
-        //    return RedirectToAction("Index");
-        //}
-        //#endregion
+            response.EnsureSuccessStatusCode();
+            TempData["Type"] = "alert-success";
+            TempData["CUD"] = true;
+            TempData["Message"] = "Vendor Edited Successfully";
+            return RedirectToAction("Index");
+        }
+        #endregion
 
     }
 
