@@ -41,9 +41,10 @@ namespace Spots.Services
 
         PagedList<Ad> GetAds(IndexResourceParameters adParameters);
         Ad GetAdById(Guid id);
-        public bool AdExists(Guid id);
-        public void AddAd(Ad ad);
-        public void DeleteAd(Ad ad);
+         bool AdExists(Guid id);
+         void AddAd(Ad ad);
+         void DeleteAd(Ad ad);
+        void UpdateAd(Guid adId, Ad ad);
 
         bool Save();
     }

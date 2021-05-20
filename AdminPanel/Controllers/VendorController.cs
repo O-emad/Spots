@@ -110,6 +110,13 @@ namespace AdminPanel.Controllers
             }
             catch (Exception e)
             {
+                if (e.GetType() == typeof(UnknownImageFormatException))
+                {
+                    TempData["Type"] = "alert-danger";
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Action Failed : Bad Image Format";
+                    return RedirectToAction("index");
+                }
                 if (!(e.GetType() == typeof(NullReferenceException)))
                     throw;
             }
@@ -136,6 +143,13 @@ namespace AdminPanel.Controllers
             }
             catch (Exception e)
             {
+                if (e.GetType() == typeof(UnknownImageFormatException))
+                {
+                    TempData["Type"] = "alert-danger";
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Action Failed : Bad Image Format";
+                    return RedirectToAction("index");
+                }
                 if (!(e.GetType() == typeof(NullReferenceException)))
                     throw;
             }
@@ -293,6 +307,13 @@ namespace AdminPanel.Controllers
             }
             catch (Exception e)
             {
+                if (e.GetType() == typeof(UnknownImageFormatException))
+                {
+                    TempData["Type"] = "alert-danger";
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Action Failed : Bad Image Format";
+                    return RedirectToAction("index");
+                }
                 if (!(e.GetType() == typeof(NullReferenceException)))
                     throw;
             }
@@ -319,6 +340,13 @@ namespace AdminPanel.Controllers
             }
             catch (Exception e)
             {
+                if (e.GetType() == typeof(UnknownImageFormatException))
+                {
+                    TempData["Type"] = "alert-danger";
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Action Failed : Bad Image Format";
+                    return RedirectToAction("index");
+                }
                 if (!(e.GetType() == typeof(NullReferenceException)))
                     throw;
             }

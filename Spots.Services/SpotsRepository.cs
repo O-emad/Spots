@@ -315,6 +315,10 @@ namespace Spots.Services
             context.Remove(ad);
         }
 
+        public void UpdateAd(Guid adId, Ad ad)
+        {
+
+        }
         #endregion
 
         public bool Save()

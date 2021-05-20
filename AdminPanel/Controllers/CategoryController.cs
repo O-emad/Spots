@@ -70,7 +70,7 @@ namespace AdminPanel.Controllers
 
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
-                $"/api/category/");
+                $"/api/category?includeAll=true");
 
             var response = await httpClient.SendAsync(
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -132,6 +132,13 @@ namespace AdminPanel.Controllers
             }
             catch (Exception e)
             {
+                if(e.GetType() == typeof(UnknownImageFormatException))
+                {
+                    TempData["Type"] = "alert-danger";
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Action Failed : Bad Image Format";
+                    return RedirectToAction("index");
+                }
                 if (!(e.GetType() == typeof(NullReferenceException)))
                     throw;
             }
@@ -274,6 +281,13 @@ namespace AdminPanel.Controllers
             }
             catch (Exception e)
             {
+                if (e.GetType() == typeof(UnknownImageFormatException))
+                {
+                    TempData["Type"] = "alert-danger";
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Action Failed : Bad Image Format";
+                    return RedirectToAction("index");
+                }
                 if (!(e.GetType() == typeof(NullReferenceException)))
                     throw;
             }

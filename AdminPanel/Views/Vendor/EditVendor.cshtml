@@ -17,7 +17,7 @@
                                     <div class="input-group file-group">
                                         <div class="input-group-input do-float">
                                             <input type="text" class="form-control file-value" readonly="">
-                                            <input asp-for="ProfileFile" type="file" class="form-control" multiple="" accept=".jpg,.jpeg">
+                                            <input asp-for="ProfileFile" type="file" class="form-control" multiple="" accept=".jpg,.jpeg" >
                                             <label>Choose file...</label>
                                         </div>
                                         <span class="input-group-append">
@@ -74,21 +74,10 @@
                                 <input type="text" class="form-control" asp-for="Location">
                             </div>
 
-                            @*<div class="form-group">
-                                <label>Categories</label>
-                                @Html.ListBoxFor(m => m.SelectedCategories, Model.Categories,
-                           new { @class = "chzn-select form-control multiselect", multiple = "multiple" })
-
-                                <script type="text/javascript">
-                                    $(function () {
-                                        $(".multiselect").multiselect();
-                                    });
-                                </script>
-                            </div>*@
-
                             <div class="form-group">
-                                <select asp-for="SelectedCategories" asp-items="@Model.CategoriesSelectList" 
-                                        data-provide="selectpicker" multiple data-actions-box="true" 
+                                <label>Selected Categories</label>
+                                <select asp-for="SelectedCategories" asp-items="@Model.CategoriesSelectList"
+                                        data-provide="selectpicker" multiple data-actions-box="true"
                                         data-live-search="true" class="chzn-select form-control multiselect">
                                 </select>
                             </div>

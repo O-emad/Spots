@@ -204,5 +204,67 @@ namespace Spots.APIs.Controllers
             return NoContent();
         }
 
+        [HttpPut("{id}")]
+        public IActionResult UpdateAd(Guid id, [FromBody] AdForUpdateDto ad,
+            [FromQuery] bool imageChanged = false)
+        {
+
+            var response = new ResponseModel();
+
+            #region checkvalidityofmodel
+            if (!ModelState.IsValid)
+            {
+                response.StatusCode = StatusCodes.Status400BadRequest;
+                response.Message = "Invalid Ad Format";
+                return BadRequest(response);
+            }
+            #endregion
+            #region checkexistanceofcategory
+            if (!repositroy.AdExists(id))
+            {
+                response.StatusCode = StatusCodes.Status404NotFound;
+                response.Message = ($"Ad Not Found");
+                return NotFound(response);
+            }
+            #endregion
+            #region checkdublication
+
+            #endregion
+
+            var _ad = repositroy.GetAdById(id);
+            //.Map(vendor, _vendor);    
+            mapper.Map(ad, _ad);
+            #region checkimagechange
+            if (imageChanged && ad.File != null)
+            {
+                // get this environment's web root path (the path
+                // from which static content, like an image, is served)
+                var webRootPath = hostEnvironment.WebRootPath;
+
+                var oldImagePath = Path.Combine($"{webRootPath}/images/{_ad.FileName}");
+                if ((System.IO.File.Exists(oldImagePath)))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
+
+                // create the filename
+                string fileName = Guid.NewGuid().ToString() + ".jpg";
+
+                // the full file path
+                var filePath = Path.Combine($"{webRootPath}/images/{fileName}");
+
+                // write bytes and auto-close stream
+                System.IO.File.WriteAllBytes(filePath, ad.File);
+
+                // fill out the filename
+                _ad.FileName = fileName;
+            }
+            #endregion
+
+            repositroy.UpdateAd(id, _ad);
+            repositroy.Save();
+            return NoContent();
+        }
+
     }
 }

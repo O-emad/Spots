@@ -107,6 +107,13 @@ namespace AdminPanel.Controllers
             }
             catch (Exception e)
             {
+                if (e.GetType() == typeof(UnknownImageFormatException))
+                {
+                    TempData["Type"] = "alert-danger";
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Action Failed : Bad Image Format";
+                    return RedirectToAction("index");
+                }
                 if (!(e.GetType() == typeof(NullReferenceException)))
                     throw;
             }
@@ -137,10 +144,100 @@ namespace AdminPanel.Controllers
         #endregion
 
         #region Edit
-        public IActionResult EditAd()
+        public async Task<IActionResult> EditAd(Guid id)
         {
             ViewData["ad"] = "active";
-            return View();
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"/api/ad/{id}");
+
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+            var ad = new Ad();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer.
+                    DeserializeAsync<DeserializedResponseModel<Ad>>(responseStream);
+                ad = deserializedResponse.Data.FirstOrDefault();
+            }
+
+            return View(new AdEditAndCreateViewModel(ad));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditAd(AdEditAndCreateViewModel editAdVM, Guid id)
+        {
+            ViewData["ad"] = "active";
+            if (!ModelState.IsValid)
+            {
+                return View(editAdVM);
+            }
+            var editedAd = new AdForCreation()
+            {
+                Name = editAdVM.Name,
+                SortOrder = editAdVM.SortOrder,
+                ExternalLink = editAdVM.ExternalLink
+            };
+
+            var adImage = editAdVM.Files.FirstOrDefault();
+            var imageChanged = false;
+            try
+            {
+                if (adImage.Length > 0)
+                {
+                    imageChanged = true;
+                    using (var fileStream = adImage.OpenReadStream())
+                    {
+                        using (var image = Image.Load(adImage.OpenReadStream()))
+                        {
+                            image.Mutate(h => h.Resize(900, 300));
+                            using (var ms = new MemoryStream())
+                            {
+                                image.SaveAsJpeg(ms);
+                                editedAd.File = ms.ToArray();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                if (e.GetType() == typeof(UnknownImageFormatException))
+                {
+                    TempData["Type"] = "alert-danger";
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Action Failed : Bad Image Format";
+                    return RedirectToAction("index");
+                }
+                if (!(e.GetType() == typeof(NullReferenceException)))
+                    throw;
+            }
+            // serialize it
+            var serializedAdForEdit = JsonSerializer.Serialize(editedAd);
+
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+
+            var request = new HttpRequestMessage(
+               HttpMethod.Put,
+               $"/api/ad/{id}?imageChanged={imageChanged}");
+
+            request.Content = new StringContent(
+               serializedAdForEdit,
+               System.Text.Encoding.Unicode,
+               "application/json");
+
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+            TempData["Type"] = "alert-success";
+            TempData["CUD"] = true;
+            TempData["Message"] = "Ad Edited Successfully";
+            return RedirectToAction("Index");
         }
         #endregion
 

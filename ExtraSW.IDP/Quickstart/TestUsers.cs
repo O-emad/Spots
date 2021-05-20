@@ -30,8 +30,8 @@ namespace IdentityServerHost.Quickstart.UI
                     new TestUser
                     {
                         SubjectId = "818727",
-                        Username = "alice",
-                        Password = "alice",
+                        Username = "Admin",
+                        Password = "msicx61",
                         Claims =
                         {
                             new Claim(JwtClaimTypes.Name, "Alice Smith"),
@@ -43,24 +43,6 @@ namespace IdentityServerHost.Quickstart.UI
                             new Claim(JwtClaimTypes.Address, JsonSerializer.Serialize(address),
                             IdentityServerConstants.ClaimValueTypes.Json),
                             new Claim("level", "Admin")
-                        }
-                    },
-                    new TestUser
-                    {
-                        SubjectId = "88421113",
-                        Username = "bob",
-                        Password = "bob",
-                        Claims =
-                        {
-                            new Claim(JwtClaimTypes.Name, "Bob Smith"),
-                            new Claim(JwtClaimTypes.GivenName, "Bob"),
-                            new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                            new Claim(JwtClaimTypes.Email, "BobSmith@email.com"),
-                            new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
-                            new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
-                            new Claim(JwtClaimTypes.Address, JsonSerializer.Serialize(address), 
-                            IdentityServerConstants.ClaimValueTypes.Json),
-                            new Claim("level", "Vendor")
                         }
                     }
                 };

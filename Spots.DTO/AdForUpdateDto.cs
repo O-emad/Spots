@@ -8,6 +8,10 @@ namespace Spots.DTO
 {
     public class AdForUpdateDto
     {
-        
+        public string Name { get; set; }
+        public int SortOrder { get; set; }
+        public byte[] File { get; set; }
+        public string ExternalLink { get; set; }
+
     }
 }
