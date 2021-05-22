@@ -19,7 +19,7 @@ namespace Spots.Services
         bool IsSuperCategory(Guid categoryId);
 
         PagedList<Vendor> GetVendors(IndexResourceParameters vendorParameters);
-        Vendor GetVendorById(Guid vendorId);
+        Vendor GetVendorById(Guid vendorId, bool includeOffer);
         Vendor GetVendorByName(string name);
         void AddVendor(Vendor vendor);
         void UpdateVendor(Guid vendorId, Vendor vendor, IEnumerable<Category> categories);

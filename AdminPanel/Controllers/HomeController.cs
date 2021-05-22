@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace AdminPanel.Controllers
 {
-    [Authorize]
+    ////////[Authorize
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -24,10 +24,10 @@ namespace AdminPanel.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             ViewData["home"] = "active";
-            await WriteOutIdentityInformation();
+            //await WriteOutIdentityInformation();
             return View();
         }
 

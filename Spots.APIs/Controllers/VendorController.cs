@@ -77,11 +77,11 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpGet("{id}", Name = "GetVendor")]
-        public IActionResult GetVendorById(Guid id)
+        public IActionResult GetVendorById(Guid id, bool includeOffer = false)
         {
             if (repositroy.VendorExists(id))
             {
-                var vendor = repositroy.GetVendorById(id);
+                var vendor = repositroy.GetVendorById(id,includeOffer);
                 var vendors = new List<Vendor>();
                 vendors.Add(vendor);
                 return Ok(new ResponseModel()
@@ -203,7 +203,7 @@ namespace Spots.APIs.Controllers
             }
             #endregion
 
-            _vendor = repositroy.GetVendorById(id);
+            _vendor = repositroy.GetVendorById(id, false);
             //.Map(vendor, _vendor);    
             {
                 _vendor.Name = vendor.Name;
@@ -274,7 +274,7 @@ namespace Spots.APIs.Controllers
         public IActionResult DeleteVendor(Guid id)
         {
             var response = new ResponseModel();
-            var vendor = repositroy.GetVendorById(id);
+            var vendor = repositroy.GetVendorById(id,false);
             if (vendor == null)
             {
                 response.StatusCode = StatusCodes.Status404NotFound;

@@ -1,0 +1,49 @@
+﻿@model AdminPanel.ViewModels.OfferCreateViewModel
+
+<main class="main-container">
+    <div class="main-content">
+        <form class="card" method="post" asp-action="CreateOffer" asp-route-id =@Model.VendorId  role="form" enctype="multipart/form-data">
+            <h4 class="card-title"><strong>@Model.VendorName New Offer</strong></h4>
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="card-body form-type-combine">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="Offer.Title" class="require"></label>
+                            <input type="text" class="form-control" asp-for="Offer.Title" required>
+                            <span asp-validation-for="Offer.Title" class="text-danger invalid-feedback"></span>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label asp-for="Offer.Value"></label>
+                            <input class="form-control" asp-for="Offer.Value">
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>Value Type</label>
+                            <select asp-for="Offer.Type" asp-items="@Model.SelectList" class="form-control">
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Offer.Description"></label>
+                            <textarea class="form-control" asp-for="Offer.Description"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <footer class="card-footer text-right">
+                <a class="btn btn-secondary" asp-action="ListOffer" asp-route-id =@Model.VendorId>Cancel</a>
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </footer>
+        </form>
+    </div>
+
+</main>

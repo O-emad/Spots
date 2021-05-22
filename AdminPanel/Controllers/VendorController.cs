@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace AdminPanel.Controllers
 {
-    [Authorize]
+    //[Authorize
     public class VendorController : Controller
     {
         private readonly IHttpClientFactory httpClientFactory;

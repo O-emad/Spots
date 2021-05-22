@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace AdminPanel.Controllers
 {
-    [Authorize]
+    //[Authorize
     public class AdController : Controller
     {
         private readonly IHttpClientFactory httpClientFactory;

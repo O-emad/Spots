@@ -32,50 +32,51 @@ namespace AdminPanel
         {
             services.AddControllersWithViews();
 
-            services.AddAuthorization(o =>
-            {
-                o.AddPolicy("CanCUDCategory",
-                    policyBuilder =>
-                    {
-                        policyBuilder.RequireAuthenticatedUser();
-                        policyBuilder.RequireClaim("level", "Admin");
-                    });
-            });
+            //services.AddAuthorization(o =>
+            //{
+            //    o.AddPolicy("CanCUDCategory",
+            //        policyBuilder =>
+            //        {
+            //            policyBuilder.RequireAuthenticatedUser();
+            //            policyBuilder.RequireClaim("level", "Admin");
+            //        });
+            //});
 
             services.AddHttpContextAccessor();
-            services.AddTransient<BearerTokenHandler>();
+            //services.AddTransient<BearerTokenHandler>();
             services.AddHttpClient("APIClient", client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44308/");
+                client.BaseAddress = new Uri("https://localhost:44308");
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
-            }).AddHttpMessageHandler<BearerTokenHandler>();
+            });//.AddHttpMessageHandler<BearerTokenHandler>();
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            })
-            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, o =>
-            {
-                o.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                o.Authority = "https://localhost:5001/";
-                o.ClientId = "adminpanelclient";
-                o.ResponseType = "code";
-                //o.Scope.Add("openid");
-                //o.Scope.Add("profile");
-                o.Scope.Add("level");
-                o.Scope.Add("categoryapi");
-                //o.ClaimActions.Remove("nbf");
-                o.ClaimActions.DeleteClaim("sid");
-                o.ClaimActions.DeleteClaim("idp");
-                o.ClaimActions.DeleteClaim("s_hash");
-                o.ClaimActions.DeleteClaim("auth_time");
-                o.SaveTokens = true;
-                o.ClientSecret = "secret";
-                o.GetClaimsFromUserInfoEndpoint = true;
-            });
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            //})
+            //.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+            //.AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, o =>
+            //{
+            //    o.RequireHttpsMetadata = false;
+            //    o.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    o.Authority = "http://localhost:5001";
+            //    o.ClientId = "adminpanelclient";
+            //    o.ResponseType = "code";
+            //    //o.Scope.Add("openid");
+            //    //o.Scope.Add("profile");
+            //    o.Scope.Add("level");
+            //    o.Scope.Add("categoryapi");
+            //    //o.ClaimActions.Remove("nbf");
+            //    o.ClaimActions.DeleteClaim("sid");
+            //    o.ClaimActions.DeleteClaim("idp");
+            //    o.ClaimActions.DeleteClaim("s_hash");
+            //    o.ClaimActions.DeleteClaim("auth_time");
+            //    o.SaveTokens = true;
+            //    o.ClientSecret = "secret";
+            //    o.GetClaimsFromUserInfoEndpoint = true;
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,15 +90,15 @@ namespace AdminPanel
             {
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                //app.UseHsts();
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            //app.UseAuthentication();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

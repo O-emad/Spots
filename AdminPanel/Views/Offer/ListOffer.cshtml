@@ -1,0 +1,134 @@
+﻿@model AdminPanel.ViewModels.OfferIndexViewModel
+
+@if (TempData.ContainsKey("CUD"))
+{
+    if ((bool)TempData["CUD"] == true)
+    {
+        <div class="alert @TempData["Type"] alert-dismissible fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            @TempData["Message"]
+        </div>
+    }
+}
+
+<main class="main-cotainer">
+    <div class="main-content">
+
+
+        <div class="card">
+            <h4 class="card-title"><strong>@Model.VendorName</strong></h4>
+
+            <div class="card-body">
+               
+                
+                <div class="flexbox mb-20">
+                    <div>
+                        <strong>Avaliable Offers</strong>
+                    </div>
+                    <a class="btn btn-float btn-primary"
+                       asp-action="CreateOffer" asp-route-id=@Model.VendorId asp-route-vendorName =@Model.VendorName>
+                        <i class="ti-plus"></i>
+                    </a>
+                </div>
+
+                <table class="table table-separated">
+                    <thead>
+                        <tr>
+                            <th class="w-300px">Title</th>
+                            <th class="w-100px">Approved</th>
+                            <th class="text-right w-100px">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Offers)
+                        {
+                            <tr>
+                                <td>@item.Title</td>
+                                <td>@item.OfferApproved</td>
+                                <td class="text-right table-actions">
+                                    <a class="table-action hover-primary"
+                                       asp-action="GetSingleOffer" asp-controller="Offer"
+                                       asp-route-id=@item.Id asp-route-vendorId =@Model.VendorId>
+                                        <i class="ti-more-alt"></i>
+                                    </a>
+                                    <a id="deletebutton"
+                                       class="table-action hover-danger"
+                                       data-target="#modal-small" data-toggle="modal"
+                                       name=@item.Id
+                                       onclick="onDelete(this.name)">
+                                        <i class="ti-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @*<nav>
+            <ul class="pagination pagination-circle justify-content-center">
+                @if (Model.Pagination.previousPageLink != null)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber=@(Model.Pagination.currentPage - 1)
+                           asp-route-searchQuery=@Model.Pagination.searchQuery>
+                            <span class="ti-arrow-left"></span>
+                        </a>
+                    </li>
+                }
+                @for (int i = 1; i <= Model.Pagination.totalPages; ++i)
+                {
+                    var activePage = (Model.Pagination.currentPage == i) ? "active" : "";
+                    <li class="page-item @activePage">
+                        <a class="page-link" asp-action="Index" asp-Route-pageNumber=@i
+                           asp-route-searchQuery=@Model.Pagination.searchQuery>@i</a>
+                    </li>
+                }
+                @if (Model.Pagination.nextPageLink != null)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber=@(Model.Pagination.currentPage + 1)
+                           asp-route-searchQuery=@Model.Pagination.searchQuery>
+                            <span class="ti-arrow-right"></span>
+                        </a>
+                    </li>
+                }
+
+            </ul>
+        </nav>*@
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-small" tabindex="-1" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Delete Offer</h4>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this item</p>
+                    </div>
+                    <div class="modal-footer" id="sdsd">
+                        <button type="button" class="btn btn-bold btn-pure btn-secondary" data-dismiss="modal">Cancel</button>
+                        <a id="assertDelete" type="submit" class="btn btn-bold btn-pure btn-primary"
+                           asp-action="DeleteOffer" asp-controller="Offer" name=@Model.VendorId>
+                            Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function onDelete(itemid) {
+                newhref = $('#assertDelete').attr('href') + '/' + itemid + "?vendorId=" + $('#assertDelete').attr('name');
+               $("#assertDelete").attr("href", newhref);
+            }
+        </script>
+
+
+    </div>
+</main>

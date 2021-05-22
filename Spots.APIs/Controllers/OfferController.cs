@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Spots.Domain;
 using Spots.DTO;
@@ -27,23 +28,39 @@ namespace Spots.APIs.Controllers
         [HttpGet]
         public IActionResult GetOffers(Guid vendorId)
         {
+            var response = new ResponseModel();
             if (!repositroy.VendorExists(vendorId))
             {
-                return NotFound();
+                response.StatusCode = StatusCodes.Status404NotFound;
+                response.Message = "Vendor doesn't exist";
+                response.Data = new { };
+                return NotFound(response);
             }
-            var offers = repositroy.GetOffersForVendor(vendorId);
-            return Ok(mapper.Map<IEnumerable<OfferDto>>(offers));
+            var offers = repositroy.GetOffersForVendor(vendorId).ToList();
+            response.StatusCode = StatusCodes.Status200OK;
+            response.Message = "";
+            response.Data = mapper.Map<List<OfferDto>>(offers);
+            return Ok(response);
         }
 
         [HttpGet("{id}", Name = "GetOffer")]
         public IActionResult GetOffer(Guid vendorId, Guid id)
         {
+            var response = new ResponseModel();
             if (!repositroy.VendorExists(vendorId))
             {
-                return NotFound();
+                response.StatusCode = StatusCodes.Status404NotFound;
+                response.Message = "Vendor Doesn't Exist";
+                response.Data = new { };
+                return NotFound(response);
             }
             var offer = repositroy.GetOfferById(vendorId, id);
-            return Ok(mapper.Map<OfferDto>(offer));
+            var offers = new List<Offer>();
+            offers.Add(offer);
+            response.StatusCode = StatusCodes.Status200OK;
+            response.Message = "";
+            response.Data = mapper.Map<IEnumerable<OfferDto>>(offers);
+            return Ok(response);
         }
 
         [HttpPost]
@@ -75,16 +92,24 @@ namespace Spots.APIs.Controllers
 
         //}
 
+        [HttpDelete("{id}")]
         public IActionResult DeleteOffer(Guid vendorId, Guid id)
         {
+            var response = new ResponseModel();
             if (!repositroy.VendorExists(vendorId))
             {
-                return NotFound($"Vendor {vendorId} does not exist");
+                response.StatusCode = StatusCodes.Status404NotFound;
+                response.Message = $"Vendor {vendorId} doesn't exist";
+                response.Data = new { };
+                return NotFound(response);
             }
             var offer = repositroy.GetOfferById(vendorId, id);
             if(offer == null)
             {
-                return NotFound();
+                response.StatusCode = StatusCodes.Status404NotFound;
+                response.Message = $"Offer doesn't exist";
+                response.Data = new { };
+                return NotFound(response);
             }
             repositroy.DeleteOffer(offer);
             repositroy.Save();

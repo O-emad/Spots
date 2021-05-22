@@ -104,10 +104,15 @@ namespace Spots.Services
                 context.Add<Vendor>(vendor);
             }
         }
-        public Vendor GetVendorById(Guid vendorId)
+        public Vendor GetVendorById(Guid vendorId, bool includeOffer)
         {
-            var vendor =  context.Vendors.Include(v => v.Categories).Where(v => v.Id == vendorId).FirstOrDefault();
-            return vendor;
+            //var vendor = context.Vendors as IQueryable<Vendor>;
+           var vendor =  context.Vendors.Include(v => v.Categories).Where(v => v.Id == vendorId);
+            if (includeOffer)
+            {
+                vendor = vendor.Include(v => v.Offers).AsSplitQuery();
+            }
+            return vendor.FirstOrDefault();
             //var vendor = context.Vendors.Where(v => v.Id == vendorId).FirstOrDefault();
             //vendor.Categories = GetCategoriesForVendor(vendorId).ToList();
             //return vendor;
@@ -162,7 +167,7 @@ namespace Spots.Services
             {
                 category.Vendors.Remove(vendor);
             }
-            var vend = GetVendorById(vendorId);
+            var vend = GetVendorById(vendorId,false);
             foreach(var category in categories)
             {
                 var cat = context.Categories.Where(c => c.Id == category.Id).FirstOrDefault();
@@ -200,7 +205,7 @@ namespace Spots.Services
             if(VendorExists(vendorId) && offer != null)
             {
                 offer.VendorId = vendorId;
-                if (context.Settings.FirstOrDefault().AutomaticOfferApproval)
+                if (GetSetting().AutomaticOfferApproval)
                 {
                     offer.OfferApproved = true;
                 }
@@ -320,6 +325,40 @@ namespace Spots.Services
 
         }
         #endregion
+
+        public Setting GetSetting()
+        {
+            if (!SettingExists())
+            {
+                CreateSetting();
+            }
+            return context.Settings.FirstOrDefault();
+        }
+
+        public void CreateSetting()
+        {
+            var setting = new Setting()
+            {
+                AutomaticOfferApproval = true
+            };
+            context.Add<Setting>(setting);
+            context.SaveChanges();
+        }
+        public void DeleteSetting()
+        {
+            var setting = context.Settings.FirstOrDefault();
+            context.Remove(setting);
+            context.SaveChanges();
+        }
+        public void UpdateSetting()
+        {
+
+        }
+
+        public bool SettingExists()
+        {
+            return context.Settings.Any();
+        }
 
         public bool Save()
         {

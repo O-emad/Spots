@@ -1,0 +1,75 @@
+﻿@model  AdminPanel.ViewModels.SingleOfferViewModel
+
+<main class="main-container">
+    <div class="main-content">
+        <div class="card">
+            <h4 class="card-title"><strong>@Model.Offer.Title</strong></h4>
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="card-body form-type-combine">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="Offer.Title"></label>
+                            <input type="text" class="form-control" asp-for="Offer.Title" readonly disabled>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label asp-for="Offer.Value"></label>
+                            <input class="form-control" asp-for="Offer.Value" readonly disabled>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>Value Type</label>
+                            <input asp-for="Offer.Type" class="form-control" readonly disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Offer.Description"></label>
+                            <textarea class="form-control" asp-for="Offer.Description" readonly disabled></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <footer class="card-footer text-right">
+                <a class="btn btn-secondary" asp-action="ListOffer" asp-route-id=@Model.Offer.VendorId>Return</a>
+                <button class="btn btn-primary btn-danger" type="button" href="#"
+                        data-target="#ineditdelete" data-toggle="modal">
+                    Delete
+                </button>
+            </footer>
+        </div>
+    </div>
+
+
+    <div  asp-action="DeleteOffer"  class="modal fade" id="ineditdelete"
+          tabindex="-1" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Delete Offer</h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this item</p>
+                </div>
+                <div class="modal-footer" id="sdsd">
+                    <button type="button" class="btn btn-bold btn-pure btn-secondary" data-dismiss="modal">Cancel</button>
+                    <a id="submitdelete" asp-action="DeleteOffer"
+                            asp-route-id="@Model.Offer.Id" asp-route-vendorId =@Model.Offer.VendorId class="btn btn-bold btn-pure btn-primary">
+                        Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>

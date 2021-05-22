@@ -48,13 +48,14 @@ namespace ExtraSW.IDP
                 ClientId = "adminpanelclient",
                 AllowedGrantTypes = GrantTypes.Code,
                 RequirePkce = true,
+                
                 RedirectUris = new List<string>()
                 {
-                    "https://localhost:44341/signin-oidc"
+                    "http://localhost:57749/signin-oidc"
                 },
                 PostLogoutRedirectUris = new List<string>()
                 {
-                    "https://localhost:44341/signout-callback-oidc"
+                    "http://localhost:57749/signout-callback-oidc"
                 },
                 AllowedScopes =
                 {

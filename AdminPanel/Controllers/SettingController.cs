@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AdminPanel.Controllers
 {
-    [Authorize]
+    //[Authorize
     public class SettingController : Controller
     {
         public IActionResult Index()

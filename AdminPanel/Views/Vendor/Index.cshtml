@@ -57,6 +57,11 @@
                                 <td>@item.SortOrder</td>
                                 <td class="text-right table-actions">
                                     <a class="table-action hover-primary"
+                                       asp-action="ListOffer" asp-controller="Offer"
+                                       asp-route-id ="@item.Id">
+                                        <i class="material-icons fs-16">local_offer</i>
+                                    </a>
+                                    <a class="table-action hover-primary"
                                        asp-action="EditVendor" asp-controller="Vendor"
                                        asp-route-id=@item.Id>
                                         <i class="ti-pencil"></i>

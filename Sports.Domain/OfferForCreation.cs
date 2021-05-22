@@ -1,17 +1,16 @@
-﻿using Spots.Domain;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spots.DTO
+namespace Spots.Domain
 {
-    public class OfferForUpdateDto
+    public class OfferForCreation
     {
         public double Value { get; set; }
-        public OfferValueType Type { get; set; }
+        public string Title { get; set; }
+        public string Type { get; set; }
         public string Description { get; set; }
-
     }
 }
