@@ -1,5 +1,39 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model AdminPanel.ViewModels.SettingViewModel
+
+@if (TempData.ContainsKey("CUD"))
+{
+    if ((bool)TempData["CUD"] == true)
+    {
+        <div class="alert @TempData["Type"] alert-dismissible fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            @TempData["Message"]
+        </div>
+    }
 }
+
+<main class="main-cotainer">
+    <div class="main-content">
+
+
+        <form asp-action="UpdateSetting" method="post" class="card">
+            <h4 class="card-title"><strong>Settings</strong></h4>
+
+            <div class="card-body">
+                <label class="switch switch-lg">
+                    <label></label>
+                    <input asp-for=@Model.Settings.AutomaticOfferApproval type="checkbox"/>
+                    <span class="switch-indicator"></span>
+                    <span class="switch-description">Automatic Offer Approval</span>
+                </label>
+            </div>
+
+            <footer class="card-footer text-right" >
+              <button class="btn btn-primary" type="submit">Save Changes</button>
+                
+            </footer>
+        </form>
+    </div>
+</main>
+

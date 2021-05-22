@@ -46,6 +46,10 @@ namespace Spots.Services
          void DeleteAd(Ad ad);
         void UpdateAd(Guid adId, Ad ad);
 
+
+        Setting GetSetting();
+        void UpdateSetting();
+        bool SettingExists();
         bool Save();
     }
 }
