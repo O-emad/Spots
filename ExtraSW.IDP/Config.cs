@@ -15,14 +15,15 @@ namespace ExtraSW.IDP
             { 
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResource("level", "your level",
-                    new List<string>(){ "level" })
+                new IdentityResource("roles", "Your role(s)",
+                    new List<string>(){ "role" })
             };
 
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             { 
-                new ApiScope("categoryapi", "Category API")
+                new ApiScope("categoryapi", "Category API"),
+                new ApiScope("idpapi", "IDP API")
             };
 
         public static IEnumerable<ApiResource> ApiResources =>
@@ -37,6 +38,17 @@ namespace ExtraSW.IDP
                         "categoryapi"
                     },
                     ShowInDiscoveryDocument = true
+                },
+                
+                new ApiResource
+                {
+                    Name = "idpapicollection",
+                    DisplayName = "IDP API Collection",
+                    Scopes =
+                    {
+                        "idpapi"
+                    },
+                    ShowInDiscoveryDocument = true
                 }
             };
 
@@ -48,26 +60,29 @@ namespace ExtraSW.IDP
                 ClientId = "adminpanelclient",
                 AllowedGrantTypes = GrantTypes.Code,
                 RequirePkce = true,
-                
                 RedirectUris = new List<string>()
                 {
-                    "http://localhost:57749/signin-oidc"
+                    "https://localhost:44343/signin-oidc"
+                    //"http://localhost:57749/signin-oidc"
                 },
                 PostLogoutRedirectUris = new List<string>()
                 {
-                    "http://localhost:57749/signout-callback-oidc"
+                    "https://localhost:44343/signout-callback-oidc"
+                    //"http://localhost:57749/signout-callback-oidc"
                 },
                 AllowedScopes =
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
-                    "level",
-                    "categoryapi"
+                    "roles",
+                    "categoryapi",
+                    "idpapi"
                 },
                 ClientSecrets =
                 {
                     new Secret("secret".Sha256())
                 }
+                
             }
             };
     }

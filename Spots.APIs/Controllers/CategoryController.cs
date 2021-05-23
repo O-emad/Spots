@@ -20,7 +20,7 @@ namespace Spots.APIs.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-   // [Authorize]
+    [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly IMapper mapper;
@@ -34,7 +34,7 @@ namespace Spots.APIs.Controllers
             this.hostEnvironment = hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
         }
 
-        [AllowAnonymous]
+       // [AllowAnonymous]
         [HttpGet(Name = "GetCategories")]
         public IActionResult GetCategories([FromQuery] IndexResourceParameters categoryParameters)
         {
@@ -78,7 +78,7 @@ namespace Spots.APIs.Controllers
             });
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpGet("{id}", Name = "GetCategory")]
         public IActionResult GetCategoryById(Guid id)
         {

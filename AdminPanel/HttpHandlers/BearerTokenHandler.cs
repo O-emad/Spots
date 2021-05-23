@@ -12,27 +12,27 @@ using System.Threading.Tasks;
 
 namespace AdminPanel.HttpHandlers
 {
-    //public class BearerTokenHandler :DelegatingHandler
-    //{
-    //    private readonly IHttpContextAccessor httpContextAccessor;
+    public class BearerTokenHandler : DelegatingHandler
+    {
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-    //    public BearerTokenHandler(IHttpContextAccessor httpContextAccessor)
-    //    {
-    //        this.httpContextAccessor = httpContextAccessor ??
-    //            throw new ArgumentNullException(nameof(httpContextAccessor));
-    //    }
-    //    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
-    //        CancellationToken cancellationToken)
-    //    {
-    //        var accessToken = await httpContextAccessor.HttpContext
-    //            .GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
-    //        if (!string.IsNullOrWhiteSpace(accessToken))
-    //        {
+        public BearerTokenHandler(IHttpContextAccessor httpContextAccessor)
+        {
+            this.httpContextAccessor = httpContextAccessor ??
+                throw new ArgumentNullException(nameof(httpContextAccessor));
+        }
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+            CancellationToken cancellationToken)
+        {
+            var accessToken = await httpContextAccessor.HttpContext
+                .GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+            if (!string.IsNullOrWhiteSpace(accessToken))
+            {
 
-    //            request.SetBearerToken(accessToken);
-    //        }
+                request.SetBearerToken(accessToken);
+            }
 
-    //        return await base.SendAsync(request, cancellationToken);
-    //    }
-    //}
+            return await base.SendAsync(request, cancellationToken);
+        }
+    }
 }

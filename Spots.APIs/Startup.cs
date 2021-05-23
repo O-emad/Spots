@@ -48,7 +48,7 @@ namespace Spots.APIs
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(o =>
                 {
-                    o.ApiName = "categoryapi";
+                    o.ApiName = "categoryapicollection";
                     o.Authority = "https://localhost:5001/";
                 });
         }

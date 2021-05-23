@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace AdminPanel.Controllers
 {
-    //[Authorize
+    [Authorize(Roles ="Admin, Vendor")]
     public class VendorController : Controller
     {
         private readonly IHttpClientFactory httpClientFactory;
@@ -32,6 +32,7 @@ namespace AdminPanel.Controllers
         }
 
         #region List
+        
         public async Task<IActionResult> Index(int pageNumber, string searchQuery)
         {
             ViewData["vendor"] = "active";
@@ -64,6 +65,7 @@ namespace AdminPanel.Controllers
         #endregion
 
         #region Create
+        [Authorize(Roles ="Admin")]
         public IActionResult CreateVendor()
         {
             ViewData["vendor"] = "active";
@@ -71,6 +73,7 @@ namespace AdminPanel.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateVendor(VendorEditAndCreateViewModel VendorCreate)
         {
             if (!ModelState.IsValid)
@@ -178,6 +181,7 @@ namespace AdminPanel.Controllers
         }
         #endregion
         #region Delete
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteVendor(Guid id)
         {
             var httpClient = httpClientFactory.CreateClient("APIClient");

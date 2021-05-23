@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace AdminPanel.Controllers
 {
-    //[Authorize
+    [Authorize(Roles = "Admin")]
     public class SettingController : Controller
     {
         private readonly IHttpClientFactory clientFactory;

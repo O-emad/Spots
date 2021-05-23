@@ -1,4 +1,5 @@
 ﻿using AdminPanel.Models;
+//using ExtraSW.IDP.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -10,24 +11,44 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace AdminPanel.Controllers
 {
-    ////////[Authorize
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IHttpClientFactory clientFactory;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger , IHttpClientFactory clientFactory)
         {
             _logger = logger;
+            this.clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             ViewData["home"] = "active";
-            //await WriteOutIdentityInformation();
+            await WriteOutIdentityInformation();
+
+            var httpClient = clientFactory.CreateClient("IDPAPIClient");
+
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"/api/usermanage");
+            var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer.
+                    DeserializeAsync<UserModel>(responseStream);
+            }
+
+
+
             return View();
         }
 

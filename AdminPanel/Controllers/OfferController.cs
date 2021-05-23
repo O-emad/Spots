@@ -1,5 +1,6 @@
 ﻿using AdminPanel.Models;
 using AdminPanel.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spots.Domain;
 using Spots.DTO;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace AdminPanel.Controllers
 {
+    [Authorize]
     public class OfferController : Controller
     {
         private readonly IHttpClientFactory clientFactory;

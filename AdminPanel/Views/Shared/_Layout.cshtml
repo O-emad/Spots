@@ -6,7 +6,7 @@
     <meta name="description" content="Responsive admin dashboard">
     <meta name="keywords" content="blank, starter">
     
-    <title>Blank page &mdash; Spots</title>
+    <title>Spots</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,300i" rel="stylesheet">
@@ -17,8 +17,8 @@
     <link href="~/css/style.min.css" rel="stylesheet">
 
     <!-- Favicons -->
-    <link rel="apple-touch-icon" href="~/img/apple-touch-icon.png">
-    <link rel="icon" href="~/img/favicon.png">
+    <link rel="shortcut icon" href="~/img/favicon.ico">
+    <link rel="icon" href="~/img/icon.png">
 </head>
 
 <body>
@@ -55,35 +55,39 @@
                         <span class="title">Dashboard</span>
                     </a>
                 </li>
-
-                <li class="menu-item @ViewData["category"]">
-                    <a class="menu-link" asp-controller="Category" asp-action="Index">
-                        <span class="icon ti-receipt"></span>
-                        <span class="title">Category</span>
-                    </a>
-                </li>
-
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="menu-item @ViewData["category"]">
+                        <a class="menu-link" asp-controller="Category" asp-action="Index">
+                            <span class="icon ti-receipt"></span>
+                            <span class="title">Category</span>
+                        </a>
+                    </li>
+                }
                 <li class="menu-item @ViewData["vendor"]">
                     <a class="menu-link" asp-controller="Vendor" asp-action="Index">
                         <span class="icon fa fa-user"></span>
                         <span class="title">Vendor</span>
                     </a>
                 </li>
-
-                <li class="menu-item @ViewData["ad"]">
-                    <a class="menu-link" asp-controller="Ad" asp-action="Index">
-                        <span class="icon fa fa-tv"></span>
-                        <span class="title">Ads</span>
-                    </a>
-                </li>
-
-                <li class="menu-item  @ViewData["setting"]">
-                    <a class="menu-link" asp-controller="Setting" asp-action="Index">
-                        <span class="icon ti-settings"></span>
-                        <span class="title">Setting</span>
-                    </a>
-                </li>
-
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="menu-item @ViewData["ad"]">
+                        <a class="menu-link" asp-controller="Ad" asp-action="Index">
+                            <span class="icon fa fa-tv"></span>
+                            <span class="title">Ads</span>
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="menu-item  @ViewData["setting"]">
+                        <a class="menu-link" asp-controller="Setting" asp-action="Index">
+                            <span class="icon ti-settings"></span>
+                            <span class="title">Setting</span>
+                        </a>
+                    </li>
+                }
 
             </ul>
         </nav>
@@ -98,7 +102,7 @@
         <div class="topbar-right">
             @if (User.Identity.IsAuthenticated)
             {
-                <a asp-area="" asp-controller="Home" asp-action="Logout">Logout</a>
+                <a class="btn btn-primary" asp-area="" asp-controller="Home" asp-action="Logout">Logout</a>
             }
         </div>
     </header>

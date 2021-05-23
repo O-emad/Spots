@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace AdminPanel.Controllers
 {
-    //[Authorize
+    [Authorize(Roles = "Admin")]
     public class AdController : Controller
     {
         private readonly IHttpClientFactory httpClientFactory;
@@ -61,8 +61,6 @@ namespace AdminPanel.Controllers
 
         }
         #endregion
-
-
         #region Create
         public IActionResult CreateAd()
         {
@@ -142,7 +140,6 @@ namespace AdminPanel.Controllers
             return RedirectToAction("Index");
         }
         #endregion
-
         #region Edit
         public async Task<IActionResult> EditAd(Guid id)
         {
@@ -167,7 +164,6 @@ namespace AdminPanel.Controllers
 
             return View(new AdEditAndCreateViewModel(ad));
         }
-
         [HttpPost]
         public async Task<IActionResult> EditAd(AdEditAndCreateViewModel editAdVM, Guid id)
         {
@@ -240,7 +236,6 @@ namespace AdminPanel.Controllers
             return RedirectToAction("Index");
         }
         #endregion
-
         #region Delete
         public async Task<IActionResult> DeleteAd(Guid id)
         {
