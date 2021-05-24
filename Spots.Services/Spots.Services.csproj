@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Sports.Domain\Spots.Domain.csproj" />
     <ProjectReference Include="..\Spots.Data\Spots.Data.csproj" />
+    <ProjectReference Include="..\Spots.Services.Helpers\Spots.Services.Helpers.csproj" />
   </ItemGroup>
 
 </Project>

@@ -9,6 +9,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Spots.Services.Helpers;
+using Spots.Services.ResourceParameters;
 
 namespace Marvin.IDP.Services
 {
@@ -21,26 +23,37 @@ namespace Marvin.IDP.Services
         {
             _context = context ?? 
                 throw new ArgumentNullException(nameof(context));
-        }          
+        }
 
-        public IEnumerable<User> GetUsers()
+        public PagedList<User> GetUsers(IndexResourceParameters userParameters)
         {
-            var users =  _context.Users.Include(u => u.Claims)
-                .Select(u => 
-                     new User()
-                    {
-                        Id = u.Id,
-                        UserName = u.UserName,
-                        Password = u.Password,
-                        Subject = u.Subject,
-                        Active = u.Active,
-                        Claims = u.Claims
-                    }
+            if (userParameters == null)
+            {
+                throw new ArgumentNullException(nameof(userParameters));
+            }
 
-                )
-                .ToList();
+            var collection = _context.Users as IQueryable<User>;
 
-            return users;
+            #region Filtering
+            if (!string.IsNullOrWhiteSpace(userParameters.FilterQuery))
+            {
+            }
+            #endregion
+
+            #region Searching
+            if (!string.IsNullOrWhiteSpace(userParameters.SearchQuery))
+            {
+                var searchQuery = userParameters.SearchQuery.Trim();
+                collection = collection.Where(c => c.UserName.Contains(searchQuery));
+            }
+
+            #endregion
+
+            collection = (IQueryable<User>)collection.OrderBy(c => c.Active)
+                .Include(u => u.Claims);
+
+            return PagedList<User>.Create(collection, userParameters.PageNumber
+                , userParameters.PageSize, userParameters.IncludeAll);
         }
 
         public async Task<bool> IsUserActive(string subject)
@@ -130,6 +143,11 @@ namespace Marvin.IDP.Services
             }
 
             return await _context.UserClaims.Where(u => u.User.Subject == subject).ToListAsync(); 
+        }
+
+        public IEnumerable<UserClaim> GetUserClaimsByUserId(Guid userId)
+        {
+            return _context.UserClaims.Where(u => u.UserId == userId).ToList();
         }
          
         public async Task<User> GetUserBySubjectAsync(string subject)

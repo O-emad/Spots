@@ -389,15 +389,15 @@ namespace AdminPanel.Controllers
 
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
-                $"/api/usermanage");
+                $"/api/usermanage?includeAll=true");
             var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer.
-                    DeserializeAsync<IEnumerable<UserModel>>(responseStream);
-                deserializedResponse = deserializedResponse.Where(u => u.Active).ToList();
-                return View(new LinkVendorViewModel(id, deserializedResponse));
+                    DeserializeAsync<DeserializedResponseModel<UserModel>>(responseStream);
+                var activeUsers = deserializedResponse.Data.Where(u => u.Active).ToList();
+                return View(new LinkVendorViewModel(id, activeUsers));
             }
         }
 

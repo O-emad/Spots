@@ -79,12 +79,12 @@
                         </a>
                     </li>
                 }
-                @if (User.IsInRole("Admin"))
+                @if (User.IsInRole("Admin") || User.IsInRole("Vendor"))
                 {
                     <li class="menu-item @ViewData["user"]">
                         <a class="menu-link" asp-controller="User" asp-action="Index">
                             <span class="icon fa fa-users"></span>
-                            <span class="title">Ads</span>
+                            <span class="title">User</span>
                         </a>
                     </li>
                 }

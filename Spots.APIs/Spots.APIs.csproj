@@ -21,6 +21,7 @@
     <ProjectReference Include="..\ExtraSW.IDP\ExtraSW.IDP.csproj" />
     <ProjectReference Include="..\Spots.Data\Spots.Data.csproj" />
     <ProjectReference Include="..\Spots.DTO\Spots.DTO.csproj" />
+    <ProjectReference Include="..\Spots.Services.Helpers\Spots.Services.Helpers.csproj" />
     <ProjectReference Include="..\Spots.Services\Spots.Services.csproj" />
   </ItemGroup>
 

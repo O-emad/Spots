@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Sports.Domain\Spots.Domain.csproj" />
     <ProjectReference Include="..\Spots.DTO\Spots.DTO.csproj" />
+    <ProjectReference Include="..\Spots.Services.Helpers\Spots.Services.Helpers.csproj" />
     <ProjectReference Include="..\Spots.Services\Spots.Services.csproj" />
   </ItemGroup>
 

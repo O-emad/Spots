@@ -1,4 +1,6 @@
 ﻿using ExtraSW.IDP.Entities;
+using Spots.Services.Helpers;
+using Spots.Services.ResourceParameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +11,7 @@ namespace Marvin.IDP.Services
 {
     public interface ILocalUserService
     {
-        IEnumerable<User> GetUsers();
+        PagedList<User> GetUsers(IndexResourceParameters userParameters);
         Task<bool> ValidateClearTextCredentialsAsync(
             string userName, 
             string password); 
