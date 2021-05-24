@@ -34,18 +34,7 @@ namespace AdminPanel.Controllers
             ViewData["home"] = "active";
             await WriteOutIdentityInformation();
 
-            var httpClient = clientFactory.CreateClient("APIClient");
-
-            var request = new HttpRequestMessage(
-                HttpMethod.Get,
-                $"/api/usermanage");
-            var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-            using (var responseStream = await response.Content.ReadAsStreamAsync())
-            {
-                var deserializedResponse = await JsonSerializer.
-                    DeserializeAsync<IEnumerable<UserModel>>(responseStream);
-            }
+           
 
 
 

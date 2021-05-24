@@ -81,6 +81,15 @@
                 }
                 @if (User.IsInRole("Admin"))
                 {
+                    <li class="menu-item @ViewData["user"]">
+                        <a class="menu-link" asp-controller="User" asp-action="Index">
+                            <span class="icon fa fa-users"></span>
+                            <span class="title">Ads</span>
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("Admin"))
+                {
                     <li class="menu-item  @ViewData["setting"]">
                         <a class="menu-link" asp-controller="Setting" asp-action="Index">
                             <span class="icon ti-settings"></span>

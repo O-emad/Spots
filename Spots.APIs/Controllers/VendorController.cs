@@ -37,7 +37,13 @@ namespace Spots.APIs.Controllers
         [HttpGet(Name = "GetVendors")]
         public IActionResult GetVendors([FromQuery] IndexResourceParameters vendorParameters)
         {
+            if (User.IsInRole("Vendor"))
+            {
+                var ownerId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+                vendorParameters.FilterQuery = ownerId;
+            }
             var vendors = repositroy.GetVendors(vendorParameters);
+            
             var previousPageLink = vendors.HasPrevious ?
                 CreateVendorsResourceUri(vendorParameters, ResourceUriType.PreviousPage) : null;
 
@@ -214,8 +220,10 @@ namespace Spots.APIs.Controllers
                 _vendor.OpenAt = vendor.OpenAt;
                 _vendor.CloseAt = vendor.CloseAt;
                 _vendor.SortOrder = vendor.SortOrder;
-
+                if(!string.IsNullOrWhiteSpace(vendor.OwnerId))
+                    _vendor.OwnerId = vendor.OwnerId;
             }
+
             #region checkimagechange
             if (imageChanged && vendor.ProfileBytes != null)
             {

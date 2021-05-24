@@ -381,6 +381,74 @@ namespace AdminPanel.Controllers
         }
         #endregion
 
+        public async Task<IActionResult> LinkVendor(Guid id)
+        {
+            ViewData["vendor"] = "active";
+
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"/api/usermanage");
+            var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer.
+                    DeserializeAsync<IEnumerable<UserModel>>(responseStream);
+                deserializedResponse = deserializedResponse.Where(u => u.Active).ToList();
+                return View(new LinkVendorViewModel(id, deserializedResponse));
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LinkVendor(Guid id, LinkVendorViewModel vm)
+        {
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"/api/vendor/{id}");
+
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+            var vendor = new Vendor();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer
+                    .DeserializeAsync<DeserializedResponseModel<Vendor>>(responseStream);
+                vendor = deserializedResponse.Data.FirstOrDefault();
+
+            }
+            vendor.OwnerId = vm.SelectedUserSubject;
+            var serializedVendorForEdit = JsonSerializer.Serialize(vendor);
+
+             httpClient = httpClientFactory.CreateClient("APIClient");
+
+             request = new HttpRequestMessage(
+               HttpMethod.Put,
+               $"/api/vendor/{id}");
+
+            request.Content = new StringContent(
+               serializedVendorForEdit,
+               System.Text.Encoding.Unicode,
+               "application/json");
+
+             response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+            TempData["Type"] = "alert-success";
+            TempData["CUD"] = true;
+            TempData["Message"] = "Vendor Linked Successfully";
+            return RedirectToAction("Index");
+
+        }
+
+
+
     }
 
 

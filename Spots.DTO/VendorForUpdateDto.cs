@@ -17,6 +17,7 @@ namespace Spots.DTO
         public string Location { get; set; }
         public byte[] ProfileBytes { get; set; }
         public byte[] BannerBytes { get; set; }
+        public string OwnerId { get; set; }
         public List<Category> Categories { get; set; }
     }
 }

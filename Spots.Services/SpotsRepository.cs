@@ -139,7 +139,11 @@ namespace Spots.Services
             var collection = context.Vendors as IQueryable<Vendor>;
 
             #region Filtering
-
+            if (!string.IsNullOrWhiteSpace(vendorParameters.FilterQuery))
+            {
+                var filterQuery = vendorParameters.FilterQuery.Trim();
+                collection = collection.Where(c => c.OwnerId == filterQuery);
+            }
             #endregion
 
             #region Searching
