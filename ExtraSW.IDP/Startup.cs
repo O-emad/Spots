@@ -3,6 +3,7 @@
 
 
 using ExtraSW.IDP.DbContexts;
+using IdentityServer4.AccessTokenValidation;
 using IdentityServerHost.Quickstart.UI;
 using Marvin.IDP.Services;
 using Microsoft.AspNetCore.Builder;
@@ -26,7 +27,10 @@ namespace ExtraSW.IDP
         public void ConfigureServices(IServiceCollection services)
         {
             // uncomment, if you want to add an MVC-based UI
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddJsonOptions(opts => {
+                    opts.JsonSerializerOptions.PropertyNamingPolicy = null;
+                });
 
             services.AddDbContext<IdentityDbContext>(opt =>
             {
@@ -52,6 +56,13 @@ namespace ExtraSW.IDP
             builder.AddProfileService<LocalUserProfileService>();
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
+
+            //services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+            //    .AddIdentityServerAuthentication(o =>
+            //    {
+            //        o.ApiName = "idpapicollection";
+            //        o.Authority = "https://localhost:5001/";
+            //    });
         }
 
         public void Configure(IApplicationBuilder app)

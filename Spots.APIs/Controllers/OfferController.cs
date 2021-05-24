@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Spots.Domain;
@@ -14,6 +15,7 @@ namespace Spots.APIs.Controllers
 {
     [ApiController]
     [Route("api/vendor/{vendorId}/[controller]")]
+    [Authorize(Roles = "Admin ,Vendor")]
     public class OfferController : ControllerBase
     {
         private readonly ISpotsRepositroy repositroy;
@@ -26,6 +28,7 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetOffers(Guid vendorId)
         {
             var response = new ResponseModel();
@@ -44,6 +47,7 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpGet("{id}", Name = "GetOffer")]
+        [AllowAnonymous]
         public IActionResult GetOffer(Guid vendorId, Guid id)
         {
             var response = new ResponseModel();

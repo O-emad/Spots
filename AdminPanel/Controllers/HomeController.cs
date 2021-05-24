@@ -34,7 +34,7 @@ namespace AdminPanel.Controllers
             ViewData["home"] = "active";
             await WriteOutIdentityInformation();
 
-            var httpClient = clientFactory.CreateClient("IDPAPIClient");
+            var httpClient = clientFactory.CreateClient("APIClient");
 
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
@@ -44,7 +44,7 @@ namespace AdminPanel.Controllers
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer.
-                    DeserializeAsync<UserModel>(responseStream);
+                    DeserializeAsync<IEnumerable<UserModel>>(responseStream);
             }
 
 

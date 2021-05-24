@@ -9,7 +9,7 @@ namespace Marvin.IDP.Services
 {
     public interface ILocalUserService
     {
-        Task<IEnumerable<User>> GetUsers();
+        IEnumerable<User> GetUsers();
         Task<bool> ValidateClearTextCredentialsAsync(
             string userName, 
             string password); 

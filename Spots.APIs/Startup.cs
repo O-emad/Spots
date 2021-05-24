@@ -1,4 +1,6 @@
+using ExtraSW.IDP.DbContexts;
 using IdentityServer4.AccessTokenValidation;
+using Marvin.IDP.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -41,10 +43,15 @@ namespace Spots.APIs
                    )
                 .EnableSensitiveDataLogging();
             });
-
+            services.AddDbContext<IdentityDbContext>(opt =>
+            {
+                opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ExtraSwIdpDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+                   )
+                .EnableSensitiveDataLogging();
+            });
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<ISpotsRepositroy, SpotsRepository>();
-
+            services.AddScoped<ILocalUserService, LocalUserService>();
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(o =>
                 {

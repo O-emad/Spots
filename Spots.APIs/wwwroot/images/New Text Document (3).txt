@@ -1,0 +1,373 @@
+[00:48:16 Information]
+Starting host...
+
+[00:48:19 Information] IdentityServer4.Startup
+Starting IdentityServer4 version 4.0.0+1acafade44176bf817412aa4309d5dff6587a741
+
+[00:48:19 Information] IdentityServer4.Startup
+You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+
+[00:48:19 Information] IdentityServer4.Startup
+Using the default authentication scheme idsrv for IdentityServer
+
+[00:48:19 Debug] IdentityServer4.Startup
+Using idsrv as default ASP.NET Core scheme for authentication
+
+[00:48:19 Debug] IdentityServer4.Startup
+Using idsrv as default ASP.NET Core scheme for sign-in
+
+[00:48:19 Debug] IdentityServer4.Startup
+Using idsrv as default ASP.NET Core scheme for sign-out
+
+[00:48:19 Debug] IdentityServer4.Startup
+Using idsrv as default ASP.NET Core scheme for challenge
+
+[00:48:19 Debug] IdentityServer4.Startup
+Using idsrv as default ASP.NET Core scheme for forbid
+
+[00:48:20 Information] Microsoft.Hosting.Lifetime
+Now listening on: https://localhost:5001
+
+[00:48:20 Information] Microsoft.Hosting.Lifetime
+Application started. Press Ctrl+C to shut down.
+
+[00:48:20 Information] Microsoft.Hosting.Lifetime
+Hosting environment: Development
+
+[00:48:20 Information] Microsoft.Hosting.Lifetime
+Content root path: C:\Users\oemad\source\repos\Spots\ExtraSW.IDP
+
+[00:48:24 Debug] IdentityServer4.Startup
+Login Url: /Account/Login
+
+[00:48:24 Debug] IdentityServer4.Startup
+Login Return Url Parameter: ReturnUrl
+
+[00:48:24 Debug] IdentityServer4.Startup
+Logout Url: /Account/Logout
+
+[00:48:24 Debug] IdentityServer4.Startup
+ConsentUrl Url: /consent
+
+[00:48:24 Debug] IdentityServer4.Startup
+Consent Return Url Parameter: returnUrl
+
+[00:48:24 Debug] IdentityServer4.Startup
+Error Url: /home/error
+
+[00:48:24 Debug] IdentityServer4.Startup
+Error Id Parameter: errorId
+
+[00:48:24 Debug] IdentityServer4.Hosting.EndpointRouter
+Request path /.well-known/openid-configuration matched to endpoint type Discovery
+
+[00:48:24 Debug] IdentityServer4.Hosting.EndpointRouter
+Endpoint enabled: Discovery, successfully created handler: IdentityServer4.Endpoints.DiscoveryEndpoint
+
+[00:48:24 Information] IdentityServer4.Hosting.IdentityServerMiddleware
+Invoking IdentityServer endpoint: IdentityServer4.Endpoints.DiscoveryEndpoint for /.well-known/openid-configuration
+
+[00:48:24 Debug] IdentityServer4.Endpoints.DiscoveryEndpoint
+Start discovery request
+
+[00:48:24 Debug] IdentityServer4.Hosting.EndpointRouter
+Request path /.well-known/openid-configuration/jwks matched to endpoint type Discovery
+
+[00:48:24 Debug] IdentityServer4.Hosting.EndpointRouter
+Endpoint enabled: Discovery, successfully created handler: IdentityServer4.Endpoints.DiscoveryKeyEndpoint
+
+[00:48:24 Information] IdentityServer4.Hosting.IdentityServerMiddleware
+Invoking IdentityServer endpoint: IdentityServer4.Endpoints.DiscoveryKeyEndpoint for /.well-known/openid-configuration/jwks
+
+[00:48:24 Debug] IdentityServer4.Endpoints.DiscoveryKeyEndpoint
+Start key discovery request
+
+[00:48:24 Debug] IdentityServer4.Hosting.EndpointRouter
+Request path /connect/authorize matched to endpoint type Authorize
+
+[00:48:25 Debug] IdentityServer4.Hosting.EndpointRouter
+Endpoint enabled: Authorize, successfully created handler: IdentityServer4.Endpoints.AuthorizeEndpoint
+
+[00:48:25 Information] IdentityServer4.Hosting.IdentityServerMiddleware
+Invoking IdentityServer endpoint: IdentityServer4.Endpoints.AuthorizeEndpoint for /connect/authorize
+
+[00:48:25 Debug] IdentityServer4.Endpoints.AuthorizeEndpoint
+Start authorize request
+
+[00:48:25 Debug] IdentityServer4.Endpoints.AuthorizeEndpoint
+No user present in authorize request
+
+[00:48:25 Debug] IdentityServer4.Validation.AuthorizeRequestValidator
+Start authorize request protocol validation
+
+[00:48:25 Debug] IdentityServer4.Stores.ValidatingClientStore
+client configuration validation for client adminpanelclient succeeded.
+
+[00:48:25 Debug] IdentityServer4.Validation.AuthorizeRequestValidator
+Checking for PKCE parameters
+
+[00:48:25 Debug] IdentityServer4.Validation.AuthorizeRequestValidator
+Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+
+[00:48:25 Debug] IdentityServer4.Endpoints.AuthorizeEndpoint
+ValidatedAuthorizeRequest
+{"ClientId": "adminpanelclient", "ClientName": "Admin Panel", "RedirectUri": "https://localhost:44335/signin-oidc", "AllowedRedirectUris": ["https://localhost:44335/signin-oidc"], "SubjectId": "anonymous", "ResponseType": "code", "ResponseMode": "form_post", "GrantType": "authorization_code", "RequestedScopes": "openid profile level categoryapi", "State": "CfDJ8FPpQewBzpNCpXeGj9_TJ2X31VZ9Gi_upb9k5i1JtgGaw-Lg2dxhz5sU_c1T7B7PP9YF1Ye-Th0yAM9USO57wwMHndzpKXh360KQKxiCUZHj8vP9giqwikHUvHp-HBDtisKS1iMvglEuSXfHb2sTJDdGhpCNCMOI0rOJWVXXcS2GHOKAEaDQdFnLx69MEodTA7YrhTKeZ6BJgnWzCLDoj70Ta-9BwFrD8RUcl175hyQJw82oRPMREgxZC5QOkADyJaSZYXEHeP5m1M3StL5_TngCgJgQ80y-1m4RB39NFLS8-oKAo-v1wNgCtz3xp6K_qlrLA66GMh-RUyhFHsUqe-ylbqsiPVydDCJ-DRUOF-K9BV-qMajJK-fH8k18TH0fiw", "UiLocales": null, "Nonce": "637573205048740548.NjQzYjk5MmQtMDc4Yy00ODgwLTgxYzMtZjY4ZmEwM2UzZDQ1NzY3YmQzZTktZjUwNi00OTRhLTkzYTAtOTNmNzFiOWQxMjJj", "AuthenticationContextReferenceClasses": null, "DisplayMode": null, "PromptMode": "", "MaxAge": null, "LoginHint": null, "SessionId": "", "Raw": {"client_id": "adminpanelclient", "redirect_uri": "https://localhost:44335/signin-oidc", "response_type": "code", "scope": "openid profile level categoryapi", "code_challenge": "kVoUd2A59SLYkz0Ml2hQqRkZGKBwF2VJCfmy2kglV00", "code_challenge_method": "S256", "response_mode": "form_post", "nonce": "637573205048740548.NjQzYjk5MmQtMDc4Yy00ODgwLTgxYzMtZjY4ZmEwM2UzZDQ1NzY3YmQzZTktZjUwNi00OTRhLTkzYTAtOTNmNzFiOWQxMjJj", "state": "CfDJ8FPpQewBzpNCpXeGj9_TJ2X31VZ9Gi_upb9k5i1JtgGaw-Lg2dxhz5sU_c1T7B7PP9YF1Ye-Th0yAM9USO57wwMHndzpKXh360KQKxiCUZHj8vP9giqwikHUvHp-HBDtisKS1iMvglEuSXfHb2sTJDdGhpCNCMOI0rOJWVXXcS2GHOKAEaDQdFnLx69MEodTA7YrhTKeZ6BJgnWzCLDoj70Ta-9BwFrD8RUcl175hyQJw82oRPMREgxZC5QOkADyJaSZYXEHeP5m1M3StL5_TngCgJgQ80y-1m4RB39NFLS8-oKAo-v1wNgCtz3xp6K_qlrLA66GMh-RUyhFHsUqe-ylbqsiPVydDCJ-DRUOF-K9BV-qMajJK-fH8k18TH0fiw", "x-client-SKU": "ID_NETSTANDARD2_0", "x-client-ver": "6.7.1.0"}, "$type": "AuthorizeRequestValidationLog"}
+
+[00:48:25 Information] IdentityServer4.ResponseHandling.AuthorizeInteractionResponseGenerator
+Showing login: User is not authenticated
+
+[00:48:25 Debug] IdentityServer4.Validation.AuthorizeRequestValidator
+Start authorize request protocol validation
+
+[00:48:25 Debug] IdentityServer4.Stores.ValidatingClientStore
+client configuration validation for client adminpanelclient succeeded.
+
+[00:48:25 Debug] IdentityServer4.Validation.AuthorizeRequestValidator
+Checking for PKCE parameters
+
+[00:48:25 Debug] IdentityServer4.Validation.AuthorizeRequestValidator
+Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+
+[00:48:25 Debug] IdentityServer4.Stores.ValidatingClientStore
+client configuration validation for client adminpanelclient succeeded.
+
+[00:48:29 Debug] IdentityServer4.Hosting.CorsPolicyProvider
+CORS request made for path: /Account/Login from origin: null but was ignored because path was not for an allowed IdentityServer CORS endpoint
+
+[00:48:32 Debug] IdentityServer4.Validation.AuthorizeRequestValidator
+Start authorize request protocol validation
+
+[00:48:32 Debug] IdentityServer4.Stores.ValidatingClientStore
+client configuration validation for client adminpanelclient succeeded.
+
+[00:48:32 Debug] IdentityServer4.Validation.AuthorizeRequestValidator
+Checking for PKCE parameters
+
+[00:48:32 Debug] IdentityServer4.Validation.AuthorizeRequestValidator
+Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+
+[00:48:32 Debug] IdentityServer4.Hosting.IdentityServerAuthenticationService
+Augmenting SignInContext
+
+[00:48:32 Debug] IdentityServer4.Hosting.IdentityServerAuthenticationService
+Adding idp claim with value: local
+
+[00:48:32 Debug] IdentityServer4.Hosting.IdentityServerAuthenticationService
+Adding amr claim with value: pwd
+
+[00:48:32 Debug] IdentityServer4.Hosting.IdentityServerAuthenticationService
+Adding auth_time claim with value: 1621723712
+
+[00:48:32 Information] Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationHandler
+AuthenticationScheme: idsrv signed in.
+
+[00:48:33 Debug] IdentityServer4.Hosting.EndpointRouter
+Request path /connect/authorize/callback matched to endpoint type Authorize
+
+[00:48:33 Debug] IdentityServer4.Hosting.EndpointRouter
+Endpoint enabled: Authorize, successfully created handler: IdentityServer4.Endpoints.AuthorizeCallbackEndpoint
+
+[00:48:33 Information] IdentityServer4.Hosting.IdentityServerMiddleware
+Invoking IdentityServer endpoint: IdentityServer4.Endpoints.AuthorizeCallbackEndpoint for /connect/authorize/callback
+
+[00:48:33 Debug] IdentityServer4.Endpoints.AuthorizeCallbackEndpoint
+Start authorize callback request
+
+[00:48:33 Debug] IdentityServer4.Endpoints.AuthorizeCallbackEndpoint
+User in authorize request: 818727
+
+[00:48:33 Debug] IdentityServer4.Validation.AuthorizeRequestValidator
+Start authorize request protocol validation
+
+[00:48:33 Debug] IdentityServer4.Stores.ValidatingClientStore
+client configuration validation for client adminpanelclient succeeded.
+
+[00:48:33 Debug] IdentityServer4.Validation.AuthorizeRequestValidator
+Checking for PKCE parameters
+
+[00:48:33 Debug] IdentityServer4.Validation.AuthorizeRequestValidator
+Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+
+[00:48:33 Debug] IdentityServer4.Endpoints.AuthorizeCallbackEndpoint
+ValidatedAuthorizeRequest
+{"ClientId": "adminpanelclient", "ClientName": "Admin Panel", "RedirectUri": "https://localhost:44335/signin-oidc", "AllowedRedirectUris": ["https://localhost:44335/signin-oidc"], "SubjectId": "818727", "ResponseType": "code", "ResponseMode": "form_post", "GrantType": "authorization_code", "RequestedScopes": "openid profile level categoryapi", "State": "CfDJ8FPpQewBzpNCpXeGj9_TJ2X31VZ9Gi_upb9k5i1JtgGaw-Lg2dxhz5sU_c1T7B7PP9YF1Ye-Th0yAM9USO57wwMHndzpKXh360KQKxiCUZHj8vP9giqwikHUvHp-HBDtisKS1iMvglEuSXfHb2sTJDdGhpCNCMOI0rOJWVXXcS2GHOKAEaDQdFnLx69MEodTA7YrhTKeZ6BJgnWzCLDoj70Ta-9BwFrD8RUcl175hyQJw82oRPMREgxZC5QOkADyJaSZYXEHeP5m1M3StL5_TngCgJgQ80y-1m4RB39NFLS8-oKAo-v1wNgCtz3xp6K_qlrLA66GMh-RUyhFHsUqe-ylbqsiPVydDCJ-DRUOF-K9BV-qMajJK-fH8k18TH0fiw", "UiLocales": null, "Nonce": "637573205048740548.NjQzYjk5MmQtMDc4Yy00ODgwLTgxYzMtZjY4ZmEwM2UzZDQ1NzY3YmQzZTktZjUwNi00OTRhLTkzYTAtOTNmNzFiOWQxMjJj", "AuthenticationContextReferenceClasses": null, "DisplayMode": null, "PromptMode": "", "MaxAge": null, "LoginHint": null, "SessionId": "1B9558531FE6BCAC42D0E4CFD6FA4C46", "Raw": {"client_id": "adminpanelclient", "redirect_uri": "https://localhost:44335/signin-oidc", "response_type": "code", "scope": "openid profile level categoryapi", "code_challenge": "kVoUd2A59SLYkz0Ml2hQqRkZGKBwF2VJCfmy2kglV00", "code_challenge_method": "S256", "response_mode": "form_post", "nonce": "637573205048740548.NjQzYjk5MmQtMDc4Yy00ODgwLTgxYzMtZjY4ZmEwM2UzZDQ1NzY3YmQzZTktZjUwNi00OTRhLTkzYTAtOTNmNzFiOWQxMjJj", "state": "CfDJ8FPpQewBzpNCpXeGj9_TJ2X31VZ9Gi_upb9k5i1JtgGaw-Lg2dxhz5sU_c1T7B7PP9YF1Ye-Th0yAM9USO57wwMHndzpKXh360KQKxiCUZHj8vP9giqwikHUvHp-HBDtisKS1iMvglEuSXfHb2sTJDdGhpCNCMOI0rOJWVXXcS2GHOKAEaDQdFnLx69MEodTA7YrhTKeZ6BJgnWzCLDoj70Ta-9BwFrD8RUcl175hyQJw82oRPMREgxZC5QOkADyJaSZYXEHeP5m1M3StL5_TngCgJgQ80y-1m4RB39NFLS8-oKAo-v1wNgCtz3xp6K_qlrLA66GMh-RUyhFHsUqe-ylbqsiPVydDCJ-DRUOF-K9BV-qMajJK-fH8k18TH0fiw", "x-client-SKU": "ID_NETSTANDARD2_0", "x-client-ver": "6.7.1.0"}, "$type": "AuthorizeRequestValidationLog"}
+
+[00:48:33 Debug] IdentityServer4.Test.TestUserProfileService
+IsActive called from: AuthorizeEndpoint
+
+[00:48:33 Debug] IdentityServer4.Services.DefaultConsentService
+Client is configured to not require consent, no consent is required
+
+[00:48:33 Debug] IdentityServer4.ResponseHandling.AuthorizeResponseGenerator
+Creating Authorization Code Flow response.
+
+[00:48:33 Debug] IdentityServer4.Endpoints.AuthorizeCallbackEndpoint
+Authorize endpoint response
+{"SubjectId": "818727", "ClientId": "adminpanelclient", "RedirectUri": "https://localhost:44335/signin-oidc", "State": "CfDJ8FPpQewBzpNCpXeGj9_TJ2X31VZ9Gi_upb9k5i1JtgGaw-Lg2dxhz5sU_c1T7B7PP9YF1Ye-Th0yAM9USO57wwMHndzpKXh360KQKxiCUZHj8vP9giqwikHUvHp-HBDtisKS1iMvglEuSXfHb2sTJDdGhpCNCMOI0rOJWVXXcS2GHOKAEaDQdFnLx69MEodTA7YrhTKeZ6BJgnWzCLDoj70Ta-9BwFrD8RUcl175hyQJw82oRPMREgxZC5QOkADyJaSZYXEHeP5m1M3StL5_TngCgJgQ80y-1m4RB39NFLS8-oKAo-v1wNgCtz3xp6K_qlrLA66GMh-RUyhFHsUqe-ylbqsiPVydDCJ-DRUOF-K9BV-qMajJK-fH8k18TH0fiw", "Scope": "openid profile level categoryapi", "Error": null, "ErrorDescription": null, "$type": "AuthorizeResponseLog"}
+
+[00:48:33 Debug] IdentityServer4.Hosting.IdentityServerAuthenticationService
+Augmenting SignInContext
+
+[00:48:33 Information] Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationHandler
+AuthenticationScheme: idsrv signed in.
+
+[00:48:33 Debug] IdentityServer4.Hosting.EndpointRouter
+Request path /connect/token matched to endpoint type Token
+
+[00:48:33 Debug] IdentityServer4.Hosting.EndpointRouter
+Endpoint enabled: Token, successfully created handler: IdentityServer4.Endpoints.TokenEndpoint
+
+[00:48:33 Information] IdentityServer4.Hosting.IdentityServerMiddleware
+Invoking IdentityServer endpoint: IdentityServer4.Endpoints.TokenEndpoint for /connect/token
+
+[00:48:33 Debug] IdentityServer4.Endpoints.TokenEndpoint
+Start token request.
+
+[00:48:33 Debug] IdentityServer4.Validation.ClientSecretValidator
+Start client validation
+
+[00:48:33 Debug] IdentityServer4.Validation.BasicAuthenticationSecretParser
+Start parsing Basic Authentication secret
+
+[00:48:33 Debug] IdentityServer4.Validation.PostBodySecretParser
+Start parsing for secret in post body
+
+[00:48:33 Debug] IdentityServer4.Validation.ISecretsListParser
+Parser found secret: PostBodySecretParser
+
+[00:48:33 Debug] IdentityServer4.Validation.ISecretsListParser
+Secret id found: adminpanelclient
+
+[00:48:33 Debug] IdentityServer4.Stores.ValidatingClientStore
+client configuration validation for client adminpanelclient succeeded.
+
+[00:48:33 Debug] IdentityServer4.Validation.ISecretsListValidator
+Secret validator success: HashedSharedSecretValidator
+
+[00:48:33 Debug] IdentityServer4.Validation.ClientSecretValidator
+Client validation success
+
+[00:48:33 Debug] IdentityServer4.Validation.TokenRequestValidator
+Start token request validation
+
+[00:48:33 Debug] IdentityServer4.Validation.TokenRequestValidator
+Start validation of authorization code token request
+
+[00:48:33 Debug] IdentityServer4.Validation.TokenRequestValidator
+Client required a proof key for code exchange. Starting PKCE validation
+
+[00:48:33 Debug] IdentityServer4.Test.TestUserProfileService
+IsActive called from: AuthorizationCodeValidation
+
+[00:48:33 Debug] IdentityServer4.Validation.TokenRequestValidator
+Validation of authorization code token request success
+
+[00:48:33 Information] IdentityServer4.Validation.TokenRequestValidator
+Token request validation success, {"ClientId": "adminpanelclient", "ClientName": "Admin Panel", "GrantType": "authorization_code", "Scopes": null, "AuthorizationCode": "B06AC4F2EF7040864382A6D0F6E99DD7EEE875FB0586848F98A2FF18092802CD", "RefreshToken": null, "UserName": null, "AuthenticationContextReferenceClasses": null, "Tenant": null, "IdP": null, "Raw": {"client_id": "adminpanelclient", "client_secret": "***REDACTED***", "code": "B06AC4F2EF7040864382A6D0F6E99DD7EEE875FB0586848F98A2FF18092802CD", "grant_type": "authorization_code", "redirect_uri": "https://localhost:44335/signin-oidc", "code_verifier": "o6clLXjQhYMjCzsobj3m9Yd8wp8UoBMKf8MQOxm0Z6s"}, "$type": "TokenRequestValidationLog"}
+
+[00:48:33 Debug] IdentityServer4.Stores.ValidatingClientStore
+client configuration validation for client adminpanelclient succeeded.
+
+[00:48:33 Debug] IdentityServer4.Services.DefaultClaimsService
+Getting claims for access token for client: adminpanelclient
+
+[00:48:33 Debug] IdentityServer4.Services.DefaultClaimsService
+Getting claims for access token for subject: 818727
+
+[00:48:33 Debug] IdentityServer4.Test.TestUserProfileService
+Get profile called for subject 818727 from client Admin Panel with claim types [] via ClaimsProviderAccessToken
+
+[00:48:33 Debug] IdentityServer4.Test.TestUserProfileService
+Issued claims: []
+
+[00:48:33 Debug] IdentityServer4.Stores.ValidatingClientStore
+client configuration validation for client adminpanelclient succeeded.
+
+[00:48:33 Debug] IdentityServer4.Services.DefaultClaimsService
+Getting claims for identity token for subject: 818727 and client: adminpanelclient
+
+[00:48:33 Debug] IdentityServer4.Services.DefaultClaimsService
+In addition to an id_token, an access_token was requested. No claims other than sub are included in the id_token. To obtain more user claims, either use the user info endpoint or set AlwaysIncludeUserClaimsInIdToken on the client configuration.
+
+[00:48:33 Debug] IdentityServer4.Endpoints.TokenEndpoint
+Token request success.
+
+[00:48:34 Debug] IdentityServer4.Hosting.EndpointRouter
+Request path /connect/userinfo matched to endpoint type Userinfo
+
+[00:48:34 Debug] IdentityServer4.Hosting.EndpointRouter
+Endpoint enabled: Userinfo, successfully created handler: IdentityServer4.Endpoints.UserInfoEndpoint
+
+[00:48:34 Information] IdentityServer4.Hosting.IdentityServerMiddleware
+Invoking IdentityServer endpoint: IdentityServer4.Endpoints.UserInfoEndpoint for /connect/userinfo
+
+[00:48:34 Debug] IdentityServer4.Endpoints.UserInfoEndpoint
+Start userinfo request
+
+[00:48:34 Debug] IdentityServer4.Validation.BearerTokenUsageValidator
+Bearer token found in header
+
+[00:48:34 Debug] IdentityServer4.Stores.ValidatingClientStore
+client configuration validation for client adminpanelclient succeeded.
+
+[00:48:34 Debug] IdentityServer4.Stores.ValidatingClientStore
+client configuration validation for client adminpanelclient succeeded.
+
+[00:48:34 Debug] IdentityServer4.Test.TestUserProfileService
+IsActive called from: AccessTokenValidation
+
+[00:48:34 Debug] IdentityServer4.Validation.TokenValidator
+Calling into custom token validator: IdentityServer4.Validation.DefaultCustomTokenValidator
+
+[00:48:34 Debug] IdentityServer4.Validation.TokenValidator
+Token validation success
+{"ClientId": null, "ClientName": null, "ValidateLifetime": true, "AccessTokenType": "Jwt", "ExpectedScope": "openid", "TokenHandle": null, "JwtId": "6E9744BFFB168B7409841E65EBD92DD8", "Claims": {"nbf": 1621723713, "exp": 1621727313, "iss": "https://localhost:5001", "aud": ["categoryapicollection", "https://localhost:5001/resources"], "client_id": "adminpanelclient", "sub": "818727", "auth_time": 1621723712, "idp": "local", "jti": "6E9744BFFB168B7409841E65EBD92DD8", "sid": "1B9558531FE6BCAC42D0E4CFD6FA4C46", "iat": 1621723713, "scope": ["openid", "profile", "level", "categoryapi"], "amr": "pwd"}, "$type": "TokenValidationLog"}
+
+[00:48:34 Debug] IdentityServer4.Test.TestUserProfileService
+IsActive called from: UserInfoRequestValidation
+
+[00:48:34 Debug] IdentityServer4.ResponseHandling.UserInfoResponseGenerator
+Creating userinfo response
+
+[00:48:34 Debug] IdentityServer4.ResponseHandling.UserInfoResponseGenerator
+Scopes in access token: openid profile level categoryapi
+
+[00:48:34 Debug] IdentityServer4.ResponseHandling.UserInfoResponseGenerator
+Requested claim types: sub name family_name given_name middle_name nickname preferred_username profile picture website gender birthdate zoneinfo locale updated_at level
+
+[00:48:34 Debug] IdentityServer4.Test.TestUserProfileService
+Get profile called for subject 818727 from client Admin Panel with claim types ["sub", "name", "family_name", "given_name", "middle_name", "nickname", "preferred_username", "profile", "picture", "website", "gender", "birthdate", "zoneinfo", "locale", "updated_at", "level"] via UserInfoEndpoint
+
+[00:48:34 Debug] IdentityServer4.Test.TestUserProfileService
+Issued claims: ["name", "given_name", "family_name", "website", "level"]
+
+[00:48:34 Information] IdentityServer4.ResponseHandling.UserInfoResponseGenerator
+Profile service returned the following claim types: name given_name family_name website level
+
+[00:48:34 Debug] IdentityServer4.Endpoints.UserInfoEndpoint
+End userinfo request
+
+[00:48:34 Debug] IdentityServer4.Hosting.EndpointRouter
+Request path /.well-known/openid-configuration matched to endpoint type Discovery
+
+[00:48:34 Debug] IdentityServer4.Hosting.EndpointRouter
+Endpoint enabled: Discovery, successfully created handler: IdentityServer4.Endpoints.DiscoveryEndpoint
+
+[00:48:34 Information] IdentityServer4.Hosting.IdentityServerMiddleware
+Invoking IdentityServer endpoint: IdentityServer4.Endpoints.DiscoveryEndpoint for /.well-known/openid-configuration
+
+[00:48:34 Debug] IdentityServer4.Endpoints.DiscoveryEndpoint
+Start discovery request
+
+[00:48:35 Debug] IdentityServer4.Hosting.EndpointRouter
+Request path /.well-known/openid-configuration/jwks matched to endpoint type Discovery
+
+[00:48:35 Debug] IdentityServer4.Hosting.EndpointRouter
+Endpoint enabled: Discovery, successfully created handler: IdentityServer4.Endpoints.DiscoveryKeyEndpoint
+
+[00:48:35 Information] IdentityServer4.Hosting.IdentityServerMiddleware
+Invoking IdentityServer endpoint: IdentityServer4.Endpoints.DiscoveryKeyEndpoint for /.well-known/openid-configuration/jwks
+
+[00:48:35 Debug] IdentityServer4.Endpoints.DiscoveryKeyEndpoint
+Start key discovery request
+

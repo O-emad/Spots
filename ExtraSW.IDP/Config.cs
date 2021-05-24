@@ -22,7 +22,8 @@ namespace ExtraSW.IDP
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             { 
-                new ApiScope("categoryapi", "Category API"),
+                new ApiScope("categoryapi", "Category API",
+                    new List<string>(){ "role"}),
                 new ApiScope("idpapi", "IDP API")
             };
 
@@ -37,7 +38,13 @@ namespace ExtraSW.IDP
                     {
                         "categoryapi"
                     },
-                    ShowInDiscoveryDocument = true
+                    ShowInDiscoveryDocument = true,
+                    UserClaims = new List<string>()
+                    {
+                        "role"
+                    }
+                    
+
                 },
                 
                 new ApiResource

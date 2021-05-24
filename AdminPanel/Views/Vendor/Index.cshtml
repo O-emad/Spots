@@ -56,9 +56,19 @@
                                 <td>@item.Name</td>
                                 <td>@item.SortOrder</td>
                                 <td class="text-right table-actions">
+                                    @if (string.IsNullOrWhiteSpace(item.OwnerId))
+                                    {
+
+                                        <a class="table-action hover-primary"
+                                           asp-action="LinkVendor" asp-controller="Vendor"
+                                           asp-route-id=@item.Id>
+                                            <i class="fa fa-link"></i>
+                                        </a>
+                                        
+                                     }
                                     <a class="table-action hover-primary"
                                        asp-action="ListOffer" asp-controller="Offer"
-                                       asp-route-id ="@item.Id">
+                                       asp-route-id="@item.Id">
                                         <i class="material-icons fs-16">local_offer</i>
                                     </a>
                                     <a class="table-action hover-primary"

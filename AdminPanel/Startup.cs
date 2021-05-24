@@ -54,6 +54,21 @@ namespace AdminPanel
                 client.DefaultRequestHeaders.Add(Microsoft.Net.Http.Headers.HeaderNames.Accept, "application/json");
             }).AddHttpMessageHandler<BearerTokenHandler>();
 
+            services.AddHttpClient("IDPClient", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:5001");
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add(Microsoft.Net.Http.Headers.HeaderNames.Accept, "application/json");
+            });
+
+
+            services.AddHttpClient("IDPAPIClient", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:5001");
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add(Microsoft.Net.Http.Headers.HeaderNames.Accept, "application/json");
+            }).AddHttpMessageHandler<BearerTokenHandler>();
+
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -74,6 +89,7 @@ namespace AdminPanel
                 //o.Scope.Add("profile");
                 o.Scope.Add("roles");
                 o.Scope.Add("categoryapi");
+                o.Scope.Add("idpapi");
                 //o.ClaimActions.Remove("nbf");
                 o.ClaimActions.MapUniqueJsonKey("role", "role");
                 o.ClaimActions.DeleteClaim("sid");

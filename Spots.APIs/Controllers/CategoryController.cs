@@ -20,7 +20,6 @@ namespace Spots.APIs.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly IMapper mapper;
@@ -34,7 +33,7 @@ namespace Spots.APIs.Controllers
             this.hostEnvironment = hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
         }
 
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [HttpGet(Name = "GetCategories")]
         public IActionResult GetCategories([FromQuery] IndexResourceParameters categoryParameters)
         {
@@ -78,7 +77,7 @@ namespace Spots.APIs.Controllers
             });
         }
 
-        //[AllowAnonymous]
+        [AllowAnonymous]
         [HttpGet("{id}", Name = "GetCategory")]
         public IActionResult GetCategoryById(Guid id)
         {
@@ -94,6 +93,7 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateCategory([FromBody] CategoryForCreationDto category)
         {
             var response = new ResponseModel();
@@ -148,6 +148,7 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateCategory(Guid id, [FromBody] CategoryForUpdateDto category,
             [FromQuery] bool imageChanged = false)
         {
@@ -234,6 +235,7 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteCategory(Guid id)
         {
             var response = new ResponseModel();

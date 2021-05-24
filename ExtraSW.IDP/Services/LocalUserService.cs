@@ -23,9 +23,24 @@ namespace Marvin.IDP.Services
                 throw new ArgumentNullException(nameof(context));
         }          
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public IEnumerable<User> GetUsers()
         {
-            return await _context.Users.Include(u => u.Claims).ToListAsync();
+            var users =  _context.Users.Include(u => u.Claims)
+                .Select(u => 
+                     new User()
+                    {
+                        Id = u.Id,
+                        UserName = u.UserName,
+                        Password = u.Password,
+                        Subject = u.Subject,
+                        Active = u.Active,
+                        Claims = u.Claims
+                    }
+
+                )
+                .ToList();
+
+            return users;
         }
 
         public async Task<bool> IsUserActive(string subject)

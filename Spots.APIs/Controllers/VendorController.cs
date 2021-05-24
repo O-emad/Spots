@@ -77,6 +77,7 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpGet("{id}", Name = "GetVendor")]
+        [AllowAnonymous]
         public IActionResult GetVendorById(Guid id, bool includeOffer = false)
         {
             if (repositroy.VendorExists(id))
@@ -103,6 +104,7 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateVendor([FromBody] VendorForCreationDto vendor)
         {
             var response = new ResponseModel();
@@ -171,6 +173,7 @@ namespace Spots.APIs.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin ,Vendor")]
         public IActionResult UpdateVendor(Guid id, [FromBody] VendorForUpdateDto vendor, 
             [FromQuery] bool imageChanged = false)
         {
@@ -271,6 +274,7 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin ,Vendor")]
         public IActionResult DeleteVendor(Guid id)
         {
             var response = new ResponseModel();
