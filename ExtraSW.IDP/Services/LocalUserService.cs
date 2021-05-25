@@ -134,7 +134,24 @@ namespace Marvin.IDP.Services
             return await _context.Users
                  .FirstOrDefaultAsync(u => u.UserName == userName);
         }
- 
+
+        public async Task<User> GetUserByIdAsync(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException(nameof(id));
+            }
+
+            return await _context.Users
+                 .Include(u=>u.Claims)
+                 .FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public bool UserExists(Guid id)
+        {
+            return _context.Users.Any(u => u.Id == id);
+        }
+
         public async Task<IEnumerable<UserClaim>> GetUserClaimsBySubjectAsync(string subject)
         { 
             if (string.IsNullOrWhiteSpace(subject))

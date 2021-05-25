@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using AdminPanel.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,6 +11,8 @@ namespace AdminPanel.ViewModels
 {
     public class UserCreateViewModel
     {
+        public Guid Id { get; set; } = Guid.Empty;
+
         [MaxLength(200)]
         [Required]
         [Display(Name ="Username")]
@@ -44,5 +47,21 @@ namespace AdminPanel.ViewModels
                 "Type",
                 "Value"
                 );
+
+        public UserCreateViewModel()
+        {
+
+        }
+
+        public UserCreateViewModel(UserModel user)
+        {
+            Id = user.Id;
+            Username = user.UserName;
+            Password = user.Password;
+            Active = user.Active;
+            GivenName = user.Claims.Where(c => c.Type == "given_name").FirstOrDefault().Value;
+            FamilyName = user.Claims.Where(c => c.Type == "family_name").FirstOrDefault().Value;
+            Role = user.Claims.Where(c => c.Type == "role").FirstOrDefault().Value;
+        }
     }
 }

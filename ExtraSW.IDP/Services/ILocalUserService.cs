@@ -11,6 +11,8 @@ namespace Marvin.IDP.Services
 {
     public interface ILocalUserService
     {
+        bool UserExists(Guid id);
+        Task<User> GetUserByIdAsync(Guid id);
         PagedList<User> GetUsers(IndexResourceParameters userParameters);
         Task<bool> ValidateClearTextCredentialsAsync(
             string userName, 

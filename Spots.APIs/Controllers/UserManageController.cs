@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ExtraSW.IDP.Entities;
 using Marvin.IDP.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,7 +19,6 @@ namespace ExtraSW.IDP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
     public class UserManageController : ControllerBase
     {
         private readonly ILocalUserService localUserService;
@@ -30,13 +30,11 @@ namespace ExtraSW.IDP.Controllers
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        [HttpGet(Name = "GetUsers")]
         public IActionResult GetUsers([FromQuery] IndexResourceParameters userParameters)
         {
-            //var users = localUserService.GetUsers();
-            //return Ok(users);
             var users = localUserService.GetUsers(userParameters);
-            //var users = new PagedList<UserDto>(new List<UserDto>() { }, 1, 1, 1);
             var previousPageLink = users.HasPrevious ?
                 CreateUsersResourceUri(userParameters, ResourceUriType.PreviousPage) : null;
 
@@ -73,6 +71,68 @@ namespace ExtraSW.IDP.Controllers
                 Message = "",
                 Data = mapper.Map<IEnumerable<UserDto>>(users).ToList()
             });
+        }
+
+        [Authorize(Roles = "Admin,Vendor")]
+        [HttpGet("{id}",Name ="GetUser")]
+        public async Task<IActionResult> GetUser(Guid id)
+        {
+            if (User.IsInRole("Vendor"))
+            {
+                var userSub = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+                var user = await localUserService.GetUserBySubjectAsync(userSub);
+                id = user.Id;
+            }
+            if (localUserService.UserExists(id))
+            {
+                var user = await localUserService.GetUserByIdAsync(id);
+                var users = new List<User>();
+                users.Add(user);
+                return Ok(new ResponseModel()
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "",
+                    Data = mapper.Map<IEnumerable<UserDto>>(users).ToList()
+                }); ;
+            }
+            else
+            {
+                return NotFound(new ResponseModel()
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "User Not Found",
+                    Data = new { }
+                });
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody]UserForCreationDto user)
+        {
+            var response = new ResponseModel();
+
+            if (!ModelState.IsValid)
+            {
+                response.StatusCode = StatusCodes.Status400BadRequest;
+                response.Message = "Invalid User Format";
+                return BadRequest(response);
+            }
+            var _user = await localUserService.GetUserByUserNameAsync(user.UserName);
+            if(_user != null)
+            {
+                response.StatusCode = StatusCodes.Status409Conflict;
+                response.Message = $"User: {user.UserName} already exists";
+                return Conflict(response);
+            }
+            _user = mapper.Map<User>(user);
+            localUserService.AddUser(_user);
+            await localUserService.SaveChangesAsync();
+            var createdUserToReturn = mapper.Map<UserDto>(_user);
+            response.StatusCode = StatusCodes.Status201Created;
+            response.Message = $"User : '{createdUserToReturn.UserName }' Created Successfully";
+            response.Data = createdUserToReturn;
+            return CreatedAtRoute("GetUser", new { createdUserToReturn.Id }, response);
         }
 
         private string CreateUsersResourceUri(IndexResourceParameters usersParameters,

@@ -15,6 +15,8 @@ namespace Spots.APIs.Profiles
         {
             CreateMap<User, UserDto>();
             CreateMap<ExtraSW.IDP.Entities.UserClaim, Spots.DTO.UserClaim>();
+            CreateMap<UserForCreationDto, User>();
+            CreateMap<UserClaimForCreation, ExtraSW.IDP.Entities.UserClaim>();
         }
     }
 }

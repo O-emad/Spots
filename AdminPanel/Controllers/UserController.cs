@@ -1,11 +1,13 @@
 ﻿using AdminPanel.Models;
 using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Spots.DTO;
 using Spots.Services.Helpers;
 //using Spots.Services.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -25,6 +27,10 @@ namespace AdminPanel.Controllers
 
         public async Task<IActionResult> Index(int pageNumber, string searchQuery)
         {
+            if (User.IsInRole("Vendor"))
+            {
+                return RedirectToAction("EditUser", Guid.Empty);
+            }
             ViewData["user"] = "active";
             ViewData["searchString"] = (string.IsNullOrEmpty(searchQuery)) ? "" : searchQuery;
             if (pageNumber < 1)
@@ -48,10 +54,24 @@ namespace AdminPanel.Controllers
             }
         }
 
-        public IActionResult EditUser()
+        public async Task<IActionResult> EditUser(Guid id)
         {
-            return View();
+            ViewData["user"] = "active";
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"/api/usermanage/{id}");
+            var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer.
+                    DeserializeAsync<DeserializedResponseModel<UserModel>>(responseStream);
+                return View(new UserCreateViewModel(deserializedResponse.Data.FirstOrDefault()));
+            }
         }
+
 
         public IActionResult CreateUser()
         {
@@ -61,15 +81,73 @@ namespace AdminPanel.Controllers
 
 
         [HttpPost]
-        public IActionResult CreateUser(UserCreateViewModel vm)
+        public async Task<IActionResult> CreateUser(UserCreateViewModel vm)
         {
             ViewData["user"] = "active";
             if (!ModelState.IsValid)
             {
                 return View(vm);
             }
-            //var userToCreate = new User
-            return View();
+            var userToCreate = new UserForCreationDto()
+            {
+                Password = vm.Password,
+                UserName = vm.Username,
+                Subject = Guid.NewGuid().ToString(),
+                Active = vm.Active
+            };
+            userToCreate.Claims.Add(new UserClaimForCreation()
+            {
+                Type = "role",
+                Value = vm.Role
+            });
+            userToCreate.Claims.Add(new UserClaimForCreation()
+            {
+                Type = "given_name",
+                Value = vm.GivenName
+            });
+            userToCreate.Claims.Add(new UserClaimForCreation()
+            {
+                Type = "family_name",
+                Value = vm.FamilyName
+            });
+
+            var serializedNewUser = JsonSerializer.Serialize(userToCreate);
+
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+
+            var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                $"/api/usermanage");
+
+            request.Content = new StringContent(
+                serializedNewUser,
+                System.Text.Encoding.Unicode,
+                "application/json");
+
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+               // TempData["Type"] = "alert-danger";
+                if (e.StatusCode == HttpStatusCode.Conflict || e.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    return View(vm);
+                    //TempData["CUD"] = true;
+                    //TempData["Message"] = "Ad not found";
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            TempData["Type"] = "alert-success";
+            TempData["CUD"] = true;
+            TempData["Message"] = "User Created Successfully";
+            return RedirectToAction("Index");
         }
 
     }

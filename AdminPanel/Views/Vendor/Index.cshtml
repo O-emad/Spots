@@ -32,12 +32,13 @@
 
 
                     </form>
-                    
+                    @if (User.IsInRole("Admin"))
+                    {
                     <a class="btn btn-float btn-primary"
                        asp-action="CreateVendor">
                         <i class="ti-plus"></i>
                     </a>
-
+                    }
 
                 </div>
 

@@ -1,0 +1,82 @@
+﻿@model AdminPanel.ViewModels.UserCreateViewModel
+
+<main class="main-container">
+    <div class="main-content">
+        <form class="card" method="post" asp-action="EditUser" asp-route-id=@Model.Id role="form" enctype="multipart/form-data">
+            <h4 class="card-title"><strong>User Info</strong></h4>
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="card-body form-type-combine">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group disabled">
+                            <label asp-for="Username"></label>
+                            <input type="text" class="form-control disabled" asp-for="Username" disabled>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label asp-for="GivenName" class="require"></label>
+                            <input type="text" class="form-control" asp-for="GivenName" required>
+                            <span asp-validation-for="GivenName" class="text-danger invalid-feedback"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="FamilyName" class="require"></label>
+                            <input type="text" class="form-control" asp-for="FamilyName" required>
+                            <span asp-validation-for="FamilyName" class="text-danger invalid-feedback"></span>
+                        </div>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                        <div class="form-group">
+                            <label asp-for="Role" class="require"></label>
+                            <select asp-for="Role" asp-items=@Model.Roles required
+                                    data-provide="selectpicker" data-live-search="true"
+                                    class="chzn-select form-control multiselect">
+                            </select>
+                            <span asp-validation-for="Role" class="text-danger invalid-feedback"></span>
+                        </div>
+
+                        <label class="switch switch-lg">
+                            <label></label>
+                            <input asp-for="Active" type="checkbox" />
+                            <span class="switch-indicator"></span>
+                            <span class="switch-description" asp-validation-for="Active">Active Status</span>
+                        </label>
+                        }
+                        @*<div class="form-group">
+            <label class="require">Ad Image</label>
+            <div class="input-group file-group">
+                <div class="input-group-input do-float">
+                    <input type="text" class="form-control file-value" readonly="">
+                    <input asp-for="Files" type="file" class="form-control" multiple="" accept=".jpg,.jpeg" required>
+                    <label>Choose file...</label>
+                </div>
+                <span class="input-group-append">
+                    <button class="btn btn-light file-browser" type="button"><i class="fa fa-upload"></i></button>
+                </span>
+            </div>
+        </div>*@
+                    </div>
+                </div>
+            </div>
+
+
+            <footer class="card-footer text-right">
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+                }
+                else
+                {
+                    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Return</a>
+                }
+
+                @*<button class="btn btn-primary" type="submit">Submit</button>*@
+            </footer>
+        </form>
+    </div>
+
+</main>
