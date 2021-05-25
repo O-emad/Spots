@@ -55,6 +55,20 @@ namespace AdminPanel.Controllers
 
         public IActionResult CreateUser()
         {
+            ViewData["user"] = "active";
+            return View(new UserCreateViewModel());
+        }
+
+
+        [HttpPost]
+        public IActionResult CreateUser(UserCreateViewModel vm)
+        {
+            ViewData["user"] = "active";
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+            //var userToCreate = new User
             return View();
         }
 
