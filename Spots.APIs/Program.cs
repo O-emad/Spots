@@ -1,3 +1,4 @@
+using ExtraSW.IDP.DbContexts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,8 +22,10 @@ namespace Spots.APIs
             using (var scope = host.Services.CreateScope())
             {
                 var spotsContext = scope.ServiceProvider.GetService<SpotsContext>();
+                var identityContext = scope.ServiceProvider.GetService<IdentityDbContext>();
                 // workshopcontext.Database.EnsureDeleted();
                 spotsContext.Database.Migrate();
+                identityContext.Database.Migrate();
             }
             host.Run();
         }
