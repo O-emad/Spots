@@ -63,19 +63,25 @@ namespace ExtraSW.IDP
             new Client[]
             {   new Client
             {
+                AccessTokenLifetime = 1200,
+                AllowOfflineAccess = true,
+                UpdateAccessTokenClaimsOnRefresh = true,
                 ClientName = "Admin Panel",
                 ClientId = "adminpanelclient",
                 AllowedGrantTypes = GrantTypes.Code,
                 RequirePkce = true,
+                RequireConsent = false,
                 RedirectUris = new List<string>()
                 {
                     "https://localhost:44343/signin-oidc"
-                    //"http://localhost:57749/signin-oidc"
+                    //"https://www.rokiba.com/signin-oidc",
+                    //"https://rokiba.com/signin-oidc"
                 },
                 PostLogoutRedirectUris = new List<string>()
                 {
                     "https://localhost:44343/signout-callback-oidc"
-                    //"http://localhost:57749/signout-callback-oidc"
+                    //"https://www.rokiba.com/signout-callback-oidc",
+                    //"https://rokiba.com/signout-callback-oidc"
                 },
                 AllowedScopes =
                 {
@@ -89,7 +95,7 @@ namespace ExtraSW.IDP
                 {
                     new Secret("secret".Sha256())
                 }
-                
+
             }
             };
     }

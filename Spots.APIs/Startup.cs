@@ -30,6 +30,10 @@ namespace Spots.APIs
         }
         public void ConfigureServices(IServiceCollection services)
         {
+            //var apiConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_api;User Id=db_a707a9_api_admin;Password=msicx611";
+            //var idpConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_idp;User Id=db_a707a9_idp_admin;Password=msicx611";
+            var apiConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SpotsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            var idpConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ExtraSwIdpDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             services.AddControllers(opt =>
             {
                 opt.ReturnHttpNotAcceptable = true;
@@ -39,13 +43,15 @@ namespace Spots.APIs
                 } );
             services.AddDbContext<SpotsContext>(opt =>
             {
-                opt.UseSqlServer(configuration[SpotsConfig.ConnectionStringKey.Replace("__", ":")]
+                //opt.UseSqlServer(configuration[SpotsConfig.ConnectionStringKey.Replace("__", ":")]
+                //   )
+                opt.UseSqlServer(apiConnectionString
                    )
                 .EnableSensitiveDataLogging();
             });
             services.AddDbContext<IdentityDbContext>(opt =>
             {
-                opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ExtraSwIdpDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+                opt.UseSqlServer(idpConnectionString
                    )
                 .EnableSensitiveDataLogging();
             });
@@ -56,7 +62,10 @@ namespace Spots.APIs
                 .AddIdentityServerAuthentication(o =>
                 {
                     o.ApiName = "categoryapicollection";
-                    o.Authority = "https://localhost:5001/";
+                    //in development
+                     o.Authority = "https://localhost:5001/";
+                    //in production
+                    //o.Authority = "https://idp.rokiba.com";
                 });
         }
 

@@ -50,6 +50,7 @@ namespace AdminPanel
             services.AddHttpClient("APIClient", client =>
             {
                 client.BaseAddress = new Uri("https://localhost:44308");
+                //client.BaseAddress = new Uri("https://api.rokiba.com");
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add(Microsoft.Net.Http.Headers.HeaderNames.Accept, "application/json");
             }).AddHttpMessageHandler<BearerTokenHandler>();
@@ -57,17 +58,19 @@ namespace AdminPanel
             services.AddHttpClient("IDPClient", client =>
             {
                 client.BaseAddress = new Uri("https://localhost:5001");
+                //client.BaseAddress = new Uri("https://idp.rokiba.com");
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add(Microsoft.Net.Http.Headers.HeaderNames.Accept, "application/json");
             });
 
 
-            services.AddHttpClient("IDPAPIClient", client =>
-            {
-                client.BaseAddress = new Uri("https://localhost:5001");
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Add(Microsoft.Net.Http.Headers.HeaderNames.Accept, "application/json");
-            }).AddHttpMessageHandler<BearerTokenHandler>();
+            //services.AddHttpClient("IDPAPIClient", client =>
+            //{
+            //    // client.BaseAddress = new Uri("https://localhost:5001");
+            //    client.BaseAddress = new Uri("https://idp.rokiba.com");
+            //    client.DefaultRequestHeaders.Clear();
+            //    client.DefaultRequestHeaders.Add(Microsoft.Net.Http.Headers.HeaderNames.Accept, "application/json");
+            //}).AddHttpMessageHandler<BearerTokenHandler>();
 
             services.AddAuthentication(options =>
             {
@@ -83,6 +86,7 @@ namespace AdminPanel
                 //o.RequireHttpsMetadata = false;
                 o.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 o.Authority = "https://localhost:5001";
+                //o.Authority = "https://idp.rokiba.com";
                 o.ClientId = "adminpanelclient";
                 o.ResponseType = "code";
                 //o.Scope.Add("openid");
@@ -90,12 +94,13 @@ namespace AdminPanel
                 o.Scope.Add("roles");
                 o.Scope.Add("categoryapi");
                 o.Scope.Add("idpapi");
+                o.UsePkce = true;
                 //o.ClaimActions.Remove("nbf");
                 o.ClaimActions.MapUniqueJsonKey("role", "role");
-                o.ClaimActions.DeleteClaim("sid");
-                o.ClaimActions.DeleteClaim("idp");
-                o.ClaimActions.DeleteClaim("s_hash");
-                o.ClaimActions.DeleteClaim("auth_time");
+                //o.ClaimActions.DeleteClaim("sid");
+                //o.ClaimActions.DeleteClaim("idp");
+                //o.ClaimActions.DeleteClaim("s_hash");
+                //o.ClaimActions.DeleteClaim("auth_time");
                 o.SaveTokens = true;
                 o.ClientSecret = "secret";
                 o.GetClaimsFromUserInfoEndpoint = true;
@@ -120,7 +125,7 @@ namespace AdminPanel
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();

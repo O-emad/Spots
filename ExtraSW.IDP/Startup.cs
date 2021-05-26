@@ -4,6 +4,7 @@
 
 using ExtraSW.IDP.DbContexts;
 using IdentityServer4.AccessTokenValidation;
+using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServerHost.Quickstart.UI;
 using Marvin.IDP.Services;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
 
 namespace ExtraSW.IDP
 {
@@ -26,6 +28,8 @@ namespace ExtraSW.IDP
 
         public void ConfigureServices(IServiceCollection services)
         {
+            //var connectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_idp;User Id=db_a707a9_idp_admin;Password=msicx611";
+            var connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ExtraSwIdpDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             // uncomment, if you want to add an MVC-based UI
             services.AddControllersWithViews()
                 .AddJsonOptions(opts => {
@@ -34,7 +38,7 @@ namespace ExtraSW.IDP
 
             services.AddDbContext<IdentityDbContext>(opt =>
             {
-                opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ExtraSwIdpDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+                opt.UseSqlServer(connectionString
                    )
                 .EnableSensitiveDataLogging();
             });
@@ -56,7 +60,14 @@ namespace ExtraSW.IDP
             builder.AddProfileService<LocalUserProfileService>();
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
-
+            var migrationAssembly = typeof(Startup)
+                .GetTypeInfo().Assembly.GetName().Name;
+            builder.AddOperationalStore(o =>
+            {
+                o.ConfigureDbContext = builder =>
+                builder.UseSqlServer(connectionString,
+                option => option.MigrationsAssembly(migrationAssembly));
+            });
             //services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
             //    .AddIdentityServerAuthentication(o =>
             //    {
@@ -71,7 +82,7 @@ namespace ExtraSW.IDP
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            InitializeDatabase(app);
             // uncomment if you want to add MVC
             app.UseStaticFiles();
             app.UseRouting();
@@ -84,6 +95,18 @@ namespace ExtraSW.IDP
             {
                 endpoints.MapDefaultControllerRoute();
             });
+        }
+
+
+
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices
+                .GetService<IServiceScopeFactory>().CreateScope())
+            {
+                serviceScope.ServiceProvider
+                    .GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+            }
         }
     }
 }
