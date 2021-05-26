@@ -38,6 +38,12 @@
 
 
             <footer class="card-footer text-right">
+                @if (User.IsInRole("Admin") && Model.Offer.OfferApproved == false)
+                {
+                    <a class="btn btn-primary" asp-action="AcceptOffer" asp-route-id=@Model.Offer.Id
+                       asp-route-vendorId =@Model.Offer.VendorId>Accept</a>
+                }
+
                 <a class="btn btn-secondary" asp-action="ListOffer" asp-route-id=@Model.Offer.VendorId>Return</a>
                 <button class="btn btn-primary btn-danger" type="button" href="#"
                         data-target="#ineditdelete" data-toggle="modal">

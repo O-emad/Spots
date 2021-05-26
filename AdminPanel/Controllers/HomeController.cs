@@ -1,4 +1,5 @@
 ﻿using AdminPanel.Models;
+using AdminPanel.ViewModels;
 //using ExtraSW.IDP.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Spots.Domain;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,24 +23,94 @@ namespace AdminPanel.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IHttpClientFactory clientFactory;
+        private readonly IHttpClientFactory httpClientFactory;
 
-        public HomeController(ILogger<HomeController> logger , IHttpClientFactory clientFactory)
+        public HomeController(ILogger<HomeController> logger , IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
-            this.clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
+            this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
         public async Task<IActionResult> Index()
         {
             ViewData["home"] = "active";
             await WriteOutIdentityInformation();
+            var vm = new HomeIndexViewModel();
+            var httpClient = httpClientFactory.CreateClient("APIClient");
 
-           
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"api/ad?includeAll=true");
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
+            response.EnsureSuccessStatusCode();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer
+                    .DeserializeAsync<DeserializedResponseModel<Ad>>(responseStream);
+                vm.AdsCount = deserializedResponse.Data.Count();
+            }
 
+            request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"api/category?includeAll=true");
+            response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-            return View();
+            response.EnsureSuccessStatusCode();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer
+                    .DeserializeAsync<DeserializedResponseModel<Category>>(responseStream);
+                vm.CategoriesCount = deserializedResponse.Data.Count();
+            }
+
+            request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"api/vendor?includeAll=true");
+            response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+            var vendors = new List<Vendor>();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer
+                    .DeserializeAsync<DeserializedResponseModel<Vendor>>(responseStream);
+                vm.VendorsCount = deserializedResponse.Data.Count();
+                vendors = deserializedResponse.Data;
+            }
+
+            request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"api/pendingoffer");
+            response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+            var offers = new List<Offer>();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer
+                    .DeserializeAsync<DeserializedResponseModel<Offer>>(responseStream);
+                offers = deserializedResponse.Data;
+            }
+
+            var query = from offer in offers
+                        join vendor in vendors
+                        on offer.VendorId equals vendor.Id
+                        select new OfferAcceptanceModel()
+                        {
+                            OfferId = offer.Id,
+                            VendorId = vendor.Id,
+                            OfferTitle = offer.Title,
+                            VendorName = vendor.Name
+                        };
+
+            vm.PendingOffers = query.ToList();
+
+            return View(vm);
         }
 
         public IActionResult Privacy()

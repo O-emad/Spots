@@ -43,8 +43,11 @@ namespace AdminPanel.Controllers
             }
         }
 
-        public async Task<IActionResult> GetSingleOffer(Guid id, Guid vendorId)
+        public async Task<IActionResult> GetSingleOffer(Guid id, Guid vendorId, bool toDash = false)
         {
+
+                TempData["todash"] = toDash;
+
             ViewData["vendor"] = "active";
             var httpClient = clientFactory.CreateClient("APIClient");
             var request = new HttpRequestMessage(
@@ -138,5 +141,27 @@ namespace AdminPanel.Controllers
             TempData["Type"] = "alert-success";
             return RedirectToAction("ListOffer", "Offer", new { id = vendorId });
         }
+
+        public async Task<IActionResult> AcceptOffer(Guid id, Guid vendorId)
+        {
+            var httpClient = clientFactory.CreateClient("APIClient");
+            var request = new HttpRequestMessage(
+                HttpMethod.Put,
+                $"/api/pendingoffer/{id}");
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            TempData["CUD"] = true;
+            TempData["Message"] = "Offer Accepted Successfully";
+            TempData["Type"] = "alert-success";
+            if (TempData.ContainsKey("todash"))
+            {
+                if ((bool)TempData["todash"] == true)
+                    return RedirectToAction("Index", "Home");
+            }
+            return RedirectToAction("ListOffer", "Offer", new { id = vendorId });
+
+        }
+
     }
 }

@@ -194,14 +194,22 @@ namespace Spots.Services
 
         public IEnumerable<Offer> GetOffersForVendor(Guid vendorId)
         {
-            return context.Offers.Where(o => o.VendorId == vendorId && o.OfferApproved == true);
+            return context.Offers.Where(o => o.VendorId == vendorId);
 
+        }
+        public IEnumerable<Offer> GetPendingOffers()
+        {
+            return context.Offers.Where(o => o.OfferApproved == false);
+        }
+
+        public Offer GetSingleOfferById(Guid id)
+        {
+            return context.Offers.FirstOrDefault(o => o.Id == id);
         }
 
         public Offer GetOfferById(Guid vendorId, Guid offerId)
         {
-            return context.Offers.Where(o => o.VendorId == vendorId &&
-            o.OfferApproved == true && o.Id == offerId).FirstOrDefault();
+            return context.Offers.Where(o => o.VendorId == vendorId && o.Id == offerId).FirstOrDefault();
         }
 
         public void AddOffer(Guid vendorId, Offer offer)

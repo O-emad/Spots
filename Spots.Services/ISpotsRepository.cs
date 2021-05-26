@@ -27,6 +27,8 @@ namespace Spots.Services
         bool VendorExists(Guid vendorId);
 
         IEnumerable<Offer> GetOffersForVendor(Guid vendorId);
+        IEnumerable<Offer> GetPendingOffers();
+        Offer GetSingleOfferById(Guid id);
         Offer GetOfferById(Guid vendorId, Guid offerId);
         void AddOffer(Guid vendorId, Offer offer);
         void DeleteOffer(Offer offer);
