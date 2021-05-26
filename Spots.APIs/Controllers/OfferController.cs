@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Spots.Domain;
 using Spots.DTO;
 using Spots.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,11 +23,13 @@ namespace Spots.APIs.Controllers
     {
         private readonly ISpotsRepositroy repositroy;
         private readonly IMapper mapper;
+        private readonly IWebHostEnvironment hostEnvironment;
 
-        public OfferController(ISpotsRepositroy repositroy, IMapper mapper)
+        public OfferController(ISpotsRepositroy repositroy, IMapper mapper, IWebHostEnvironment hostEnvironment)
         {
             this.repositroy = repositroy ?? throw new ArgumentNullException(nameof(repositroy));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.hostEnvironment = hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
         }
 
         [HttpGet]
@@ -75,6 +80,23 @@ namespace Spots.APIs.Controllers
                 return NotFound($"Vendor {vendorId} does not exist");
             }
             var _offer = mapper.Map<Offer>(offer);
+            if (offer.Bytes != null)
+            {
+                // get this environment's web root path (the path
+                // from which static content, like an image, is served)
+                var webRootPath = hostEnvironment.WebRootPath;
+
+                // create the filename
+                string fileName = Guid.NewGuid().ToString() + ".jpg";
+
+                // the full file path
+                var filePath = Path.Combine($"{webRootPath}/images/{fileName}");
+
+                // write bytes and auto-close stream
+                System.IO.File.WriteAllBytes(filePath, offer.Bytes);
+                // fill out the filename
+                _offer.FileName = fileName;
+            }
             repositroy.AddOffer(vendorId,_offer);
             repositroy.Save();
 

@@ -1,4 +1,4 @@
-﻿@model  AdminPanel.ViewModels.SingleOfferViewModel
+﻿@model AdminPanel.ViewModels.SingleOfferViewModel
 
 <main class="main-container">
     <div class="main-content">
@@ -10,6 +10,11 @@
             <div class="card-body form-type-combine">
                 <div class="row">
                     <div class="col-12">
+                        <div class="col-md-4">
+                            <Label>Offer Image</Label>
+                            <img src="@("https://localhost:44308/images/" + Model.Offer.FileName)" class="rounded">
+                        </div>
+                        <hr />
                         <div class="form-group">
                             <label asp-for="Offer.Title"></label>
                             <input type="text" class="form-control" asp-for="Offer.Title" readonly disabled>
@@ -41,7 +46,7 @@
                 @if (User.IsInRole("Admin") && Model.Offer.OfferApproved == false)
                 {
                     <a class="btn btn-primary" asp-action="AcceptOffer" asp-route-id=@Model.Offer.Id
-                       asp-route-vendorId =@Model.Offer.VendorId>Accept</a>
+                       asp-route-vendorId=@Model.Offer.VendorId>Accept</a>
                 }
 
                 <a class="btn btn-secondary" asp-action="ListOffer" asp-route-id=@Model.Offer.VendorId>Return</a>
@@ -54,8 +59,8 @@
     </div>
 
 
-    <div  asp-action="DeleteOffer"  class="modal fade" id="ineditdelete"
-          tabindex="-1" style="display: none;" aria-hidden="true">
+    <div asp-action="DeleteOffer" class="modal fade" id="ineditdelete"
+         tabindex="-1" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
@@ -70,7 +75,7 @@
                 <div class="modal-footer" id="sdsd">
                     <button type="button" class="btn btn-bold btn-pure btn-secondary" data-dismiss="modal">Cancel</button>
                     <a id="submitdelete" asp-action="DeleteOffer"
-                            asp-route-id="@Model.Offer.Id" asp-route-vendorId =@Model.Offer.VendorId class="btn btn-bold btn-pure btn-primary">
+                       asp-route-id="@Model.Offer.Id" asp-route-vendorId=@Model.Offer.VendorId class="btn btn-bold btn-pure btn-primary">
                         Delete
                     </a>
                 </div>

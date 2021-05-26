@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Spots.Domain;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace AdminPanel.ViewModels
         public Guid VendorId { get; set; }
         public string VendorName { get; set; }
         public OfferForCreation Offer { get; set; }
+        public List<IFormFile> Files { get; set; } = new List<IFormFile>();
 
         public List<SelectListItem> SelectList { get; set; } = new List<SelectListItem>()
         {

@@ -2,10 +2,13 @@
 using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using Spots.Domain;
 using Spots.DTO;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -83,6 +86,38 @@ namespace AdminPanel.Controllers
             offerForCreation.Value = offerCreate.Offer.Value;
             offerForCreation.Type = (offerCreate.Offer.Type == "1") ? OfferValueType.Percentage : OfferValueType.Value;
 
+            var imageFile = offerCreate.Files.FirstOrDefault();
+
+            try
+            {
+                if (imageFile.Length > 0)
+                {
+                    using (var fileStream = imageFile.OpenReadStream())
+                    {
+                        using (var image = Image.Load(imageFile.OpenReadStream()))
+                        {
+                            image.Mutate(h => h.Resize(300, 300));
+                            using (var ms = new MemoryStream())
+                            {
+                                image.SaveAsJpeg(ms);
+                                offerForCreation.Bytes = ms.ToArray();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                if (e.GetType() == typeof(UnknownImageFormatException))
+                {
+                    TempData["Type"] = "alert-danger";
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Action Failed : Bad Image Format";
+                    return RedirectToAction("index");
+                }
+                if (!(e.GetType() == typeof(NullReferenceException)))
+                    throw;
+            }
             var httpClient = clientFactory.CreateClient("APIClient");
 
             var serializedOfferForCreation = JsonSerializer.Serialize(offerForCreation);
