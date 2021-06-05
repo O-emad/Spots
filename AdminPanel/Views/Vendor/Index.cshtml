@@ -77,6 +77,8 @@
                                        asp-route-id=@item.Id>
                                         <i class="ti-pencil"></i>
                                     </a>
+                                    @if (User.IsInRole("Admin"))
+                                    {
                                     <a id="deletebutton"
                                        class="table-action hover-danger"
                                        data-target="#modal-small" data-toggle="modal"
@@ -84,6 +86,7 @@
                                        onclick="onDelete(this.name)">
                                         <i class="ti-trash"></i>
                                     </a>
+                                    }
                                 </td>
                             </tr>
                         }

@@ -34,7 +34,11 @@ namespace AdminPanel.Controllers
         public async Task<IActionResult> Index()
         {
             ViewData["home"] = "active";
-            await WriteOutIdentityInformation();
+            //await WriteOutIdentityInformation();
+            if (User.IsInRole("Vendor"))
+            {
+                return View(new HomeIndexViewModel());
+            }
             var vm = new HomeIndexViewModel();
             var httpClient = httpClientFactory.CreateClient("APIClient");
 

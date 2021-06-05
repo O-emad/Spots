@@ -88,6 +88,7 @@ namespace AdminPanel.Controllers
                 SortOrder = VendorCreate.SortOrder,
                 CloseAt = VendorCreate.CloseAt,
                 OpenAt = VendorCreate.OpenAt,
+                Description = VendorCreate.Description
             };
 
             // take the first (only) file in the Files list
@@ -285,6 +286,7 @@ namespace AdminPanel.Controllers
                 SortOrder = VendorEdit.SortOrder,
                 CloseAt = VendorEdit.CloseAt,
                 OpenAt = VendorEdit.OpenAt,
+                Description = VendorEdit.Description,
                 Categories = newSelectedCategories
             };
 

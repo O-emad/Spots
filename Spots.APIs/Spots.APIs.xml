@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Spots.APIs</name>
+    </assembly>
+    <members>
+        <member name="M:Spots.APIs.Controllers.CategoryController.GetCategories(Spots.Services.ResourceParameters.IndexResourceParameters)">
+            <summary>
+            Get all categories
+            </summary>
+        </member>
+        <member name="M:Spots.APIs.Controllers.CategoryController.GetCategoryById(System.Guid)">
+            <summary>
+            Get a category by its id
+            </summary>
+            <param name="id">The id of the category you want to get</param>
+            <returns>a CategoryDto</returns>
+        </member>
+    </members>
+</doc>

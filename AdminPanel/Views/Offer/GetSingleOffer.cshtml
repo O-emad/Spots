@@ -12,7 +12,8 @@
                     <div class="col-12">
                         <div class="col-md-4">
                             <Label>Offer Image</Label>
-                            <img src="@("https://localhost:44308/images/" + Model.Offer.FileName)" class="rounded">
+                            @*<img src="@("https://localhost:44308/images/" + Model.Offer.FileName)" class="rounded">*@
+                            <img src="@("https://api.rokiba.com/images/" + Model.Offer.FileName)" class="rounded">
                         </div>
                         <hr />
                         <div class="form-group">

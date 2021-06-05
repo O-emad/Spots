@@ -18,6 +18,7 @@ using System.Text.Json;
 
 namespace Spots.APIs.Controllers
 {
+    [Produces("application/json")]
     [ApiController]
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
@@ -33,7 +34,12 @@ namespace Spots.APIs.Controllers
             this.hostEnvironment = hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
         }
 
+        /// <summary>
+        /// Get all categories
+        /// </summary>
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Category>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet(Name = "GetCategories")]
         public IActionResult GetCategories([FromQuery] IndexResourceParameters categoryParameters)
         {
@@ -77,7 +83,16 @@ namespace Spots.APIs.Controllers
             });
         }
 
+
+        /// <summary>
+        /// Get a category by its id
+        /// </summary>
+        /// <param name="id">The id of the category you want to get</param>
+        /// <returns>a CategoryDto</returns>
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("{id}", Name = "GetCategory")]
         public IActionResult GetCategoryById(Guid id)
         {

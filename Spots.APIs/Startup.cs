@@ -13,7 +13,9 @@ using Spots.Data;
 using Spots.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Spots.APIs
@@ -30,10 +32,10 @@ namespace Spots.APIs
         }
         public void ConfigureServices(IServiceCollection services)
         {
-            //var apiConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_api;User Id=db_a707a9_api_admin;Password=msicx611";
-            //var idpConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_idp;User Id=db_a707a9_idp_admin;Password=msicx611";
-            var apiConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SpotsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            var idpConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ExtraSwIdpDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            var apiConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_api;User Id=db_a707a9_api_admin;Password=msicx611";
+            var idpConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_idp;User Id=db_a707a9_idp_admin;Password=msicx611";
+            //var apiConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SpotsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            //var idpConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ExtraSwIdpDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             services.AddControllers(opt =>
             {
                 opt.ReturnHttpNotAcceptable = true;
@@ -63,10 +65,27 @@ namespace Spots.APIs
                 {
                     o.ApiName = "categoryapicollection";
                     //in development
-                     o.Authority = "https://localhost:5001/";
+                    //o.Authority = "https://localhost:5001/";
                     //in production
-                    //o.Authority = "https://idp.rokiba.com";
+                    o.Authority = "https://idp.rokiba.com";
+                    
                 });
+
+            services.AddSwaggerGen(setupAction =>
+            {
+                setupAction.SwaggerDoc("SpotsOpenAPISpecification",
+                    new Microsoft.OpenApi.Models.OpenApiInfo()
+                    {
+                        Title = "Spots API",
+                        Version = "1"
+                    });
+
+                var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+
+                setupAction.IncludeXmlComments(xmlCommentsFullPath);
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,6 +107,13 @@ namespace Spots.APIs
                 });
             }
             app.UseHttpsRedirection();
+            app.UseSwagger();
+            app.UseSwaggerUI(setupAction =>
+            {
+                setupAction.SwaggerEndpoint("/swagger/SpotsOpenAPISpecification/swagger.json",
+                    "Spots API");
+                setupAction.RoutePrefix = "";
+            });
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();

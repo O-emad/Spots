@@ -150,7 +150,8 @@ namespace Spots.Services
             if (!string.IsNullOrWhiteSpace(vendorParameters.SearchQuery))
             {
                 var searchQuery = vendorParameters.SearchQuery.Trim();
-                collection = collection.Where(c => c.Name.Contains(searchQuery));
+                collection = collection.Where(c => c.Name.Contains(searchQuery)
+                                                || c.Description.Contains(searchQuery));
             }
 
             #endregion

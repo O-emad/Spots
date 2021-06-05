@@ -13,8 +13,10 @@
                                 <div>
                                     <Label>Ad Image</Label>
                                 </div>
+
+                                @*<img src="@("https://localhost:44308/images/" + Model.FileName)" class="rounded">*@
+                                <img src="@("https://api.rokiba.com/images/" + Model.FileName)" class="rounded">
                                 
-                                <img src="@("https://localhost:44308/images/" + Model.FileName)" class="rounded">
                                 <hr>
                                 <label>Upload New Profile Image</label>
                                 <div class="input-group file-group">

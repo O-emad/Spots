@@ -18,6 +18,7 @@ namespace Spots.APIs.Controllers
 {
     [ApiController]
     [Route("api/vendor/{vendorId}/[controller]")]
+    [Produces("application/json")]
     [Authorize(Roles = "Admin ,Vendor")]
     public class OfferController : ControllerBase
     {
@@ -32,6 +33,8 @@ namespace Spots.APIs.Controllers
             this.hostEnvironment = hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Offer>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet]
         [AllowAnonymous]
         public IActionResult GetOffers(Guid vendorId)
@@ -52,6 +55,8 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpGet("{id}", Name = "GetOffer")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OfferDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         public IActionResult GetOffer(Guid vendorId, Guid id)
         {

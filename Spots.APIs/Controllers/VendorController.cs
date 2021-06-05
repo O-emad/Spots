@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 
 namespace Spots.APIs.Controllers
 {
+    [Produces("application/json")]
     [ApiController]
     [Route("api/[controller]")]
     public class VendorController : ControllerBase
@@ -34,6 +35,8 @@ namespace Spots.APIs.Controllers
         }
 
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Vendor>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet(Name = "GetVendors")]
         public IActionResult GetVendors([FromQuery] IndexResourceParameters vendorParameters)
         {
@@ -83,6 +86,8 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpGet("{id}", Name = "GetVendor")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Vendor))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         public IActionResult GetVendorById(Guid id, bool includeOffer = false)
         {
@@ -220,6 +225,7 @@ namespace Spots.APIs.Controllers
                 _vendor.OpenAt = vendor.OpenAt;
                 _vendor.CloseAt = vendor.CloseAt;
                 _vendor.SortOrder = vendor.SortOrder;
+                _vendor.Description = vendor.Description;
                 if(!string.IsNullOrWhiteSpace(vendor.OwnerId))
                     _vendor.OwnerId = vendor.OwnerId;
             }

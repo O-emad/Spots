@@ -18,9 +18,10 @@ using System.Threading.Tasks;
 
 namespace Spots.APIs.Controllers
 {
+    [Produces("application/json")]
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class AdController : ControllerBase
     {
         private readonly IMapper mapper;
@@ -35,6 +36,9 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpGet(Name = "GetAds")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Ad>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [AllowAnonymous]
         public IActionResult GetAds([FromQuery] IndexResourceParameters adParameters)
         {
             var ads = repositroy.GetAds(adParameters);
@@ -78,6 +82,9 @@ namespace Spots.APIs.Controllers
 
 
         [HttpGet("{id}", Name = "GetAd")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AdDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [AllowAnonymous]
         public IActionResult GetAd(Guid id)
         {
             if (repositroy.AdExists(id))
@@ -104,6 +111,7 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateAd([FromBody]AdForCreationDto ad)
         {
             var response = new ResponseModel();
@@ -184,6 +192,7 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteAd(Guid id)
         {
             var response = new ResponseModel();
@@ -207,6 +216,7 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateAd(Guid id, [FromBody] AdForUpdateDto ad,
             [FromQuery] bool imageChanged = false)
         {

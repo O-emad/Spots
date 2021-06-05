@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Spots.Domain;
 using Spots.DTO;
@@ -11,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace Spots.APIs.Controllers
 {
+    [Produces("application/json")]
     [ApiController]
     [Route("api/vendor/{vendorId}/[controller]")]
     public class ReviewController : ControllerBase
@@ -25,6 +28,9 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ReviewDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [AllowAnonymous]
         public IActionResult GetReviews(Guid vendorId)
         {
             if (!repositroy.VendorExists(vendorId))
@@ -46,6 +52,7 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpPost]
+
         public IActionResult AddReview(Guid vendorId, [FromBody] ReviewForCreationDto review)
         {
             if (!repositroy.VendorExists(vendorId))
