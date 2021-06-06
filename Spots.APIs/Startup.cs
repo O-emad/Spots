@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Spots.APIs
@@ -32,17 +33,25 @@ namespace Spots.APIs
         }
         public void ConfigureServices(IServiceCollection services)
         {
-            var apiConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_api;User Id=db_a707a9_api_admin;Password=msicx611";
-            var idpConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_idp;User Id=db_a707a9_idp_admin;Password=msicx611";
-            //var apiConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SpotsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            //var idpConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ExtraSwIdpDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            //var apiConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_api;User Id=db_a707a9_api_admin;Password=msicx611";
+           // var idpConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_idp;User Id=db_a707a9_idp_admin;Password=msicx611";
+            var apiConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SpotsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            var idpConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ExtraSwIdpDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             services.AddControllers(opt =>
             {
                 opt.ReturnHttpNotAcceptable = true;
-            })
-                .AddJsonOptions(opts => {
-                    opts.JsonSerializerOptions.PropertyNamingPolicy = null;
-                } );
+            }).AddNewtonsoftJson(setupAction =>
+            {
+                setupAction.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                setupAction.SerializerSettings.ContractResolver = new DefaultContractResolver()
+                {
+                    NamingStrategy = new DefaultNamingStrategy()
+                };
+            });
+                //.AddJsonOptions(opts => {
+                //    opts.JsonSerializerOptions.PropertyNamingPolicy = null;
+                //    //opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                //} );
             services.AddDbContext<SpotsContext>(opt =>
             {
                 //opt.UseSqlServer(configuration[SpotsConfig.ConnectionStringKey.Replace("__", ":")]
@@ -65,9 +74,9 @@ namespace Spots.APIs
                 {
                     o.ApiName = "categoryapicollection";
                     //in development
-                    //o.Authority = "https://localhost:5001/";
+                    o.Authority = "https://localhost:5001/";
                     //in production
-                    o.Authority = "https://idp.rokiba.com";
+                    //o.Authority = "https://idp.rokiba.com";
                     
                 });
 

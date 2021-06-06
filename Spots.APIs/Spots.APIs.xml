@@ -9,7 +9,7 @@
             Get all categories
             </summary>
         </member>
-        <member name="M:Spots.APIs.Controllers.CategoryController.GetCategoryById(System.Guid)">
+        <member name="M:Spots.APIs.Controllers.CategoryController.GetCategoryById(System.Guid,System.Boolean)">
             <summary>
             Get a category by its id
             </summary>

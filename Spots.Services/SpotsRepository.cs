@@ -36,6 +36,8 @@ namespace Spots.Services
             }
 
             var collection = context.Categories as IQueryable<Category>;
+            
+            
 
             #region Filtering
 
@@ -55,13 +57,20 @@ namespace Spots.Services
             {
                 collection = collection.AsNoTracking();
             }
+
             return PagedList<Category>.Create(collection, categoryParameters.PageNumber
                 , categoryParameters.PageSize,categoryParameters.IncludeAll);
         }
 
-        public Category GetCategoryById(Guid categoryId)
+        public Category GetCategoryById(Guid categoryId, bool includeVendors)
         {
-            return context.Categories.Where(c => c.Id == categoryId).FirstOrDefault();
+            var category =  context.Categories as IQueryable<Category>;
+            category = category.Where(c => c.Id == categoryId);
+            if(includeVendors == true)
+            {
+                category = category.Include(c => c.Vendors);
+            }
+            return category.FirstOrDefault();
         }
 
         public Category GetCategoryByName(string name)

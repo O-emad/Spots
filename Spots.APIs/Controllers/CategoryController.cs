@@ -75,6 +75,7 @@ namespace Spots.APIs.Controllers
             Response.Headers.Add("MVC-Pagination",
                 JsonSerializer.Serialize(paginationForMVC));
 
+
             return Ok(new ResponseModel()
             {
                 StatusCode = StatusCodes.Status200OK,
@@ -90,25 +91,31 @@ namespace Spots.APIs.Controllers
         /// <param name="id">The id of the category you want to get</param>
         /// <returns>a CategoryDto</returns>
         [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryDto))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Category))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("{id}", Name = "GetCategory")]
-        public IActionResult GetCategoryById(Guid id)
+        public IActionResult GetCategoryById(Guid id, [FromQuery] bool includeVendors = false)
         {
+            var response = new ResponseModel();
             if (repositroy.CategoryExists(id))
             {
-                var category = repositroy.GetCategoryById(id);
-                return Ok(mapper.Map<CategoryDto>(category));
+                response.StatusCode = StatusCodes.Status200OK;
+                response.Message = "";
+                response.Data = repositroy.GetCategoryById(id, includeVendors);
+                return Ok(response);
             }
             else
             {
-                return NotFound();
+                response.StatusCode = StatusCodes.Status404NotFound;
+                response.Message = "Category not found";
+                return NotFound(response);
             }
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public IActionResult CreateCategory([FromBody] CategoryForCreationDto category)
         {
             var response = new ResponseModel();
@@ -131,12 +138,7 @@ namespace Spots.APIs.Controllers
 
 
             _category = mapper.Map<Category>(category);
-            if (!repositroy.CategoryExists(category.SuperCategoryId))
-            {
-                _category.SuperCategoryId = new Guid();
-            }
-
-            if(category.Bytes != null)
+            if (category.Bytes != null)
             {
                 // get this environment's web root path (the path
                 // from which static content, like an image, is served)
@@ -153,7 +155,18 @@ namespace Spots.APIs.Controllers
                 // fill out the filename
                 _category.FileName = fileName;
             }
-            repositroy.AddCategory(_category);
+            var superCategory = repositroy.GetCategoryById(category.SuperCategoryId, false);
+            if (superCategory == null)
+            {
+                _category.SuperCategoryId = Guid.Empty;
+                repositroy.AddCategory(_category);
+            }
+            else
+            {
+                _category.SuperCategoryId = category.SuperCategoryId;
+                repositroy.AddCategory(_category);
+                superCategory.SubCategories.Add(_category);
+            }
             repositroy.Save();
             var createdCategoryToReturn = mapper.Map<CategoryDto>(_category);
             response.StatusCode = StatusCodes.Status201Created;
@@ -163,7 +176,8 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public IActionResult UpdateCategory(Guid id, [FromBody] CategoryForUpdateDto category,
             [FromQuery] bool imageChanged = false)
         {
@@ -197,7 +211,7 @@ namespace Spots.APIs.Controllers
             }
             #endregion
 
-            _category = repositroy.GetCategoryById(id);
+            _category = repositroy.GetCategoryById(id,false);
             mapper.Map(category, _category);
 
             #region checkexistanceofsupercategory
@@ -250,11 +264,12 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public IActionResult DeleteCategory(Guid id)
         {
             var response = new ResponseModel();
-            var category = repositroy.GetCategoryById(id);
+            var category = repositroy.GetCategoryById(id,false);
             if (category == null)
             {
                 response.StatusCode = StatusCodes.Status404NotFound;
