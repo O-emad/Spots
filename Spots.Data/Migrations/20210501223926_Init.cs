@@ -14,14 +14,14 @@ namespace Spots.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SuperCategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Categories_Categories_SuperCategoryId",
-                        column: x => x.SuperCategoryId,
+                        column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -45,7 +45,7 @@ namespace Spots.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_SuperCategoryId",
                 table: "Categories",
-                column: "SuperCategoryId");
+                column: "CategoryId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

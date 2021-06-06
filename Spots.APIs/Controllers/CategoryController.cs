@@ -127,7 +127,7 @@ namespace Spots.APIs.Controllers
                 return BadRequest(response);
             }
 
-            var _category = repositroy.GetCategoryByNameAndSuperCategory(category.Name, category.SuperCategoryId);
+            var _category = repositroy.GetCategoryByNameAndSuperCategory(category.Name, category.CategoryId);
 
             if (_category != null)
             {
@@ -155,17 +155,17 @@ namespace Spots.APIs.Controllers
                 // fill out the filename
                 _category.FileName = fileName;
             }
-            var superCategory = repositroy.GetCategoryById(category.SuperCategoryId, false);
+            var superCategory = repositroy.GetCategoryById(category.CategoryId, false);
             if (superCategory == null)
             {
-                _category.SuperCategoryId = Guid.Empty;
+                _category.CategoryId = Guid.Empty;
                 repositroy.AddCategory(_category);
             }
             else
             {
-                _category.SuperCategoryId = category.SuperCategoryId;
+                _category.CategoryId = category.CategoryId;
                 repositroy.AddCategory(_category);
-                superCategory.SubCategories.Add(_category);
+                //superCategory.SubCategories.Add(_category);
             }
             repositroy.Save();
             var createdCategoryToReturn = mapper.Map<CategoryDto>(_category);
@@ -202,7 +202,7 @@ namespace Spots.APIs.Controllers
 
             //redefine this condition
             #region checkdublication
-            var _category = repositroy.GetCategoryByNameAndSuperCategory(category.Name, category.SuperCategoryId);
+            var _category = repositroy.GetCategoryByNameAndSuperCategory(category.Name, category.CategoryId);
             if (_category != null && _category.Id != id)
             {
                 response.StatusCode = StatusCodes.Status400BadRequest;
@@ -215,19 +215,19 @@ namespace Spots.APIs.Controllers
             mapper.Map(category, _category);
 
             #region checkexistanceofsupercategory
-            if (repositroy.CategoryExists(category.SuperCategoryId))
+            if (repositroy.CategoryExists(category.CategoryId))
             {
-                if(category.SuperCategoryId == id)
+                if(category.CategoryId == id)
                 {
                     response.StatusCode = StatusCodes.Status400BadRequest;
                     response.Message = $"SuperCategory cannot be the exact same category as child";
                     return BadRequest(response);
                 }
-                _category.SuperCategoryId = category.SuperCategoryId;
+                _category.CategoryId = category.CategoryId;
             }
             else
             {
-                _category.SuperCategoryId = Guid.Empty;
+                _category.CategoryId = Guid.Empty;
             }
             #endregion
 

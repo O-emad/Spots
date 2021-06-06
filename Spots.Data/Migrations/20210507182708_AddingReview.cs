@@ -16,7 +16,7 @@ namespace Spots.Data.Migrations
                 table: "Categories");
 
             migrationBuilder.AlterColumn<Guid>(
-                name: "SuperCategoryId",
+                name: "CategoryId",
                 table: "Categories",
                 type: "uniqueidentifier",
                 nullable: false,
@@ -47,7 +47,7 @@ namespace Spots.Data.Migrations
                 name: "Reviews");
 
             migrationBuilder.AlterColumn<Guid>(
-                name: "SuperCategoryId",
+                name: "CategoryId",
                 table: "Categories",
                 type: "uniqueidentifier",
                 nullable: true,
@@ -57,12 +57,12 @@ namespace Spots.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_SuperCategoryId",
                 table: "Categories",
-                column: "SuperCategoryId");
+                column: "CategoryId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Categories_Categories_SuperCategoryId",
                 table: "Categories",
-                column: "SuperCategoryId",
+                column: "CategoryId",
                 principalTable: "Categories",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);

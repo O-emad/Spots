@@ -82,7 +82,7 @@ namespace Spots.Services
         public Category GetCategoryByNameAndSuperCategory(string name, Guid superCategoryId)
         {
             return context.Categories.Where(c => c.Name == name 
-            && c.SuperCategoryId == superCategoryId).FirstOrDefault();
+            && c.CategoryId == superCategoryId).FirstOrDefault();
         }
 
         public void UpdateCategory(Guid categoryId, Category category)
@@ -100,7 +100,7 @@ namespace Spots.Services
 
         public bool IsSuperCategory(Guid categoryId)
         {
-            return context.Categories.Where(c => c.SuperCategoryId == categoryId).Any();
+            return context.Categories.Where(c => c.CategoryId == categoryId).Any();
         }
 
         #endregion

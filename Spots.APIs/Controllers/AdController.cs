@@ -125,7 +125,7 @@ namespace Spots.APIs.Controllers
 
 
             //check conflict state if required
-            //var _category = repositroy.GetCategoryByNameAndSuperCategory(category.Name, category.SuperCategoryId);
+            //var _category = repositroy.GetCategoryByNameAndSuperCategory(category.Name, category.CategoryId);
 
             //if (_category != null)
             //{

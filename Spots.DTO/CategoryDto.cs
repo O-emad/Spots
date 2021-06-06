@@ -13,6 +13,6 @@ namespace Spots.DTO
         public string NameAR { get; set; }
         public int SortOrder { get; set; }
         public string FileName { get; set; }
-        public Guid SuperCategoryId { get; set; }
+        public Guid CategoryId { get; set; }
     }
 }

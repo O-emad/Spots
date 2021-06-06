@@ -33,12 +33,12 @@ namespace Spots.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("SuperCategoryId")
+                    b.Property<Guid?>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SuperCategoryId");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Categories");
                 });
@@ -70,7 +70,7 @@ namespace Spots.Data.Migrations
                 {
                     b.HasOne("Spots.Domain.Category", "SuperCategory")
                         .WithMany()
-                        .HasForeignKey("SuperCategoryId");
+                        .HasForeignKey("CategoryId");
 
                     b.Navigation("SuperCategory");
                 });

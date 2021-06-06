@@ -106,7 +106,7 @@ namespace AdminPanel.Controllers
                 NameAR = categoryCreate.NameAR,
                 Name = categoryCreate.Name,
                 SortOrder = categoryCreate.SortOrder,
-                SuperCategoryId = categoryCreate.SuperCategoryId
+                CategoryId = categoryCreate.CategoryId
             };
 
             // take the first (only) file in the Files list
@@ -254,7 +254,7 @@ namespace AdminPanel.Controllers
                 NameAR = categoryEdit.NameAR,
                 Name = categoryEdit.Name,
                 SortOrder = categoryEdit.SortOrder,
-                SuperCategoryId = categoryEdit.SuperCategoryId
+                CategoryId = categoryEdit.CategoryId
             };
 
             // take the first (only) file in the Files list
