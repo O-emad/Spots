@@ -36,11 +36,23 @@ namespace Spots.Services
             }
 
             var collection = context.Categories as IQueryable<Category>;
-            
-            
+
+
 
             #region Filtering
-
+            if (!string.IsNullOrWhiteSpace(categoryParameters.FilterQuery))
+            {
+                var filterQuery = categoryParameters.FilterQuery.ToLower().Trim();
+                if(filterQuery == "level1")
+                {
+                    collection = collection.Where(c => c.CategoryId == null);
+                }
+                else if(filterQuery == "level2")
+                {
+                    collection = collection.Where(c => c.CategoryId == null).Include(c => c.Categories);
+                }
+                
+            }
             #endregion
 
             #region Searching

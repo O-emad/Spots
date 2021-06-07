@@ -26,7 +26,7 @@
                 <div class="form-group">
                     <label>Super Category</label>
                     <select asp-for="CategoryId" asp-items="@Model.Categories" class="form-control">
-                        <option value="@Guid.Empty">Select Parent Category</option>
+                        <option value="@null">None</option>
                     </select>
                 </div>
                 <div class="form-group">

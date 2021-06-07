@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Spots.Services.Helpers;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Spots.APIs.Controllers
 {
@@ -201,11 +202,36 @@ namespace Spots.APIs.Controllers
         {
             var response = new ResponseModel();
 
+            //check availability of parent category in the model
+            try
+            {
+                var parentCategoryExists = repositroy.CategoryExists(category.CategoryId.Value);
+                //if the repo returns null, then the given parent category id is invalid
+                if (!parentCategoryExists)
+                {
+                    ModelState.AddModelError("CategoryId",
+                        "The given parent category id doesn't exist");
+                }
+            }
+            catch (Exception e)
+            {
+                //check if the reason of exception is that the parent category is null
+                if (e.GetType() == typeof(InvalidOperationException))
+                {
+                    //if that's the case then we got nothing to do
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
             #region checkvalidityofmodel
             if (!ModelState.IsValid)
             {
                 response.StatusCode = StatusCodes.Status400BadRequest;
                 response.Message = "Invalid Category Format";
+                response.Data = ModelState;
                 return BadRequest(response);
             }
             #endregion
@@ -233,20 +259,20 @@ namespace Spots.APIs.Controllers
             mapper.Map(category, _category);
 
             #region checkexistanceofsupercategory
-            if (repositroy.CategoryExists(category.CategoryId))
-            {
-                if(category.CategoryId == id)
-                {
-                    response.StatusCode = StatusCodes.Status400BadRequest;
-                    response.Message = $"SuperCategory cannot be the exact same category as child";
-                    return BadRequest(response);
-                }
-                _category.CategoryId = category.CategoryId;
-            }
-            else
-            {
-                _category.CategoryId = Guid.Empty;
-            }
+            //if (repositroy.CategoryExists(category.CategoryId))
+            //{
+            //    if(category.CategoryId == id)
+            //    {
+            //        response.StatusCode = StatusCodes.Status400BadRequest;
+            //        response.Message = $"SuperCategory cannot be the exact same category as child";
+            //        return BadRequest(response);
+            //    }
+            //    _category.CategoryId = category.CategoryId;
+            //}
+            //else
+            //{
+            //    _category.CategoryId = Guid.Empty;
+            //}
             #endregion
 
             #region checkimagechange
