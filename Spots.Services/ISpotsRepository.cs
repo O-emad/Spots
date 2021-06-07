@@ -11,7 +11,7 @@ namespace Spots.Services
         PagedList<Category> GetCategories(IndexResourceParameters categoryParameters);
         Category GetCategoryById(Guid categoryId, bool includeVendors);
         Category GetCategoryByName(string name);
-        Category GetCategoryByNameAndSuperCategory(string name, Guid superCategoryId);
+        Category GetCategoryByNameAndSuperCategory(string name, Guid? superCategoryId);
         void AddCategory(Category category);
         void UpdateCategory(Guid categoryId, Category category);
         void DeleteCategory(Category category);

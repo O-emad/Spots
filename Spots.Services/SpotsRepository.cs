@@ -79,7 +79,7 @@ namespace Spots.Services
             return context.Categories.Where(c => c.Name == name).FirstOrDefault();
         }
 
-        public Category GetCategoryByNameAndSuperCategory(string name, Guid superCategoryId)
+        public Category GetCategoryByNameAndSuperCategory(string name, Guid? superCategoryId)
         {
             return context.Categories.Where(c => c.Name == name 
             && c.CategoryId == superCategoryId).FirstOrDefault();

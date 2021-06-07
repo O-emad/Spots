@@ -120,24 +120,51 @@ namespace Spots.APIs.Controllers
         {
             var response = new ResponseModel();
 
+            //check availability of parent category in the model
+            try
+            {
+                var parentCategoryExists = repositroy.CategoryExists(category.CategoryId.Value);
+                //if the repo returns null, then the given parent category id is invalid
+                if (!parentCategoryExists)
+                {
+                    ModelState.AddModelError("CategoryId",
+                        "The given parent category id doesn't exist");
+                }
+            }
+            catch(Exception e)
+            {
+                //check if the reason of exception is that the parent category is null
+                if(e.GetType() == typeof(InvalidOperationException))
+                {
+                    //if that's the case then we got nothing to do
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            
+            //check model state validity
             if (!ModelState.IsValid)
             {
                 response.StatusCode = StatusCodes.Status400BadRequest;
                 response.Message = "Invalid Category Format";
+                response.Data = ModelState;
                 return BadRequest(response);
             }
 
             var _category = repositroy.GetCategoryByNameAndSuperCategory(category.Name, category.CategoryId);
 
+            //check conflict with pre existing categories
             if (_category != null)
             {
                 response.StatusCode = StatusCodes.Status409Conflict;
                 response.Message = $"Category: {category.Name} already exists";
                 return Conflict(response);
             }
-
-
+            //map creation dto into an entity
             _category = mapper.Map<Category>(category);
+            //save the image if exists
             if (category.Bytes != null)
             {
                 // get this environment's web root path (the path
@@ -155,18 +182,9 @@ namespace Spots.APIs.Controllers
                 // fill out the filename
                 _category.FileName = fileName;
             }
-            var superCategory = repositroy.GetCategoryById(category.CategoryId, false);
-            if (superCategory == null)
-            {
-                _category.CategoryId = Guid.Empty;
-                repositroy.AddCategory(_category);
-            }
-            else
-            {
-                _category.CategoryId = category.CategoryId;
-                repositroy.AddCategory(_category);
-                //superCategory.SubCategories.Add(_category);
-            }
+
+
+            repositroy.AddCategory(_category);
             repositroy.Save();
             var createdCategoryToReturn = mapper.Map<CategoryDto>(_category);
             response.StatusCode = StatusCodes.Status201Created;

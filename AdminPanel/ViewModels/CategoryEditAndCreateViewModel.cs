@@ -17,7 +17,7 @@ namespace AdminPanel.ViewModels
         public string NameAR { get; set; }
         public int SortOrder { get; set; } = 0;
         public List<IFormFile> Files { get; set; } = new List<IFormFile>();
-        public Guid CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
 
         public List<SelectListItem> Categories { get; set; } = new List<SelectListItem>();
         public CategoryEditAndCreateViewModel()
@@ -29,7 +29,7 @@ namespace AdminPanel.ViewModels
             Id = category.Id;
             FileName = category.FileName;
             SortOrder = category.SortOrder;
-            CategoryId = category.CategoryId == null ? Guid.Empty : category.CategoryId.Value;
+            CategoryId = category.CategoryId ;
             Name = category.Name;
             NameAR = category.NameAR;
         }
