@@ -90,20 +90,23 @@ namespace Spots.APIs.Controllers
         /// Get a category by its id
         /// </summary>
         /// <param name="id">The id of the category you want to get</param>
-        /// <returns>a CategoryDto</returns>
+        /// <param name="includeSub">Query parameter to include the sub categories</param>
+        /// <param name="includeVendors">Query parameter to include the subscriped vendors</param>
+        /// <returns>a Category</returns>
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Category))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("{id}", Name = "GetCategory")]
-        public IActionResult GetCategoryById(Guid id, [FromQuery] bool includeVendors = false)
+        public IActionResult GetCategoryById(Guid id, [FromQuery] bool includeVendors = false,
+            [FromQuery] bool includeSub = false)
         {
             var response = new ResponseModel();
             if (repositroy.CategoryExists(id))
             {
                 response.StatusCode = StatusCodes.Status200OK;
                 response.Message = "";
-                response.Data = repositroy.GetCategoryById(id, includeVendors);
+                response.Data = repositroy.GetCategoryById(id, includeVendors, includeSub);
                 return Ok(response);
             }
             else
@@ -255,7 +258,7 @@ namespace Spots.APIs.Controllers
             }
             #endregion
 
-            _category = repositroy.GetCategoryById(id,false);
+            _category = repositroy.GetCategoryById(id,false,false);
             mapper.Map(category, _category);
 
             #region checkexistanceofsupercategory
@@ -313,7 +316,7 @@ namespace Spots.APIs.Controllers
         public IActionResult DeleteCategory(Guid id)
         {
             var response = new ResponseModel();
-            var category = repositroy.GetCategoryById(id,false);
+            var category = repositroy.GetCategoryById(id,false,false);
             if (category == null)
             {
                 response.StatusCode = StatusCodes.Status404NotFound;

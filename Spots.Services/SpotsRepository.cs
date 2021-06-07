@@ -74,13 +74,17 @@ namespace Spots.Services
                 , categoryParameters.PageSize,categoryParameters.IncludeAll);
         }
 
-        public Category GetCategoryById(Guid categoryId, bool includeVendors)
+        public Category GetCategoryById(Guid categoryId, bool includeVendors, bool includeSub)
         {
             var category =  context.Categories as IQueryable<Category>;
             category = category.Where(c => c.Id == categoryId);
             if(includeVendors == true)
             {
                 category = category.Include(c => c.Vendors);
+            }
+            if(includeSub == true)
+            {
+                category = category.Include(c => c.Categories);
             }
             return category.FirstOrDefault();
         }
