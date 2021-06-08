@@ -9,12 +9,14 @@
             Get all categories
             </summary>
         </member>
-        <member name="M:Spots.APIs.Controllers.CategoryController.GetCategoryById(System.Guid,System.Boolean)">
+        <member name="M:Spots.APIs.Controllers.CategoryController.GetCategoryById(System.Guid,System.Boolean,System.Boolean)">
             <summary>
             Get a category by its id
             </summary>
             <param name="id">The id of the category you want to get</param>
-            <returns>a CategoryDto</returns>
+            <param name="includeSub">Query parameter to include the sub categories</param>
+            <param name="includeVendors">Query parameter to include the subscriped vendors</param>
+            <returns>a Category</returns>
         </member>
     </members>
 </doc>

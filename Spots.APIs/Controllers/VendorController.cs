@@ -7,6 +7,7 @@ using Spots.Domain;
 using Spots.DTO;
 using Spots.Services;
 using Spots.Services.Helpers;
+using Spots.Services.Helpers.ResourceParameters;
 using Spots.Services.ResourceParameters;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace Spots.APIs.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Vendor>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet(Name = "GetVendors")]
-        public IActionResult GetVendors([FromQuery] IndexResourceParameters vendorParameters)
+        public IActionResult GetVendors([FromQuery] VendorResourceParameters vendorParameters)
         {
             if (User.IsInRole("Vendor"))
             {
@@ -316,7 +317,7 @@ namespace Spots.APIs.Controllers
             return NoContent();
         }
 
-        private string CreateVendorsResourceUri(IndexResourceParameters vendorsParameters,
+        private string CreateVendorsResourceUri(VendorResourceParameters vendorsParameters,
             ResourceUriType type)
         {
             switch (type)
@@ -326,21 +327,24 @@ namespace Spots.APIs.Controllers
                     {
                         pageNumber = vendorsParameters.PageNumber - 1,
                         pageSize = vendorsParameters.PageSize,
-                        seachQuery = vendorsParameters.SearchQuery
+                        seachQuery = vendorsParameters.SearchQuery,
+                        categoryId = vendorsParameters.CategoryId
                     });
                 case ResourceUriType.NextPage:
                     return Url.Link("GetCategories", new
                     {
                         pageNumber = vendorsParameters.PageNumber + 1,
                         pageSize = vendorsParameters.PageSize,
-                        seachQuery = vendorsParameters.SearchQuery
+                        seachQuery = vendorsParameters.SearchQuery,
+                        categoryId = vendorsParameters.CategoryId
                     });
                 default:
                     return Url.Link("GetCategories", new
                     {
                         pageNumber = vendorsParameters.PageNumber,
                         pageSize = vendorsParameters.PageSize,
-                        seachQuery = vendorsParameters.SearchQuery
+                        seachQuery = vendorsParameters.SearchQuery,
+                        categoryId = vendorsParameters.CategoryId
                     });
             }
         }

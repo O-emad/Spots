@@ -8,6 +8,7 @@ using Spots.Data;
 using Spots.Domain;
 using Spots.Services.Helpers;
 using Microsoft.EntityFrameworkCore;
+using Spots.Services.Helpers.ResourceParameters;
 
 namespace Spots.Services
 {
@@ -154,7 +155,7 @@ namespace Spots.Services
             return context.Vendors.Where(v => v.Name == name).FirstOrDefault();
         }
 
-        public PagedList<Vendor> GetVendors(IndexResourceParameters vendorParameters)
+        public PagedList<Vendor> GetVendors(VendorResourceParameters vendorParameters)
         {
             if (vendorParameters == null)
             {
@@ -170,6 +171,11 @@ namespace Spots.Services
                 collection = collection.Where(c => c.OwnerId == filterQuery);
             }
             #endregion
+            if (vendorParameters.CategoryId != Guid.Empty)
+            {
+                var categoryId = vendorParameters.CategoryId;
+                collection = collection.Where(c => c.Categories.Where(category=>category.Id == categoryId).Any());
+            }
 
             #region Searching
             if (!string.IsNullOrWhiteSpace(vendorParameters.SearchQuery))

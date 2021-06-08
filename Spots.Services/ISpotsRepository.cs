@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Spots.Services.ResourceParameters;
 using Spots.Domain;
 using Spots.Services.Helpers;
+using Spots.Services.Helpers.ResourceParameters;
 
 namespace Spots.Services
 {
@@ -18,7 +19,7 @@ namespace Spots.Services
         bool CategoryExists(Guid categoryId);
         bool IsSuperCategory(Guid categoryId);
 
-        PagedList<Vendor> GetVendors(IndexResourceParameters vendorParameters);
+        PagedList<Vendor> GetVendors(VendorResourceParameters vendorParameters);
         Vendor GetVendorById(Guid vendorId, bool includeOffer);
         Vendor GetVendorByName(string name);
         void AddVendor(Vendor vendor);
