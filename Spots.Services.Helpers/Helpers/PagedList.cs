@@ -15,14 +15,24 @@ namespace Spots.Services.Helpers
         public bool HasPrevious => (CurrentPage > 1);
         public bool HasNext => (CurrentPage < TotalPages);
 
+
+        public PagedList()
+        {
+
+        }
+        public PagedList(List<T> collection) : base(collection)
+        {
+
+        }
         public PagedList(List<T> items, int count, int pageNumber, int pageSize)
+            :base(items)
         {
             TotalCount = count;
             PageSize = pageSize;
             CurrentPage = pageNumber;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-            AddRange(items);
         }
+
 
         public static PagedList<T> Create(IQueryable<T> source, int pageNmber, int pageSize, bool includeAll)
         {

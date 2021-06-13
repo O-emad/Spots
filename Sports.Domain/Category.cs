@@ -12,6 +12,7 @@ namespace Spots.Domain
         [Required]
         [MaxLength(150)]
         public string Name { get; set; }
+        [MaxLength(150)]
         public string NameAR { get; set; }
         public int SortOrder { get; set; }
         [MaxLength(100)]

@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 using Spots.Services.Helpers;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Spots.Services.Helpers.ResourceParameters;
+using Microsoft.Extensions.Primitives;
 
 namespace Spots.APIs.Controllers
 {
@@ -39,12 +41,14 @@ namespace Spots.APIs.Controllers
         /// Get all categories
         /// </summary>
         [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Category>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CategoryDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet(Name = "GetCategories")]
-        public IActionResult GetCategories([FromQuery] IndexResourceParameters categoryParameters)
+        public IActionResult GetCategories([FromQuery] CategoryResourceParameters categoryParameters,
+                                           [FromHeader(Name = "X-Lang")] string language
+            )
         {
-            var categories = repositroy.GetCategories(categoryParameters);
+            var categories = repositroy.GetCategories(categoryParameters, language);
 
             var previousPageLink = categories.HasPrevious ?
                 CreateCategoriesResourceUri(categoryParameters, ResourceUriType.PreviousPage) : null;
@@ -70,19 +74,24 @@ namespace Spots.APIs.Controllers
                 previousPageLink,
                 nextPageLink
             };
-
+            
             Response.Headers.Add("X-Pagination",
                 JsonSerializer.Serialize(paginationMetadata));
             Response.Headers.Add("MVC-Pagination",
                 JsonSerializer.Serialize(paginationForMVC));
+            var response = new ResponseModel();
 
 
-            return Ok(new ResponseModel()
+            response.StatusCode = StatusCodes.Status200OK;
+            response.Message = "";
+            
+            response.Data = mapper.Map<List<Category>,List<CategoryDto>>(categories, opt=>
             {
-                StatusCode = StatusCodes.Status200OK,
-                Message = "",
-                Data = categories.ToList()
+                
             });
+ 
+
+            return Ok(response);
         }
 
 
@@ -102,6 +111,7 @@ namespace Spots.APIs.Controllers
             [FromQuery] bool includeSub = false)
         {
             var response = new ResponseModel();
+            //returns a domain category with both language
             if (repositroy.CategoryExists(id))
             {
                 response.StatusCode = StatusCodes.Status200OK;
@@ -124,6 +134,7 @@ namespace Spots.APIs.Controllers
         {
             var response = new ResponseModel();
 
+            #region check existance of parent category
             //check availability of parent category in the model
             try
             {
@@ -147,7 +158,8 @@ namespace Spots.APIs.Controllers
                     throw;
                 }
             }
-            
+            #endregion
+            #region check validity of model
             //check model state validity
             if (!ModelState.IsValid)
             {
@@ -156,9 +168,9 @@ namespace Spots.APIs.Controllers
                 response.Data = ModelState;
                 return BadRequest(response);
             }
-
+            #endregion
+            #region check dublication of category
             var _category = repositroy.GetCategoryByNameAndSuperCategory(category.Name, category.CategoryId);
-
             //check conflict with pre existing categories
             if (_category != null)
             {
@@ -166,6 +178,8 @@ namespace Spots.APIs.Controllers
                 response.Message = $"Category: {category.Name} already exists";
                 return Conflict(response);
             }
+            #endregion
+
             //map creation dto into an entity
             _category = mapper.Map<Category>(category);
             //save the image if exists
@@ -190,7 +204,7 @@ namespace Spots.APIs.Controllers
 
             repositroy.AddCategory(_category);
             repositroy.Save();
-            var createdCategoryToReturn = mapper.Map<CategoryDto>(_category);
+            var createdCategoryToReturn = _category;//mapper.Map<CategoryDto>(_category);
             response.StatusCode = StatusCodes.Status201Created;
             response.Message = $"Category : '{createdCategoryToReturn.Name }' Created Successfully";
             response.Data = createdCategoryToReturn;
@@ -205,6 +219,7 @@ namespace Spots.APIs.Controllers
         {
             var response = new ResponseModel();
 
+            #region check existance of parent category
             //check availability of parent category in the model
             try
             {
@@ -228,8 +243,8 @@ namespace Spots.APIs.Controllers
                     throw;
                 }
             }
-
-            #region checkvalidityofmodel
+            #endregion
+            #region check validity of model
             if (!ModelState.IsValid)
             {
                 response.StatusCode = StatusCodes.Status400BadRequest;
@@ -238,7 +253,7 @@ namespace Spots.APIs.Controllers
                 return BadRequest(response);
             }
             #endregion
-            #region checkexistanceofcategory
+            #region check existance of category
             if (!repositroy.CategoryExists(id))
             {
                 response.StatusCode = StatusCodes.Status404NotFound;
@@ -246,10 +261,11 @@ namespace Spots.APIs.Controllers
                 return NotFound(response);
             }
             #endregion
-
-            //redefine this condition
-            #region checkdublication
+            #region check dublication
+            //check if there's a category with the same name and parent as the newly edited category
             var _category = repositroy.GetCategoryByNameAndSuperCategory(category.Name, category.CategoryId);
+            //if the categoryforedit and existing category in database has different id that would result in a dublication
+            //if they have the same id, then we are merely editing the existing category without changing its name and parent
             if (_category != null && _category.Id != id)
             {
                 response.StatusCode = StatusCodes.Status400BadRequest;
@@ -257,28 +273,22 @@ namespace Spots.APIs.Controllers
                 return BadRequest(response);
             }
             #endregion
-
-            _category = repositroy.GetCategoryById(id,false,false);
-            mapper.Map(category, _category);
-
-            #region checkexistanceofsupercategory
-            //if (repositroy.CategoryExists(category.CategoryId))
-            //{
-            //    if(category.CategoryId == id)
-            //    {
-            //        response.StatusCode = StatusCodes.Status400BadRequest;
-            //        response.Message = $"SuperCategory cannot be the exact same category as child";
-            //        return BadRequest(response);
-            //    }
-            //    _category.CategoryId = category.CategoryId;
-            //}
-            //else
-            //{
-            //    _category.CategoryId = Guid.Empty;
-            //}
+            #region check cyclic relation between cateogry and parent
+            // a category cannot be a parent of its parent
+            if (category.CategoryId == id)
+            {
+                response.StatusCode = StatusCodes.Status400BadRequest;
+                response.Message = $"Parent Category cannot be the exact same category as child";
+                return BadRequest(response);
+            }
             #endregion
 
-            #region checkimagechange
+            //get the original category from the database with tracking on
+            _category = repositroy.GetCategoryById(id);
+            //copy the content of the edited category into the original category
+            mapper.Map(category, _category);
+            //if the image was changed, upload the new image and save its name in the original category
+            #region check image change
             if (imageChanged && category.Bytes != null)
             {
                 // get this environment's web root path (the path
@@ -316,21 +326,27 @@ namespace Spots.APIs.Controllers
         public IActionResult DeleteCategory(Guid id)
         {
             var response = new ResponseModel();
-            var category = repositroy.GetCategoryById(id,false,false);
+            #region check existance of category
+            var category = repositroy.GetCategoryById(id);
             if (category == null)
             {
                 response.StatusCode = StatusCodes.Status404NotFound;
                 response.Message = "Category to be deleted not found !";
                 return NotFound(response);
             }
+            #endregion
+            #region check if the category is parent
             if (repositroy.IsSuperCategory(id))
             {
                 response.StatusCode = StatusCodes.Status400BadRequest;
                 response.Message = "Category has childred";
                 return BadRequest(response);
             }
-            var webRootPath = hostEnvironment.WebRootPath;
+            #endregion
 
+            //if the operation is valid check if an image exists for category, if there's one
+            //delete it too
+            var webRootPath = hostEnvironment.WebRootPath;
             var imagePath = Path.Combine($"{webRootPath}/images/{category.FileName}");
             if ((System.IO.File.Exists(imagePath)))
             {
@@ -341,7 +357,7 @@ namespace Spots.APIs.Controllers
             return NoContent();
         }
 
-        private string CreateCategoriesResourceUri(IndexResourceParameters categoryParameters,
+        private string CreateCategoriesResourceUri(CategoryResourceParameters categoryParameters,
             ResourceUriType type)
         {
             switch (type)

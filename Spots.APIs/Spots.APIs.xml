@@ -4,7 +4,7 @@
         <name>Spots.APIs</name>
     </assembly>
     <members>
-        <member name="M:Spots.APIs.Controllers.CategoryController.GetCategories(Spots.Services.ResourceParameters.IndexResourceParameters)">
+        <member name="M:Spots.APIs.Controllers.CategoryController.GetCategories(Spots.Services.Helpers.ResourceParameters.CategoryResourceParameters,System.String)">
             <summary>
             Get all categories
             </summary>

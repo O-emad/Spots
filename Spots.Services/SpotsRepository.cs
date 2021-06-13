@@ -29,7 +29,7 @@ namespace Spots.Services
                 context.Add<Category>(category);
             }
         }
-        public PagedList<Category> GetCategories(IndexResourceParameters categoryParameters)
+        public PagedList<Category> GetCategories(CategoryResourceParameters categoryParameters, string lang = null)
         {
             if(categoryParameters == null)
             {
@@ -38,7 +38,26 @@ namespace Spots.Services
 
             var collection = context.Categories as IQueryable<Category>;
 
+            #region Language
+            //if (lang != null)
+            //{
+            //    var language = lang.ToLower().Trim();
+            //    if (lang == "ar")
+            //    {
+            //        collection = collection.Select(c =>
 
+            //            new Category()
+            //            {
+            //                Id = c.Id,
+            //                Name = c.NameAR,
+            //                FileName = c.FileName,
+            //                CategoryId = c.CategoryId,
+            //                SortOrder = c.SortOrder
+            //            }
+            //        );
+            //    }
+            //}
+            #endregion
 
             #region Filtering
             if (!string.IsNullOrWhiteSpace(categoryParameters.FilterQuery))
@@ -65,17 +84,20 @@ namespace Spots.Services
 
             #endregion
 
+           
+
             collection = collection.OrderBy(c => c.SortOrder);
             if (categoryParameters.IncludeAll)
             {
                 collection = collection.AsNoTracking();
             }
 
+
             return PagedList<Category>.Create(collection, categoryParameters.PageNumber
                 , categoryParameters.PageSize,categoryParameters.IncludeAll);
         }
 
-        public Category GetCategoryById(Guid categoryId, bool includeVendors, bool includeSub)
+        public Category GetCategoryById(Guid categoryId, bool includeVendors = false, bool includeSub = false)
         {
             var category =  context.Categories as IQueryable<Category>;
             category = category.Where(c => c.Id == categoryId);

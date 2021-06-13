@@ -9,8 +9,8 @@ namespace Spots.Services
 {
     public interface ISpotsRepositroy
     {
-        PagedList<Category> GetCategories(IndexResourceParameters categoryParameters);
-        Category GetCategoryById(Guid categoryId, bool includeVendors, bool includeSub);
+        PagedList<Category> GetCategories(CategoryResourceParameters categoryParameters, string lang = null);
+        Category GetCategoryById(Guid categoryId, bool includeVendors = false, bool includeSub = false);
         Category GetCategoryByName(string name);
         Category GetCategoryByNameAndSuperCategory(string name, Guid? superCategoryId);
         void AddCategory(Category category);
