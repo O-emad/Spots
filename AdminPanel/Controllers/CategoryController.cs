@@ -1,4 +1,5 @@
 ﻿using AdminPanel.Models;
+using AdminPanel.Models.Category;
 using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -55,7 +56,7 @@ namespace AdminPanel.Controllers
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel<Category>>(responseStream);
+                    .DeserializeAsync<DeserializedResponseModel<CategoryModel>>(responseStream);
                 var deserializedHeader = JsonSerializer.Deserialize<PaginationHeader>(pagination);
                 return View(new CategoryIndexViewModel(deserializedResponse.Data,deserializedHeader));
             }

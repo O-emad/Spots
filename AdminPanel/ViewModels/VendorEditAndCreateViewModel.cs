@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AdminPanel.Models.Category;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Spots.Domain;
 using System;
@@ -24,13 +25,13 @@ namespace AdminPanel.ViewModels
         public List<IFormFile> ProfileFile { get; set; } = new List<IFormFile>();
         public List<IFormFile> BannerFile { get; set; } = new List<IFormFile>();
         public List<Guid> SelectedCategories { get; set; }
-        public List<Category> Categories { get; set; }
+        public List<CategoryModel> Categories { get; set; }
         public MultiSelectList CategoriesSelectList { get; set; }
         public VendorEditAndCreateViewModel()
         {
 
         }
-        public VendorEditAndCreateViewModel(Vendor vendor, IEnumerable<Category> categories)
+        public VendorEditAndCreateViewModel(Vendor vendor, IEnumerable<CategoryModel> categories)
         {
             Categories = categories.ToList();
             Id = vendor.Id;

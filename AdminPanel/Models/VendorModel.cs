@@ -1,4 +1,5 @@
-﻿using Spots.Domain;
+﻿using AdminPanel.Models.Category;
+using Spots.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,6 @@ namespace AdminPanel.Models
                 }
             }
         }
-        public List<Category> Categories { get; set; }
+        public List<CategoryModel> Categories { get; set; }
     }
 }

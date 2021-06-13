@@ -45,8 +45,7 @@ namespace Spots.APIs.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet(Name = "GetCategories")]
         public IActionResult GetCategories([FromQuery] CategoryResourceParameters categoryParameters,
-                                           [FromHeader(Name = "X-Lang")] string language
-            )
+                                           [FromHeader(Name = "X-Lang")] string language = "en")
         {
             var categories = repositroy.GetCategories(categoryParameters, language);
 
@@ -84,11 +83,7 @@ namespace Spots.APIs.Controllers
 
             response.StatusCode = StatusCodes.Status200OK;
             response.Message = "";
-            
-            response.Data = mapper.Map<List<Category>,List<CategoryDto>>(categories, opt=>
-            {
-                
-            });
+            response.Data = mapper.Map<List<CategoryDto>>(categories);
  
 
             return Ok(response);

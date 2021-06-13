@@ -38,6 +38,32 @@ namespace Spots.Services
 
             var collection = context.Categories as IQueryable<Category>;
 
+
+
+            #region Searching
+            if (!string.IsNullOrWhiteSpace(categoryParameters.SearchQuery))
+            {
+                var searchQuery = categoryParameters.SearchQuery.Trim();
+                collection = collection.Where(c => c.Names.Where(n => n.Value.Contains(searchQuery)).Any());
+            }
+
+            #endregion
+
+            #region Language
+            var lang = language.ToLower().Trim();
+            if (!string.IsNullOrWhiteSpace(language))
+            {
+                if (lang == "en" || lang == "ar")
+                {
+                    collection = collection.Include(c => c.Names.Where(n => n.Culture == language));
+                }
+                else
+                {
+                    collection = collection.Include(c => c.Names.Where(n => n.Culture == "en"));
+                }
+            }
+            #endregion
+
             #region Filtering
             if (!string.IsNullOrWhiteSpace(categoryParameters.FilterQuery))
             {
@@ -48,22 +74,13 @@ namespace Spots.Services
                 }
                 else if(filterQuery == "level2")
                 {
-                    collection = collection.Where(c => c.CategoryId == null).Include(c => c.Categories);
+                    collection = collection.Where(c => c.CategoryId == null)
+                                           .Include(c => c.Categories)
+                                           .ThenInclude(cc => cc.Names.Where(n => n.Culture == lang));
                 }
                 
             }
             #endregion
-
-            #region Searching
-            if (!string.IsNullOrWhiteSpace(categoryParameters.SearchQuery))
-            {
-                var searchQuery = categoryParameters.SearchQuery.Trim();
-                collection = collection.Where(c => c.Names.Where(n=>n.Value.Contains(searchQuery)).Any());
-            }
-
-            #endregion
-
-           
 
             collection = collection.OrderBy(c => c.SortOrder);
             if (categoryParameters.IncludeAll)
@@ -371,6 +388,7 @@ namespace Spots.Services
         }
         #endregion
 
+        #region Setting
         public Setting GetSetting()
         {
             if (!SettingExists())
@@ -404,7 +422,7 @@ namespace Spots.Services
         {
             return context.Settings.Any();
         }
-
+        #endregion
         public bool Save()
         {
             return (context.SaveChanges() >= 0);

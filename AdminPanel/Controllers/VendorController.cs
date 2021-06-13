@@ -1,4 +1,5 @@
 ﻿using AdminPanel.Models;
+using AdminPanel.Models.Category;
 using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -250,11 +251,11 @@ namespace AdminPanel.Controllers
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
-            var multiselect = new List<Category>();
+            var multiselect = new List<CategoryModel>();
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel<Category>>(responseStream);
+                    .DeserializeAsync<DeserializedResponseModel<CategoryModel>>(responseStream);
                  multiselect = deserializedResponse.Data;
             }
             var viewmodel = new VendorEditAndCreateViewModel(vendor,multiselect);
@@ -269,7 +270,7 @@ namespace AdminPanel.Controllers
                 return View();
             }
 
-            var newSelectedCategories = new List<Category>();
+            var newSelectedCategories = new List<CategoryModel>();
             if (VendorModel != null && VendorEdit.SelectedCategories != null)
             {
                 foreach (var selectedCategoryId in VendorEdit.SelectedCategories)
@@ -287,7 +288,7 @@ namespace AdminPanel.Controllers
                 CloseAt = VendorEdit.CloseAt,
                 OpenAt = VendorEdit.OpenAt,
                 Description = VendorEdit.Description,
-                Categories = newSelectedCategories
+                //Categories = newSelectedCategories
             };
 
             var profileImageFile = VendorEdit.ProfileFile.FirstOrDefault();
