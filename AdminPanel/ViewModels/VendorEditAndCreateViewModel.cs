@@ -25,13 +25,13 @@ namespace AdminPanel.ViewModels
         public List<IFormFile> ProfileFile { get; set; } = new List<IFormFile>();
         public List<IFormFile> BannerFile { get; set; } = new List<IFormFile>();
         public List<Guid> SelectedCategories { get; set; }
-        public List<CategoryModel> Categories { get; set; }
+        public List<CategoryListModel> Categories { get; set; }
         public MultiSelectList CategoriesSelectList { get; set; }
         public VendorEditAndCreateViewModel()
         {
 
         }
-        public VendorEditAndCreateViewModel(Vendor vendor, IEnumerable<CategoryModel> categories)
+        public VendorEditAndCreateViewModel(Vendor vendor, IEnumerable<CategoryListModel> categories)
         {
             Categories = categories.ToList();
             Id = vendor.Id;

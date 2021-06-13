@@ -96,6 +96,7 @@ namespace Spots.APIs.Controllers
         /// <param name="id">The id of the category you want to get</param>
         /// <param name="includeSub">Query parameter to include the sub categories</param>
         /// <param name="includeVendors">Query parameter to include the subscriped vendors</param>
+        /// <param name="language">Language header to choose return language "only 'en' and 'ar' are available"</param>
         /// <returns>a Category</returns>
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Category))]
@@ -103,7 +104,7 @@ namespace Spots.APIs.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("{id}", Name = "GetCategory")]
         public IActionResult GetCategoryById(Guid id, [FromQuery] bool includeVendors = false,
-            [FromQuery] bool includeSub = false)
+            [FromQuery] bool includeSub = false, [FromHeader(Name ="X-Lang")] string language = "en")
         {
             var response = new ResponseModel();
             //returns a domain category with both language
@@ -111,7 +112,16 @@ namespace Spots.APIs.Controllers
             {
                 response.StatusCode = StatusCodes.Status200OK;
                 response.Message = "";
-                response.Data = repositroy.GetCategoryById(id, includeVendors, includeSub);
+                if (language.ToLower().Trim().Contains("all"))
+                {
+                    response.Data = new List<Category>() { repositroy.GetCategoryById(id, includeVendors, includeSub, language) };
+                }
+                else
+                {
+                    response.Data = mapper.Map<IEnumerable<CategoryDto>>( 
+                        repositroy.GetCategoryById(id, includeVendors, includeSub, language));
+                }
+                
                 return Ok(response);
             }
             else

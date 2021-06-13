@@ -87,24 +87,29 @@ namespace Spots.Services
             {
                 collection = collection.AsNoTracking();
             }
-
+            collection = collection.AsSplitQuery();
 
             return PagedList<Category>.Create(collection, categoryParameters.PageNumber
                 , categoryParameters.PageSize,categoryParameters.IncludeAll);
         }
 
-        public Category GetCategoryById(Guid categoryId, bool includeVendors = false, bool includeSub = false)
+        public Category GetCategoryById(Guid categoryId, bool includeVendors = false, bool includeSub = false, string language = "en")
         {
             var category =  context.Categories as IQueryable<Category>;
-            category = category.Where(c => c.Id == categoryId);
-            if(includeVendors == true)
+            //check that language has a valid format, if it's not valid use the default "en"
+            var lang = language.ToLower().Trim();
+            // check if language is ar or en then it's valid and perceed
+            if(lang != "ar" && lang != "en")
             {
-                category = category.Include(c => c.Vendors);
+                //if it's not ar or en check if it's all, if not return default en
+                lang = lang == "all" ? "%ar%en%" : "en";
             }
-            if(includeSub == true)
-            {
-                category = category.Include(c => c.Categories);
-            }
+            category = category.Where(c => c.Id == categoryId)
+                               .Include(c => c.Names.Where(n=>lang.Contains(n.Culture)));
+            category = includeVendors? category.Include(c => c.Vendors):category;
+            category = includeSub? category.Include(c => c.Categories)
+                                           .ThenInclude(cc => cc.Names.Where(n => lang.Contains(n.Culture))) : category;
+            category = category.AsSplitQuery();
             return category.FirstOrDefault();
         }
 

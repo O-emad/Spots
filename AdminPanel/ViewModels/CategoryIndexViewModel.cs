@@ -11,11 +11,11 @@ namespace AdminPanel.ViewModels
 {
     public class CategoryIndexViewModel
     {
-        public IEnumerable<CategoryModel> Categories { get; private set; }
-            = new List<CategoryModel>();
+        public IEnumerable<CategoryListModel> Categories { get; private set; }
+            = new List<CategoryListModel>();
 
         public PaginationHeader Pagination { get; set; }
-        public CategoryIndexViewModel(IEnumerable<CategoryModel> categories, PaginationHeader pagination)
+        public CategoryIndexViewModel(IEnumerable<CategoryListModel> categories, PaginationHeader pagination)
         {
             Pagination = pagination;
             Categories = categories;

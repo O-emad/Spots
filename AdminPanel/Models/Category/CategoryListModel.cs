@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AdminPanel.Models.Category
 {
-    public class CategoryModel
+    public class CategoryListModel
     {
         [Required]
         public Guid Id { get; set; }
@@ -18,6 +18,6 @@ namespace AdminPanel.Models.Category
         [MaxLength(150)]
         public string FileName { get; set; }
         public Guid? CategoryId { get; set; }
-        public List<CategoryModel> Categories { get; set; }
+        public List<CategoryListModel> Categories { get; set; }
     }
 }

@@ -56,7 +56,7 @@ namespace AdminPanel.Controllers
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel<CategoryModel>>(responseStream);
+                    .DeserializeAsync<DeserializedResponseModel<CategoryListModel>>(responseStream);
                 var deserializedHeader = JsonSerializer.Deserialize<PaginationHeader>(pagination);
                 return View(new CategoryIndexViewModel(deserializedResponse.Data,deserializedHeader));
             }
@@ -213,7 +213,6 @@ namespace AdminPanel.Controllers
         #region Edit
         public async Task<IActionResult> EditCategory(Guid id)
         {
-
             ViewData["category"] = "active";
             var httpClient = httpClientFactory.CreateClient("APIClient");
 
@@ -226,21 +225,39 @@ namespace AdminPanel.Controllers
 
             response.EnsureSuccessStatusCode();
 
-            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            var deserializedResponse = await JsonSerializer
+                .DeserializeAsync<DeserializedResponseModel<CategoryListModel>>(responseStream);
+            var selectList = deserializedResponse.Data;
+            var categoryToBeEdited = deserializedResponse.Data.Where(c => c.Id == id).FirstOrDefault();
+            selectList.Remove(categoryToBeEdited);
+
+             request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"/api/category/{id}");
+            request.Headers.Add("X-Lang", "all");
+
+            response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            using var responseStream2 = await response.Content.ReadAsStreamAsync();
+            var deserializedResponse2 = await JsonSerializer
+                .DeserializeAsync<DeserializedResponseModel<Category>>(responseStream2);
+            var categorySingle = deserializedResponse2.Data.FirstOrDefault();
+            var viewmodel = new CategoryEditAndCreateViewModel(categorySingle);
+
+            foreach (var category in selectList)
             {
-                var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel<Category>>(responseStream);
-                var categoryToBeEdited = deserializedResponse.Data.Where(c => c.Id == id).FirstOrDefault();
-                var viewmodel = new CategoryEditAndCreateViewModel(categoryToBeEdited);
-                var selectList = deserializedResponse.Data;
-                selectList.Remove(categoryToBeEdited);
-                foreach (var category in selectList)
+                var selectItem = new SelectListItem
                 {
-                    var selectItem = new SelectListItem { Text = category.Names.FirstOrDefault().Value, Value = category.Id.ToString() };
-                    viewmodel.Categories.Add(selectItem);
-                }
-                return View(viewmodel);
+                    Text = category.Name,
+                    Value = category.Id.ToString()
+                };
+                viewmodel.Categories.Add(selectItem);
             }
+            return View(viewmodel);
         }
         [HttpPost]
         public async Task<IActionResult> EditCategory(CategoryEditAndCreateViewModel categoryEdit, Guid id)

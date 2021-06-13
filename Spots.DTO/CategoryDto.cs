@@ -20,5 +20,6 @@ namespace Spots.DTO
         public string FileName { get; set; }
         public Guid? CategoryId { get; set; }
         public List<CategoryDto> Categories { get; set; }
+        public List<VendorDto> Vendors { get; set; }
     }
 }

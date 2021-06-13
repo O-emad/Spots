@@ -30,6 +30,6 @@ namespace AdminPanel.Models
                 }
             }
         }
-        public List<CategoryModel> Categories { get; set; }
+        public List<CategoryListModel> Categories { get; set; }
     }
 }

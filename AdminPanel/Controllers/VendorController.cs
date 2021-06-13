@@ -251,11 +251,11 @@ namespace AdminPanel.Controllers
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
-            var multiselect = new List<CategoryModel>();
+            var multiselect = new List<CategoryListModel>();
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel<CategoryModel>>(responseStream);
+                    .DeserializeAsync<DeserializedResponseModel<CategoryListModel>>(responseStream);
                  multiselect = deserializedResponse.Data;
             }
             var viewmodel = new VendorEditAndCreateViewModel(vendor,multiselect);
@@ -270,7 +270,7 @@ namespace AdminPanel.Controllers
                 return View();
             }
 
-            var newSelectedCategories = new List<CategoryModel>();
+            var newSelectedCategories = new List<CategoryListModel>();
             if (VendorModel != null && VendorEdit.SelectedCategories != null)
             {
                 foreach (var selectedCategoryId in VendorEdit.SelectedCategories)
