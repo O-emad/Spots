@@ -12,6 +12,7 @@ namespace Spots.DTO
         [Required]
         [MaxLength(150)]
         public string Name { get; set; }
+        [Required]
         [MaxLength(150)]
         public string NameAR { get; set; }
         public int SortOrder { get; set; }

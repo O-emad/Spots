@@ -16,6 +16,7 @@
             <param name="id">The id of the category you want to get</param>
             <param name="includeSub">Query parameter to include the sub categories</param>
             <param name="includeVendors">Query parameter to include the subscriped vendors</param>
+            <param name="language">Language header to choose return language "only 'en' and 'ar' are available"</param>
             <returns>a Category</returns>
         </member>
     </members>

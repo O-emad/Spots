@@ -119,9 +119,9 @@ namespace Spots.Services
             return context.Categories.Where(c => c.Id == categoryId).FirstOrDefault();
         }
 
-        public Category GetCategoryByNameAndSuperCategory(string name, Guid? superCategoryId)
+        public Category GetCategoryByNameAndSuperCategory(string name,string nameAR, Guid? superCategoryId)
         {
-            return context.Categories.Where(c => c.Names.Where(n=>n.Value == name).Any() 
+            return context.Categories.Where(c => c.Names.Where(n=>n.Value == name || n.Value == nameAR).Any() 
             && c.CategoryId == superCategoryId).FirstOrDefault();
         }
 
@@ -218,20 +218,20 @@ namespace Spots.Services
         }
         public void UpdateVendor(Guid vendorId, Vendor vendor, IEnumerable<Category> categories)
         {
-            var categoryWithVendor = context.Categories
-                .Include(c => c.Vendors)
-                .Where(c=>c.Vendors.Any(v=>v.Id == vendorId))
-                .ToList();
-            foreach(var category in categoryWithVendor)
-            {
-                category.Vendors.Remove(vendor);
-            }
-            var vend = GetVendorById(vendorId,false);
-            foreach(var category in categories)
-            {
-                var cat = context.Categories.Where(c => c.Id == category.Id).FirstOrDefault();
-                vend.Categories.Add(cat);
-            }
+            //var categoryWithVendor = context.Categories
+            //    .Include(c => c.Vendors)
+            //    .Where(c=>c.Vendors.Any(v=>v.Id == vendorId))
+            //    .ToList();
+            //foreach(var category in categoryWithVendor)
+            //{
+            //    category.Vendors.Remove(vendor);
+            //}
+            //var vend = GetVendorById(vendorId,false);
+            //foreach(var category in categories)
+            //{
+            //    var cat = context.Categories.Where(c => c.Id == category.Id).FirstOrDefault();
+            //    vend.Categories.Add(cat);
+            //}
         }
         public void DeleteVendor(Vendor vendor)
         {

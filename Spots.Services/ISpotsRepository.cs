@@ -12,7 +12,7 @@ namespace Spots.Services
         PagedList<Category> GetCategories(CategoryResourceParameters categoryParameters, string language);
         Category GetCategoryById(Guid categoryId, bool includeVendors = false, bool includeSub = false, string language = "en");
         Category GetCategoryByName(string name);
-        Category GetCategoryByNameAndSuperCategory(string name, Guid? superCategoryId);
+        Category GetCategoryByNameAndSuperCategory(string name, string nameAR, Guid? superCategoryId);
         void AddCategory(Category category);
         void UpdateCategory(Guid categoryId, Category category);
         void DeleteCategory(Category category);

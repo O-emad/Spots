@@ -175,7 +175,7 @@ namespace Spots.APIs.Controllers
             }
             #endregion
             #region check dublication of category
-            var _category = repositroy.GetCategoryByNameAndSuperCategory(category.Name, category.CategoryId);
+            var _category = repositroy.GetCategoryByNameAndSuperCategory(category.Name, category.NameAR, category.CategoryId);
             //check conflict with pre existing categories
             if (_category != null)
             {
@@ -205,13 +205,16 @@ namespace Spots.APIs.Controllers
                 // fill out the filename
                 _category.FileName = fileName;
             }
-
-
+            _category.Names = new List<Name>()
+            {
+                new Name(){Value = category.Name, Culture = "en"},
+                new Name(){Value = category.NameAR, Culture = "ar"}
+            };
             repositroy.AddCategory(_category);
             repositroy.Save();
-            var createdCategoryToReturn = _category;//mapper.Map<CategoryDto>(_category);
+            var createdCategoryToReturn = mapper.Map<CategoryDto>(_category);
             response.StatusCode = StatusCodes.Status201Created;
-            response.Message = $"Category : '{createdCategoryToReturn.Names.FirstOrDefault().Value }' Created Successfully";
+            response.Message = $"Category : '{createdCategoryToReturn.Name }' Created Successfully";
             response.Data = createdCategoryToReturn;
             return CreatedAtRoute("GetCategory", new { createdCategoryToReturn.Id }, response);
         }
@@ -268,7 +271,7 @@ namespace Spots.APIs.Controllers
             #endregion
             #region check dublication
             //check if there's a category with the same name and parent as the newly edited category
-            var _category = repositroy.GetCategoryByNameAndSuperCategory(category.Name, category.CategoryId);
+            var _category = repositroy.GetCategoryByNameAndSuperCategory(category.Name, category.NameAR, category.CategoryId);
             //if the categoryforedit and existing category in database has different id that would result in a dublication
             //if they have the same id, then we are merely editing the existing category without changing its name and parent
             if (_category != null && _category.Id != id)
@@ -289,7 +292,7 @@ namespace Spots.APIs.Controllers
             #endregion
 
             //get the original category from the database with tracking on
-            _category = repositroy.GetCategoryById(id);
+            _category = repositroy.GetCategoryById(id,language:"all");
             //copy the content of the edited category into the original category
             mapper.Map(category, _category);
             //if the image was changed, upload the new image and save its name in the original category
@@ -319,7 +322,11 @@ namespace Spots.APIs.Controllers
                 _category.FileName = fileName;
             }
             #endregion
-
+            _category.Names = new List<Name>()
+            {
+                new Name(){Value = category.Name, Culture = "en"},
+                new Name(){Value = category.NameAR, Culture = "ar"}
+            };
             repositroy.UpdateCategory(id, _category);
             repositroy.Save();
             return NoContent();

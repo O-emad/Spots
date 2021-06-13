@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Spots.Domain;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ namespace AdminPanel.ViewModels
     public class VendorEditAndCreateViewModel
     {
         public Guid Id { get; set; }
+        [Required]
+        [MaxLength(150)]
         public string Name { get; set; }
         public string ProfilePicFileName { get; set; }
         public string BannerPicFileName { get; set; }

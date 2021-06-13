@@ -1,10 +1,11 @@
-﻿using System;
+﻿using AdminPanel.Models.Category;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spots.Domain
+namespace AdminPanel.Models
 {
     public class VendorForCreation
     {
@@ -17,6 +18,6 @@ namespace Spots.Domain
         public byte[] ProfileBytes{ get; set; }
         public byte[] BannerBytes { get; set; }
         public string Description { get; set; }
-        public List<Category> Categories { get; set; }
+        public List<CategoryListModel> Categories { get; set; }
     }
 }

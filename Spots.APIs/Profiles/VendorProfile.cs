@@ -15,7 +15,9 @@ namespace Spots.APIs.Profiles
         {
             CreateMap<Vendor, VendorDto>();
             CreateMap<VendorForCreationDto, Vendor>();
-            CreateMap<VendorForUpdateDto, Vendor>();
+            CreateMap<VendorForUpdateDto, Vendor>()
+                .ForMember(dest => dest.OwnerId, opt => opt.PreCondition(c => !string.IsNullOrWhiteSpace(c.OwnerId)))
+                .ForMember(dest => dest.Categories, opt => opt.Ignore());
         }
     }
 }

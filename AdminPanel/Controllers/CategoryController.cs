@@ -81,11 +81,11 @@ namespace AdminPanel.Controllers
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel<Category>>(responseStream);
+                    .DeserializeAsync<DeserializedResponseModel<CategoryListModel>>(responseStream);
                 var viewmodel = new CategoryEditAndCreateViewModel();
                 foreach (var category in deserializedResponse.Data)
                 {
-                    var selectItem = new SelectListItem { Text = category.Names.FirstOrDefault().Value, Value = category.Id.ToString() };
+                    var selectItem = new SelectListItem { Text = category.Name, Value = category.Id.ToString() };
                     viewmodel.Categories.Add(selectItem);
                 }
                 return View(viewmodel);

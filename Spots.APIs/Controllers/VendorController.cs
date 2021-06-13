@@ -219,17 +219,17 @@ namespace Spots.APIs.Controllers
             #endregion
 
             _vendor = repositroy.GetVendorById(id, false);
-            //.Map(vendor, _vendor);    
-            {
-                _vendor.Name = vendor.Name;
-                _vendor.Location = vendor.Location;
-                _vendor.OpenAt = vendor.OpenAt;
-                _vendor.CloseAt = vendor.CloseAt;
-                _vendor.SortOrder = vendor.SortOrder;
-                _vendor.Description = vendor.Description;
-                if(!string.IsNullOrWhiteSpace(vendor.OwnerId))
-                    _vendor.OwnerId = vendor.OwnerId;
-            }
+            mapper.Map(vendor, _vendor);    
+            //{
+            //    _vendor.Name = vendor.Name;
+            //    _vendor.Location = vendor.Location;
+            //    _vendor.OpenAt = vendor.OpenAt;
+            //    _vendor.CloseAt = vendor.CloseAt;
+            //    _vendor.SortOrder = vendor.SortOrder;
+            //    _vendor.Description = vendor.Description;
+            //    if(!string.IsNullOrWhiteSpace(vendor.OwnerId))
+            //        _vendor.OwnerId = vendor.OwnerId;
+            //}
 
             #region checkimagechange
             if (imageChanged && vendor.ProfileBytes != null)
@@ -283,7 +283,13 @@ namespace Spots.APIs.Controllers
             }
             #endregion
 
-            repositroy.UpdateVendor(id, _vendor, vendor.Categories);
+            var categories = new List<Category>();
+            foreach(var cat in vendor.Categories)
+            {
+                categories.Add(repositroy.GetCategoryById(cat.Id));
+            }
+            _vendor.Categories = categories;
+            repositroy.UpdateVendor(id, _vendor, categories);
             repositroy.Save();
             return NoContent();
         }

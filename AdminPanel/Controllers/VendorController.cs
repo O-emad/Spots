@@ -227,6 +227,7 @@ namespace AdminPanel.Controllers
             ViewData["vendor"] = "active";
             var httpClient = httpClientFactory.CreateClient("APIClient");
 
+            #region Get Vendor To Be Edited
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
                 $"/api/vendor/{id}");
@@ -243,6 +244,8 @@ namespace AdminPanel.Controllers
                 vendor = deserializedResponse.Data.FirstOrDefault();
                 
             }
+            #endregion
+
             request = new HttpRequestMessage(
                 HttpMethod.Get,
                 $"/api/category?includeAll=true");
@@ -267,7 +270,7 @@ namespace AdminPanel.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View();
+                return View(VendorEdit);
             }
 
             var newSelectedCategories = new List<CategoryListModel>();
@@ -288,7 +291,7 @@ namespace AdminPanel.Controllers
                 CloseAt = VendorEdit.CloseAt,
                 OpenAt = VendorEdit.OpenAt,
                 Description = VendorEdit.Description,
-                //Categories = newSelectedCategories
+                Categories = newSelectedCategories
             };
 
             var profileImageFile = VendorEdit.ProfileFile.FirstOrDefault();
