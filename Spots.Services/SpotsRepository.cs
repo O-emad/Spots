@@ -29,7 +29,7 @@ namespace Spots.Services
                 context.Add<Category>(category);
             }
         }
-        public PagedList<Category> GetCategories(CategoryResourceParameters categoryParameters, string lang = null)
+        public PagedList<Category> GetCategories(CategoryResourceParameters categoryParameters, string language)
         {
             if(categoryParameters == null)
             {
@@ -37,27 +37,6 @@ namespace Spots.Services
             }
 
             var collection = context.Categories as IQueryable<Category>;
-
-            #region Language
-            //if (lang != null)
-            //{
-            //    var language = lang.ToLower().Trim();
-            //    if (lang == "ar")
-            //    {
-            //        collection = collection.Select(c =>
-
-            //            new Category()
-            //            {
-            //                Id = c.Id,
-            //                Name = c.NameAR,
-            //                FileName = c.FileName,
-            //                CategoryId = c.CategoryId,
-            //                SortOrder = c.SortOrder
-            //            }
-            //        );
-            //    }
-            //}
-            #endregion
 
             #region Filtering
             if (!string.IsNullOrWhiteSpace(categoryParameters.FilterQuery))
@@ -79,7 +58,7 @@ namespace Spots.Services
             if (!string.IsNullOrWhiteSpace(categoryParameters.SearchQuery))
             {
                 var searchQuery = categoryParameters.SearchQuery.Trim();
-                collection = collection.Where(c => c.Name.Contains(searchQuery));
+                collection = collection.Where(c => c.Names.Where(n=>n.Value.Contains(searchQuery)).Any());
             }
 
             #endregion
@@ -114,13 +93,13 @@ namespace Spots.Services
 
         public Category GetCategoryByName(string name)
         {
-            
-            return context.Categories.Where(c => c.Name == name).FirstOrDefault();
+            var categoryId = context.Names.Where(n => n.Value == name).FirstOrDefault().Id;
+            return context.Categories.Where(c => c.Id == categoryId).FirstOrDefault();
         }
 
         public Category GetCategoryByNameAndSuperCategory(string name, Guid? superCategoryId)
         {
-            return context.Categories.Where(c => c.Name == name 
+            return context.Categories.Where(c => c.Names.Where(n=>n.Value == name).Any() 
             && c.CategoryId == superCategoryId).FirstOrDefault();
         }
 

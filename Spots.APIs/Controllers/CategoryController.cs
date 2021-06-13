@@ -206,7 +206,7 @@ namespace Spots.APIs.Controllers
             repositroy.Save();
             var createdCategoryToReturn = _category;//mapper.Map<CategoryDto>(_category);
             response.StatusCode = StatusCodes.Status201Created;
-            response.Message = $"Category : '{createdCategoryToReturn.Name }' Created Successfully";
+            response.Message = $"Category : '{createdCategoryToReturn.Names.FirstOrDefault().Value }' Created Successfully";
             response.Data = createdCategoryToReturn;
             return CreatedAtRoute("GetCategory", new { createdCategoryToReturn.Id }, response);
         }

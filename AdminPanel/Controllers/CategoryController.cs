@@ -84,7 +84,7 @@ namespace AdminPanel.Controllers
                 var viewmodel = new CategoryEditAndCreateViewModel();
                 foreach (var category in deserializedResponse.Data)
                 {
-                    var selectItem = new SelectListItem { Text = category.Name, Value = category.Id.ToString() };
+                    var selectItem = new SelectListItem { Text = category.Names.FirstOrDefault().Value, Value = category.Id.ToString() };
                     viewmodel.Categories.Add(selectItem);
                 }
                 return View(viewmodel);
@@ -235,7 +235,7 @@ namespace AdminPanel.Controllers
                 selectList.Remove(categoryToBeEdited);
                 foreach (var category in selectList)
                 {
-                    var selectItem = new SelectListItem { Text = category.Name, Value = category.Id.ToString() };
+                    var selectItem = new SelectListItem { Text = category.Names.FirstOrDefault().Value, Value = category.Id.ToString() };
                     viewmodel.Categories.Add(selectItem);
                 }
                 return View(viewmodel);

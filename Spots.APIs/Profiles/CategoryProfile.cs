@@ -14,7 +14,8 @@ namespace Spots.APIs.Profiles
     {
         public CategoryProfile()
         {
-            CreateMap<Category, CategoryDto>();
+            CreateMap<Category, CategoryDto>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Names.FirstOrDefault().Value));
             //CreateMap<PagedList<Category>, PagedList<CategoryDto>>();
             CreateMap<CategoryForCreationDto, Category>();
             CreateMap<CategoryForUpdateDto, Category>();

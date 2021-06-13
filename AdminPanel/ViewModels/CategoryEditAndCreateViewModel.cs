@@ -30,8 +30,8 @@ namespace AdminPanel.ViewModels
             FileName = category.FileName;
             SortOrder = category.SortOrder;
             CategoryId = category.CategoryId ;
-            Name = category.Name;
-            NameAR = category.NameAR;
+            Name = category.Names.Where(n=>n.Culture == "en").FirstOrDefault().Value;
+            NameAR = category.Names.Where(n=>n.Culture == "ar").FirstOrDefault().Value;
         }
 
     }

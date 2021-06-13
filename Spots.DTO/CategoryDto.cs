@@ -15,11 +15,6 @@ namespace Spots.DTO
         [Required]
         [MaxLength(150)]
         public string Name { get; set; }
-        //NameAR is not required
-        //[JsonIgnore]
-        
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string NameAR { get; set; }
         public int SortOrder { get; set; }
         [MaxLength(150)]
         public string FileName { get; set; }
