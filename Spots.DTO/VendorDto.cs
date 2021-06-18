@@ -21,6 +21,7 @@ namespace Spots.DTO
         public int ReviewCount { get; set; }
         public string OwnerId { get; set; }
         public string Description { get; set; }
+        public int Follows { get; set; }
         public List<Offer> Offers { get; set; }
         public List<CategoryDto> Categories { get; set; }
     }

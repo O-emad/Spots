@@ -23,6 +23,7 @@ namespace Spots.Data
         public DbSet<Setting> Settings { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Ad> Ads { get; set; }
+        public DbSet<Follow> Follows { get; set; }
 
 
     }

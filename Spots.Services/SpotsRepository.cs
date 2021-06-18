@@ -156,7 +156,9 @@ namespace Spots.Services
         public Vendor GetVendorById(Guid vendorId, bool includeOffer)
         {
             //var vendor = context.Vendors as IQueryable<Vendor>;
-           var vendor =  context.Vendors.Include(v => v.Categories).Where(v => v.Id == vendorId);
+           var vendor =  context.Vendors.Include(v => v.Categories)
+                                        .Include(v=>v.Follows)
+                                        .Where(v => v.Id == vendorId);
             if (includeOffer)
             {
                 vendor = vendor.Include(v => v.Offers).AsSplitQuery();
@@ -210,7 +212,8 @@ namespace Spots.Services
 
             #endregion
 
-            collection = (IQueryable<Vendor>)collection.OrderBy(c => c.SortOrder);
+            collection = collection.Include(v=>v.Follows)
+                                   .OrderBy(c => c.SortOrder);
       //          .Include(v=>v.Categories);
 
             return PagedList<Vendor>.Create(collection, vendorParameters.PageNumber
@@ -431,6 +434,21 @@ namespace Spots.Services
         public bool Save()
         {
             return (context.SaveChanges() >= 0);
+        }
+
+        void ISpotsRepositroy.AddFollow(Follow follow)
+        {
+            context.Add<Follow>(follow);
+        }
+
+        void ISpotsRepositroy.DeleteFollow(Follow follow)
+        {
+            context.Remove(follow);
+        }
+
+        Follow ISpotsRepositroy.VendorIsFollowedByUser(Guid vendorId, Guid userId)
+        {
+            return context.Follows.Where(f => f.VendorId == vendorId && f.UserId == userId).FirstOrDefault();
         }
     }
 }

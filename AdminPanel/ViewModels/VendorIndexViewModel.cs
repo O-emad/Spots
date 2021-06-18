@@ -1,4 +1,5 @@
-﻿using Spots.Domain;
+﻿using AdminPanel.Models;
+using Spots.Domain;
 using Spots.Services.Helpers;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,11 @@ namespace AdminPanel.ViewModels
 {
     public class VendorIndexViewModel
     {
-        public IEnumerable<Vendor> Vendors { get; private set; }
-            = new List<Vendor>();
+        public IEnumerable<VendorDomainModel> Vendors { get; private set; }
+            = new List<VendorDomainModel>();
 
         public PaginationHeader Pagination { get; set; }
-        public VendorIndexViewModel(IEnumerable<Vendor> vendors, PaginationHeader pagination)
+        public VendorIndexViewModel(IEnumerable<VendorDomainModel> vendors, PaginationHeader pagination)
         {
             Pagination = pagination;
             Vendors = vendors;

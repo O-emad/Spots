@@ -49,6 +49,10 @@ namespace Spots.Services
          void DeleteAd(Ad ad);
         void UpdateAd(Guid adId, Ad ad);
 
+        void AddFollow(Follow follow);
+        void DeleteFollow(Follow follow);
+        Follow VendorIsFollowedByUser(Guid vendorId, Guid userId);
+
 
         Setting GetSetting();
         void UpdateSetting();

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Spots.Data;
 
 namespace Spots.Data.Migrations
 {
     [DbContext(typeof(SpotsContext))]
-    partial class SpotsContextModelSnapshot : ModelSnapshot
+    [Migration("20210618204926_addingfollows")]
+    partial class addingfollows
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,8 +100,6 @@ namespace Spots.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("VendorId");
 
                     b.ToTable("Follows");
                 });
@@ -270,15 +270,6 @@ namespace Spots.Data.Migrations
                         .HasForeignKey("CategoryId");
                 });
 
-            modelBuilder.Entity("Spots.Domain.Follow", b =>
-                {
-                    b.HasOne("Spots.Domain.Vendor", null)
-                        .WithMany("Follows")
-                        .HasForeignKey("VendorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Spots.Domain.Name", b =>
                 {
                     b.HasOne("Spots.Domain.Category", null)
@@ -306,8 +297,6 @@ namespace Spots.Data.Migrations
 
             modelBuilder.Entity("Spots.Domain.Vendor", b =>
                 {
-                    b.Navigation("Follows");
-
                     b.Navigation("Offers");
                 });
 #pragma warning restore 612, 618

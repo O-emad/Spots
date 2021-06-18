@@ -118,8 +118,8 @@ namespace Spots.APIs.Controllers
                 }
                 else
                 {
-                    response.Data = mapper.Map<IEnumerable<CategoryDto>>( 
-                        repositroy.GetCategoryById(id, includeVendors, includeSub, language));
+                    var category = repositroy.GetCategoryById(id, includeVendors, includeSub, language);
+                    response.Data = mapper.Map<IEnumerable<CategoryDto>>( new List<Category>() {category});
                 }
                 
                 return Ok(response);

@@ -58,7 +58,7 @@ namespace AdminPanel.Controllers
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel<Vendor>>(responseStream);
+                    .DeserializeAsync<DeserializedResponseModel<VendorDomainModel>>(responseStream);
                 var deserializedHeader = JsonSerializer.Deserialize<PaginationHeader>(pagination);
                 return View(new VendorIndexViewModel(deserializedResponse.Data, deserializedHeader));
             }
@@ -236,11 +236,11 @@ namespace AdminPanel.Controllers
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
-            var vendor = new Vendor();
+            var vendor = new VendorDomainModel();
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel<Vendor>>(responseStream);
+                    .DeserializeAsync<DeserializedResponseModel<VendorDomainModel>>(responseStream);
                 vendor = deserializedResponse.Data.FirstOrDefault();
                 
             }
@@ -420,11 +420,11 @@ namespace AdminPanel.Controllers
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
-            var vendor = new Vendor();
+            var vendor = new VendorDomainModel();
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel<Vendor>>(responseStream);
+                    .DeserializeAsync<DeserializedResponseModel<VendorDomainModel>>(responseStream);
                 vendor = deserializedResponse.Data.FirstOrDefault();
 
             }

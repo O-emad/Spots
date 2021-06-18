@@ -1,4 +1,5 @@
-﻿using Spots.Domain;
+﻿using AdminPanel.Models;
+using Spots.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace AdminPanel.ViewModels
         }
 
 
-        public OfferIndexViewModel(Vendor vendor)
+        public OfferIndexViewModel(VendorDomainModel vendor)
         {
             Offers = vendor.Offers;
             VendorId = vendor.Id;

@@ -1,4 +1,5 @@
-﻿using AdminPanel.Models.Category;
+﻿using AdminPanel.Models;
+using AdminPanel.Models.Category;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Spots.Domain;
@@ -34,7 +35,7 @@ namespace AdminPanel.ViewModels
         {
 
         }
-        public VendorEditAndCreateViewModel(Vendor vendor, IEnumerable<CategoryListModel> categories)
+        public VendorEditAndCreateViewModel(VendorDomainModel vendor, IEnumerable<CategoryListModel> categories)
         {
             Categories = categories.ToList();
             Id = vendor.Id;

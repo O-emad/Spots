@@ -10,6 +10,15 @@ namespace Spots.Domain
 {
     public class Follow
     {
+        public Follow()
+        {
+
+        }
+        public Follow(Guid vendorId, Guid userId)
+        {
+            VendorId = vendorId;
+            UserId = userId;
+        }
         [Key]
         public Guid Id { get; set; }
         [ForeignKey("Vendor")]

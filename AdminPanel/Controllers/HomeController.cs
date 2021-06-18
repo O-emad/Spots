@@ -77,12 +77,12 @@ namespace AdminPanel.Controllers
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
-            var vendors = new List<Vendor>();
+            var vendors = new List<VendorDomainModel>();
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel<Vendor>>(responseStream);
-                vm.VendorsCount = deserializedResponse.Data.Count();
+                    .DeserializeAsync<DeserializedResponseModel<VendorDomainModel>>(responseStream);
+                vm.VendorsCount = deserializedResponse.Data.Count;
                 vendors = deserializedResponse.Data;
             }
 

@@ -41,7 +41,7 @@ namespace AdminPanel.Controllers
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
                 var deserializedResponse = await JsonSerializer.
-                    DeserializeAsync<DeserializedResponseModel<Vendor>>(responseStream);
+                    DeserializeAsync<DeserializedResponseModel<VendorDomainModel>>(responseStream);
                 return View(new OfferIndexViewModel(deserializedResponse.Data.FirstOrDefault()));
             }
         }
