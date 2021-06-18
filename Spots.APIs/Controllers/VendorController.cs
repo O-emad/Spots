@@ -102,7 +102,7 @@ namespace Spots.APIs.Controllers
                     StatusCode = StatusCodes.Status200OK,
                     Message = "",
                     Data = mapper.Map<IEnumerable<VendorDto>>(vendors).ToList()
-                });;
+                });
             }
             else
             {
