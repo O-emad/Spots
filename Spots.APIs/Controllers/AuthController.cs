@@ -44,7 +44,7 @@ namespace Spots.APIs.Controllers
         private const string grantType = "authorization_code";
 
         //IdentityServer4
-        private const string idPServerBaseUri = "https://idp.rokiba.com"; //"http://localhost:5001";
+        private const string idPServerBaseUri = "http://localhost:5001";// "https://idp.rokiba.com"; //
         private const string idPServerAuthUri = idPServerBaseUri + "/connect/authorize";
         private const string idPServerTokenUriFragment = @"connect/token";
         private const string idPServerEndSessionUri = idPServerBaseUri + @"/connect/endsession";
@@ -136,7 +136,7 @@ namespace Spots.APIs.Controllers
             var client = new HttpClient();
             var responseToken = await client.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest()
             {
-                Address = $"https://idp.rokiba.com/connect/token",
+                Address = idPServerBaseUri + "/connect/token",
                 ClientId = "adminpanelclient",
                 ClientSecret = "secret",//new Secret("secret".Sha256()).ToString(),
                 Code = authorizationCode,

@@ -78,7 +78,7 @@ namespace Spots.APIs.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddOffer(Guid vendorId, [FromBody] OfferForCreationDto offer)
+        public async Task<IActionResult> AddOffer(Guid vendorId, [FromBody] OfferForCreationDto offer)
         {
             if (!repositroy.VendorExists(vendorId))
             {
@@ -104,6 +104,11 @@ namespace Spots.APIs.Controllers
             }
             repositroy.AddOffer(vendorId,_offer);
             repositroy.Save();
+            if (_offer.OfferApproved)
+            {
+                var note = new FcmTopicNotification(hostEnvironment);
+                await note.OnGetAsync();
+            }
 
             var createdOfferToReturn = mapper.Map<OfferDto>(_offer);
             return CreatedAtRoute("GetOffer", new { createdOfferToReturn.VendorId, createdOfferToReturn.Id },
