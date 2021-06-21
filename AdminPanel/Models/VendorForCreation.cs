@@ -18,6 +18,7 @@ namespace AdminPanel.Models
         public byte[] ProfileBytes{ get; set; }
         public byte[] BannerBytes { get; set; }
         public string Description { get; set; }
+        public string OwnerId { get; set; }
         public List<CategoryListModel> Categories { get; set; }
     }
 }

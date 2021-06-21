@@ -187,7 +187,7 @@ namespace Spots.APIs.Controllers
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin ,Vendor")]
         public IActionResult UpdateVendor(Guid id, [FromBody] VendorForUpdateDto vendor, 
-            [FromQuery] bool imageChanged = false)
+            [FromQuery] bool imageChanged = false, [FromQuery] string linkOwner = "")
         {
 
             var response = new ResponseModel();
@@ -219,6 +219,12 @@ namespace Spots.APIs.Controllers
             #endregion
 
             _vendor = repositroy.GetVendorById(id, false);
+            if (!string.IsNullOrWhiteSpace(linkOwner))
+            {
+                _vendor.OwnerId = linkOwner.Trim();
+                repositroy.Save();
+                return NoContent();
+            }
             mapper.Map(vendor, _vendor);    
             //{
             //    _vendor.Name = vendor.Name;

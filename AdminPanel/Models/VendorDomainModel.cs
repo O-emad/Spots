@@ -12,9 +12,10 @@ namespace AdminPanel.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public int SortOrder { get; set; }
         public string ProfilePicFileName { get; set; }
         public string BannerPicFileName { get; set; }
-        public int SortOrder { get; set; }
+
         public DateTime OpenAt { get; set; }
         public DateTime CloseAt { get; set; }
         public string Location { get; set; }

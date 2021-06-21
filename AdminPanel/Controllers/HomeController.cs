@@ -34,18 +34,41 @@ namespace AdminPanel.Controllers
         public async Task<IActionResult> Index()
         {
             ViewData["home"] = "active";
-            //await WriteOutIdentityInformation();
-            if (User.IsInRole("Vendor"))
-            {
-                return View(new HomeIndexViewModel());
-            }
-            var vm = new HomeIndexViewModel();
             var httpClient = httpClientFactory.CreateClient("APIClient");
+            var vm = new HomeIndexViewModel();
 
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
-                $"api/ad?includeAll=true");
+                $"api/vendor?includeAll=true");
             var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+            var vendors = new List<VendorDomainModel>();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer
+                    .DeserializeAsync<DeserializedResponseModel<VendorDomainModel>>(responseStream);
+                vm.VendorsCount = deserializedResponse.Data.Count;
+                vendors = deserializedResponse.Data;
+            }
+            int follows = 0;
+            foreach (var vendor in vendors)
+            {
+                follows += vendor.Follows;
+            }
+            vm.FollowsCount = follows;
+            if (User.IsInRole("Vendor"))
+            {
+                return View(vm);
+            }
+            
+
+
+             request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"api/ad?includeAll=true");
+             response = await httpClient.SendAsync(
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
@@ -70,21 +93,7 @@ namespace AdminPanel.Controllers
                 vm.CategoriesCount = deserializedResponse.Data.Count();
             }
 
-            request = new HttpRequestMessage(
-                HttpMethod.Get,
-                $"api/vendor?includeAll=true");
-            response = await httpClient.SendAsync(
-                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
-
-            response.EnsureSuccessStatusCode();
-            var vendors = new List<VendorDomainModel>();
-            using (var responseStream = await response.Content.ReadAsStreamAsync())
-            {
-                var deserializedResponse = await JsonSerializer
-                    .DeserializeAsync<DeserializedResponseModel<VendorDomainModel>>(responseStream);
-                vm.VendorsCount = deserializedResponse.Data.Count;
-                vendors = deserializedResponse.Data;
-            }
+            
 
             request = new HttpRequestMessage(
                 HttpMethod.Get,

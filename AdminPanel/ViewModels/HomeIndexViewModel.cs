@@ -11,6 +11,7 @@ namespace AdminPanel.ViewModels
         public int AdsCount { get; set; }
         public int CategoriesCount { get; set; }
         public int VendorsCount { get; set; }
+        public int FollowsCount { get; set; }
         public List<OfferAcceptanceModel> PendingOffers { get; set; }
 
         public HomeIndexViewModel()
