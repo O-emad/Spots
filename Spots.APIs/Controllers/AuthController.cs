@@ -44,7 +44,7 @@ namespace Spots.APIs.Controllers
         private const string grantType = "authorization_code";
 
         //IdentityServer4
-        private const string idPServerBaseUri = "http://localhost:5001";// "https://idp.rokiba.com"; //
+        private const string idPServerBaseUri = "https://idp.rokiba.com"; //"http://localhost:5001";//  //
         private const string idPServerAuthUri = idPServerBaseUri + "/connect/authorize";
         private const string idPServerTokenUriFragment = @"connect/token";
         private const string idPServerEndSessionUri = idPServerBaseUri + @"/connect/endsession";
@@ -71,7 +71,7 @@ namespace Spots.APIs.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> GoogleAuthenticate([FromBody] string id_token)
+        public async Task<IActionResult> GoogleAuthenticate([FromQuery] string id_token)
         {
             
             Payload payload = await ValidateAsync(id_token, new ValidationSettings
@@ -143,8 +143,17 @@ namespace Spots.APIs.Controllers
                 GrantType = "authorization_code",
                 RedirectUri = redirectUri
             }).ConfigureAwait(false);
-
-            return Ok(responseToken.AccessToken);
+            var responseModel = new ResponseModel();
+            //if (!string.IsNullOrWhiteSpace(responseToken.AccessToken))
+            //{
+            //    responseModel.StatusCode = StatusCodes.Status404NotFound;
+            //    responseModel.Message = "No Access Token Generated";
+            //    return NotFound(responseModel);
+            //}
+            responseModel.StatusCode = StatusCodes.Status200OK;
+            responseModel.Message = "Success";
+            responseModel.Data = new { accessToken = responseToken.AccessToken };
+            return Ok(responseModel);
         }
 
     }

@@ -106,8 +106,8 @@ namespace Spots.APIs.Controllers
             repositroy.Save();
             if (_offer.OfferApproved)
             {
-                var note = new FcmTopicNotification(hostEnvironment);
-                await note.OnGetAsync();
+                var pushController = new TopicNotificationController(hostEnvironment);
+                var pushNotificationResult = await pushController.PushTopicNotification();
             }
 
             var createdOfferToReturn = mapper.Map<OfferDto>(_offer);

@@ -24,7 +24,7 @@ namespace Spots.APIs.Controllers
 
         [HttpPost()]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult Follow(Guid vendorId, [FromBody] Guid userId)
+        public IActionResult Follow(Guid vendorId, [FromQuery] Guid userId)
         {
             var followed = repositroy.VendorIsFollowedByUser(vendorId, userId);
             if (followed == null)
