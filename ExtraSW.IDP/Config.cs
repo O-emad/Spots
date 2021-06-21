@@ -68,21 +68,22 @@ namespace ExtraSW.IDP
                 UpdateAccessTokenClaimsOnRefresh = true,
                 ClientName = "Admin Panel",
                 ClientId = "adminpanelclient",
-                AllowedGrantTypes = GrantTypes.Code,
-                RequirePkce = true,
+                AllowedGrantTypes = GrantTypes.Code ,
+                RequirePkce = false,
                 RequireConsent = false,
                 
                 RedirectUris = new List<string>()
                 {
-                    "https://localhost:44343/signin-oidc"
-                    //"https://www.rokiba.com/signin-oidc",
-                    //"https://rokiba.com/signin-oidc"
+                    //"https://localhost:44343/signin-oidc",
+                    "https://api.rokiba.com",
+                    "https://www.rokiba.com/signin-oidc",
+                    "https://rokiba.com/signin-oidc"
                 },
                 PostLogoutRedirectUris = new List<string>()
                 {
-                    "https://localhost:44343/signout-callback-oidc"
-                    //"https://www.rokiba.com/signout-callback-oidc",
-                    //"https://rokiba.com/signout-callback-oidc"
+                    //"https://localhost:44343/signout-callback-oidc"
+                    "https://www.rokiba.com/signout-callback-oidc",
+                    "https://rokiba.com/signout-callback-oidc"
                 },
                 AllowedScopes =
                 {

@@ -1,6 +1,10 @@
 using ExtraSW.IDP.DbContexts;
+using IdentityModel;
 using IdentityServer4.AccessTokenValidation;
 using Marvin.IDP.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json.Serialization;
 using Spots.Data;
 using Spots.Services;
@@ -24,19 +30,22 @@ namespace Spots.APIs
     public class Startup
     {
         private readonly IConfiguration configuration;
+        public static IConfiguration StaticConfig { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public Startup(IConfiguration configuration)
         {
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            StaticConfig = configuration;
         }
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public void ConfigureServices(IServiceCollection services)
         {
-            //var apiConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_api;User Id=db_a707a9_api_admin;Password=msicx611";
-            //var idpConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_idp;User Id=db_a707a9_idp_admin;Password=msicx611";
-            var apiConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SpotsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            var idpConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ExtraSwIdpDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            var apiConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_api;User Id=db_a707a9_api_admin;Password=msicx611";
+            var idpConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_idp;User Id=db_a707a9_idp_admin;Password=msicx611";
+            //var apiConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SpotsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            //var idpConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ExtraSwIdpDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             services.AddControllers(opt =>
             {
                 opt.ReturnHttpNotAcceptable = true;
@@ -48,10 +57,21 @@ namespace Spots.APIs
                     NamingStrategy = new DefaultNamingStrategy()
                 };
             });
-                //.AddJsonOptions(opts => {
-                //    opts.JsonSerializerOptions.PropertyNamingPolicy = null;
-                //    //opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-                //} );
+            //.AddJsonOptions(opts => {
+            //    opts.JsonSerializerOptions.PropertyNamingPolicy = null;
+            //    //opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            //} );
+
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy(MyAllowSpecificOrigins, builer =>
+                 {
+                     builer.AllowAnyOrigin()
+                     .AllowAnyHeader()
+                     .AllowAnyMethod();
+                 });
+            });
+
             services.AddDbContext<SpotsContext>(opt =>
             {
                 //opt.UseSqlServer(configuration[SpotsConfig.ConnectionStringKey.Replace("__", ":")]
@@ -74,10 +94,10 @@ namespace Spots.APIs
                 {
                     o.ApiName = "categoryapicollection";
                     //in development
-                    o.Authority = "https://localhost:5001/";
+                    //o.Authority = "https://localhost:5001/";
                     //in production
-                    //o.Authority = "https://idp.rokiba.com";
-                    
+                    o.Authority = "https://idp.rokiba.com";
+
                 });
 
             services.AddSwaggerGen(setupAction =>
@@ -93,6 +113,16 @@ namespace Spots.APIs
                 var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
 
                 setupAction.IncludeXmlComments(xmlCommentsFullPath);
+            });
+
+            services.AddHttpContextAccessor();
+
+            services.AddHttpClient("IDPClient", client =>
+            {
+                //client.BaseAddress = new Uri("https://localhost:5001");
+                client.BaseAddress = new Uri("https://idp.rokiba.com");
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add(Microsoft.Net.Http.Headers.HeaderNames.Accept, "application/json");
             });
 
         }
@@ -116,6 +146,7 @@ namespace Spots.APIs
                 });
             }
             app.UseHttpsRedirection();
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseSwagger();
             app.UseSwaggerUI(setupAction =>
             {

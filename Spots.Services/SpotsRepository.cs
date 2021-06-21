@@ -446,9 +446,14 @@ namespace Spots.Services
             context.Remove(follow);
         }
 
+
         Follow ISpotsRepositroy.VendorIsFollowedByUser(Guid vendorId, Guid userId)
         {
             return context.Follows.Where(f => f.VendorId == vendorId && f.UserId == userId).FirstOrDefault();
         }
+
+
+
+
     }
 }

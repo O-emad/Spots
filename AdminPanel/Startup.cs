@@ -98,7 +98,7 @@ namespace AdminPanel
                 o.Scope.Add("roles");
                 o.Scope.Add("categoryapi");
                 o.Scope.Add("idpapi");
-                o.UsePkce = true;
+                //o.UsePkce = true;
                 //o.ClaimActions.Remove("nbf");
                 o.ClaimActions.MapUniqueJsonKey("role", "role");
                 //o.ClaimActions.DeleteClaim("sid");

@@ -11,18 +11,27 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Spots.Services.Helpers;
 using Spots.Services.ResourceParameters;
+using System.Text;
+using IdentityServer4;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace Marvin.IDP.Services
 {
     public class LocalUserService : ILocalUserService
     {
         private readonly IdentityDbContext _context;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
         public LocalUserService(
-            IdentityDbContext context)
+            IdentityDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context ?? 
                 throw new ArgumentNullException(nameof(context));
+            this.httpContextAccessor = httpContextAccessor ??
+                throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
         public PagedList<User> GetUsers(IndexResourceParameters userParameters)
@@ -194,6 +203,115 @@ namespace Marvin.IDP.Services
             _context.Users.Add(userToAdd);
         }
 
+        public async Task<User> GetOrCreateExternalLoginUser(string provider, string key, string email, string firstName, string lastName)
+        {
+            var user = await GetUserBySubjectAsync(key);
+            if (user != null)
+                return user;
+            user = await GetUserByUserNameAsync(email);
+            if (user == null)
+            {
+                user = new User
+                {
+                    Subject = key,
+                    UserName = email,
+                    Password = RandomPassword(),
+                    Active = true
+                };
+                user.Claims.Add(new UserClaim()
+                {
+                    Type = "role",
+                    Value = "User"
+                });
+                user.Claims.Add(new UserClaim()
+                {
+                    Type = "given_name",
+                    Value = firstName
+                });
+                user.Claims.Add(new UserClaim()
+                {
+                    Type = "family_name",
+                    Value = lastName
+                });
+
+                AddUser(user);
+                await SaveChangesAsync();
+                user = await GetUserBySubjectAsync(key);
+                return user;
+            }
+
+            
+
+            //var info = new UserLoginInfo(provider, key, provider.ToUpperInvariant());
+            //var result = await _userManager.AddLoginAsync(user, info);
+            //if (result.Succeeded)
+            //    return user;
+            return null;
+
+        }
+
+        public async Task<string> LoginExternalUser(User user)
+        {
+            var isuser = new IdentityServerUser(user.Subject)
+            {
+                DisplayName = user.UserName
+            };
+            var props = new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.Add(new TimeSpan(7, 0, 0, 0, 0))
+            };
+
+            var httpContext = httpContextAccessor.HttpContext;
+            await httpContext.SignInAsync(isuser, props);
+
+            var accessToken = await httpContextAccessor.HttpContext
+                .GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+            return accessToken;
+        }
+
+        public int RandomNumber(int min, int max)
+        {
+            return new Random().Next(min,max);
+        }
+
+        public string RandomString(int size, bool lowerCase = false)
+        {
+            var builder = new StringBuilder(size);
+
+            // Unicode/ASCII Letters are divided into two blocks
+            // (Letters 65–90 / 97–122):
+            // The first group containing the uppercase letters and
+            // the second group containing the lowercase.  
+
+            // char is a single Unicode character  
+            char offset = lowerCase ? 'a' : 'A';
+            const int lettersOffset = 26; // A...Z or a..z: length=26  
+
+            for (var i = 0; i < size; i++)
+            {
+                var @char = (char) new Random().Next(offset, offset + lettersOffset);
+                builder.Append(@char);
+            }
+
+            return lowerCase ? builder.ToString().ToLower() : builder.ToString();
+        }
+        public string RandomPassword()
+        {
+            var passwordBuilder = new StringBuilder();
+
+            // 4-Letters lower case   
+            passwordBuilder.Append(RandomString(4, true));
+
+            // 4-Digits between 1000 and 9999  
+            passwordBuilder.Append(RandomNumber(1000, 9999));
+
+            // 2-Letters upper case  
+            passwordBuilder.Append(RandomString(2));
+            return passwordBuilder.ToString();
+        }
+
+
         //public void AddUser(User userToAdd, string password)
         //{
         //    if (userToAdd == null)
@@ -239,7 +357,7 @@ namespace Marvin.IDP.Services
         //    {
         //        throw new ArgumentNullException(nameof(securityCode));
         //    }
-            
+
         //    // find an user with this security code as an active security code.  
         //    var user = await _context.Users.FirstOrDefaultAsync(u => 
         //        u.SecurityCode == securityCode && 
@@ -273,7 +391,7 @@ namespace Marvin.IDP.Services
         //    }
 
         //    var user = await GetUserBySubjectAsync(subject); 
-            
+
         //    if (user == null)
         //    {
         //        return false;
@@ -381,7 +499,7 @@ namespace Marvin.IDP.Services
 
         //    return userLogin?.User;
         //}
-        
+
         //public async Task AddExternalProviderToUser(
         //    string subject,
         //    string provider,
@@ -409,7 +527,7 @@ namespace Marvin.IDP.Services
         //        ProviderIdentityKey = providerIdentityKey
         //    });            
         //}
-        
+
         //public User ProvisionUserFromExternalIdentity(
         //    string provider, 
         //    string providerIdentityKey,
@@ -449,7 +567,7 @@ namespace Marvin.IDP.Services
         //    return user;
         //}
 
-      
+
 
         public async Task<bool> SaveChangesAsync()
         {
