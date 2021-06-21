@@ -22,13 +22,19 @@
                     <label>Sort Order</label>
                     <input type="text" class="form-control" asp-for="SortOrder">
                 </div>
-
-                <div class="form-group">
-                    <label>Super Category</label>
-                    <select asp-for="CategoryId" asp-items="@Model.Categories" class="form-control">
-                        <option value="@null">None</option>
-                    </select>
-                </div>
+                @if (Model.CategoryId == null)
+                {
+                    <div class="form-group">
+                        <label>Super Category</label>
+                        <select asp-for="CategoryId" asp-items="@Model.Categories" class="form-control">
+                            <option value="@null">None</option>
+                        </select>
+                    </div>
+                }
+                else
+                {
+                    <input class="hidden" asp-for="CategoryId" hidden/>
+                }
                 <div class="form-group">
                     <label>Upload New Image</label>
                     <div class="input-group file-group">

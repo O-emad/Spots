@@ -44,7 +44,7 @@ namespace AdminPanel.Controllers
 
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
-                $"/api/category?pageSize=15&pageNumber={pageNumber}&searchQuery={searchQuery}");
+                $"/api/category?FilterQuery=level1&pageSize=15&pageNumber={pageNumber}&searchQuery={searchQuery}");
 
             var response = await httpClient.SendAsync(
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -64,9 +64,16 @@ namespace AdminPanel.Controllers
         #endregion
 
         #region Create
-        public async Task<IActionResult> CreateCategory()
+        public async Task<IActionResult> CreateCategory(Guid? categoryId = null)
         {
             ViewData["category"] = "active";
+            if(categoryId != null)
+            {
+                var viewModel = new CategoryEditAndCreateViewModel();
+                viewModel.CategoryId = categoryId;
+                return View(viewModel);
+            }
+
             var httpClient = httpClientFactory.CreateClient("APIClient");
 
             var request = new HttpRequestMessage(
@@ -234,7 +241,7 @@ namespace AdminPanel.Controllers
 
              request = new HttpRequestMessage(
                 HttpMethod.Get,
-                $"/api/category/{id}");
+                $"/api/category/{id}?includeSub=true");
             request.Headers.Add("X-Lang", "all");
 
             response = await httpClient.SendAsync(

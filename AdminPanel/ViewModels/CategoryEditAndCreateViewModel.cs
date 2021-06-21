@@ -18,6 +18,7 @@ namespace AdminPanel.ViewModels
         public int SortOrder { get; set; } = 0;
         public List<IFormFile> Files { get; set; } = new List<IFormFile>();
         public Guid? CategoryId { get; set; }
+        public List<Category> SubCategories { get; set; }
 
         public List<SelectListItem> Categories { get; set; } = new List<SelectListItem>();
         public CategoryEditAndCreateViewModel()
@@ -32,6 +33,8 @@ namespace AdminPanel.ViewModels
             CategoryId = category.CategoryId ;
             Name = category.Names.Where(n=>n.Culture == "en").FirstOrDefault().Value;
             NameAR = category.Names.Where(n=>n.Culture == "ar").FirstOrDefault().Value;
+            SubCategories = category.Categories;
+
         }
 
     }
