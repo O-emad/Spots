@@ -19,7 +19,7 @@ namespace Spots.APIs
             this.env = env ?? throw new ArgumentNullException(nameof(env));
         }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(string title, string body, string topic)
         {
             var path = env.ContentRootPath;
             path = path + "\\SpotsFcm.json";
@@ -41,17 +41,17 @@ namespace Spots.APIs
             {
                 Notification = new Notification
                 {
-                    Title = "My push notification title",
-                    Body = "Content for this push notification"
+                    Title = title,
+                    Body = body
                 },
-                Data = new Dictionary<string, string>()
-                 {
-                     { "AdditionalData1", "data 1" },
-                     { "AdditionalData2", "data 2" },
-                     { "AdditionalData3", "data 3" },
-                 },
+                //Data = new Dictionary<string, string>()
+                // {
+                //     { "AdditionalData1", "data 1" },
+                //     { "AdditionalData2", "data 2" },
+                //     { "AdditionalData3", "data 3" },
+                // },
                 
-                Topic = "WebsiteUpdates"
+                Topic = topic
             };
 
             Result = await fcm.SendAsync(message);

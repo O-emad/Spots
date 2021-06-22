@@ -26,8 +26,8 @@ namespace Spots.APIs.Controllers
         public async Task<IActionResult> PushTopicNotification()
         {
             var note = new FcmTopicNotification(hostEnvironment);
-            await note.OnGetAsync();
-            return Ok(note.Result);
+            await note.OnGetAsync("sd","asdasdf","testtopic");
+            return Ok();
         }
     }
 }

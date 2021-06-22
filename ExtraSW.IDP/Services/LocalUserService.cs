@@ -203,17 +203,27 @@ namespace Marvin.IDP.Services
             _context.Users.Add(userToAdd);
         }
 
-        public async Task<User> GetOrCreateExternalLoginUser(string provider, string key, string email, string firstName, string lastName)
+        public async Task<User> GetOrCreateExternalLoginUser(string provider, string key,
+            string email, string firstName, string lastName)
         {
-            var user = await GetUserBySubjectAsync(key);
+            //var user = await GetUserBySubjectAsync(key);
+            //if (user != null)
+            //    return user;
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return null;
+            }
+            var user = await GetUserByUserNameAsync(email);
+
             if (user != null)
+            {
                 return user;
-            user = await GetUserByUserNameAsync(email);
-            if (user == null)
+            }
+            else
             {
                 user = new User
                 {
-                    Subject = key,
+                    Subject = Guid.NewGuid().ToString(),
                     UserName = email,
                     Password = RandomPassword(),
                     Active = true
@@ -236,7 +246,7 @@ namespace Marvin.IDP.Services
 
                 AddUser(user);
                 await SaveChangesAsync();
-                user = await GetUserBySubjectAsync(key);
+                //user = await GetUserBySubjectAsync(user.Subject);
                 return user;
             }
 
@@ -246,7 +256,6 @@ namespace Marvin.IDP.Services
             //var result = await _userManager.AddLoginAsync(user, info);
             //if (result.Succeeded)
             //    return user;
-            return null;
 
         }
 

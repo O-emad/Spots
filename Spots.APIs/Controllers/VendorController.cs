@@ -95,6 +95,14 @@ namespace Spots.APIs.Controllers
             if (repositroy.VendorExists(id))
             {
                 var vendor = repositroy.GetVendorById(id,includeOffer);
+                //TODO
+                if (User.IsInRole("User"))
+                {
+                    var ownerId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+                    var userId = Guid.Parse(ownerId);
+                    var follow = repositroy.VendorIsFollowedByUser(id, userId);
+                    vendor.SortOrder = follow == null ? 0 : 1;
+                }
                 var vendors = new List<Vendor>();
                 vendors.Add(vendor);
                 return Ok(new ResponseModel()

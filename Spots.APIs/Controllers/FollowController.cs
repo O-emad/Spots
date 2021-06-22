@@ -24,8 +24,23 @@ namespace Spots.APIs.Controllers
 
         [HttpPost()]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult Follow(Guid vendorId, [FromQuery] Guid userId)
+        public IActionResult Follow(Guid vendorId)
         {
+            var userId = Guid.Empty;
+            if (User.IsInRole("User"))
+            {
+                var ownerId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+                userId = Guid.Parse(ownerId);
+            }
+            if(userId == Guid.Empty)
+            {
+                return Unauthorized(new ResponseModel()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Unauthorized request to follow please login as user first",
+                    Data = new { }
+                });
+            }
             var followed = repositroy.VendorIsFollowedByUser(vendorId, userId);
             if (followed == null)
             {
