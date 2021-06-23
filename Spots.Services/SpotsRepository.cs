@@ -201,6 +201,11 @@ namespace Spots.Services
                 var categoryId = vendorParameters.CategoryId;
                 collection = collection.Where(c => c.Categories.Where(category=>category.Id == categoryId).Any());
             }
+            if (vendorParameters.Trusted)
+            {
+                var trusted = vendorParameters.Trusted;
+                collection = collection.Where(v => v.Trusted == trusted) ;
+            }
 
             #region Searching
             if (!string.IsNullOrWhiteSpace(vendorParameters.SearchQuery))
@@ -313,21 +318,44 @@ namespace Spots.Services
 
         public void AddReview(Guid vendorId, Review review)
         {
-            if (VendorExists(vendorId) && review != null)
-            {
-                review.VendorId = vendorId;
-                context.Add<Review>(review);
-            }
+            if (review == null)
+                return;
+            var vendor = context.Vendors.FirstOrDefault(v => v.Id == vendorId);
+            if (vendor == null)
+                return;
+            var totalStars = vendor.ReviewAverage * vendor.ReviewCount;
+            vendor.ReviewCount++;
+            totalStars += review.ReviewValue;
+            vendor.ReviewAverage = totalStars / vendor.ReviewCount;
+            review.VendorId = vendorId;
+            context.Add<Review>(review);
         }
 
         public void UpdateReview(Guid vendorId, Guid reviewId, Review review)
         {
 
             review.Updated = true;
+            var vendor = context.Vendors.FirstOrDefault(v => v.Id == vendorId);
+            if (vendor == null)
+                return;
+            var originalReview = context.Reviews.FirstOrDefault(r => r.Id == reviewId);
+            if (originalReview == null)
+                return;
+            var reviewValueChange = review.ReviewValue - originalReview.ReviewValue;
+            var totalStars = vendor.ReviewAverage * vendor.ReviewCount;
+            totalStars += reviewValueChange;
+            vendor.ReviewAverage = totalStars / vendor.ReviewCount;
         }
 
         public void DeleteReview(Review review)
         {
+            var vendor = context.Vendors.FirstOrDefault(v => v.Id == review.VendorId);
+            if (vendor == null)
+                return;
+            var totalStars = vendor.ReviewAverage * vendor.ReviewCount;
+            vendor.ReviewCount--;
+            totalStars -= review.ReviewValue;
+            vendor.ReviewAverage = totalStars / vendor.ReviewCount;
             context.Remove(review);
         }
 
@@ -436,6 +464,7 @@ namespace Spots.Services
             return (context.SaveChanges() >= 0);
         }
 
+        #region Follow
         void ISpotsRepositroy.AddFollow(Follow follow)
         {
             context.Add<Follow>(follow);
@@ -451,9 +480,56 @@ namespace Spots.Services
         {
             return context.Follows.Where(f => f.VendorId == vendorId && f.UserId == userId).FirstOrDefault();
         }
+        #endregion
 
+        #region Video
+        List<VendorVideo> ISpotsRepositroy.GetVideosForVendor(Guid vendorId)
+        {
+            return context.VendorVideos.Where(v => v.VendorId == vendorId).ToList();
+        }
 
+        VendorVideo ISpotsRepositroy.GetVideoById(Guid id)
+        {
+            return context.VendorVideos.FirstOrDefault(v => v.Id == id);
+        }
 
+        void ISpotsRepositroy.AddVideo(Guid vendorId, VendorVideo video)
+        {
+            if (!VendorExists(vendorId))
+                return;
+            video.VendorId = vendorId;
+            context.Add<VendorVideo>(video);
+        }
+
+        void ISpotsRepositroy.DeleteVideo(VendorVideo video)
+        {
+            context.Remove(video);
+        }
+        #endregion
+        #region Gallery
+        List<VendorGallery> ISpotsRepositroy.GetGalleriesForVendor(Guid vendorId)
+        {
+            return context.VendorGallery.Where(v => v.VendorId == vendorId).ToList();
+        }
+
+        VendorGallery ISpotsRepositroy.GetGalleryById(Guid id)
+        {
+            return context.VendorGallery.FirstOrDefault(v => v.Id == id);
+        }
+
+        void ISpotsRepositroy.AddGallery(Guid vendorId, VendorGallery gallery)
+        {
+            if (!VendorExists(vendorId))
+                return;
+            gallery.VendorId = vendorId;
+            context.Add<VendorGallery>(gallery);
+        }
+
+        void ISpotsRepositroy.DeleteGallery(VendorGallery gallery)
+        {
+            context.Remove(gallery);
+        }
+        #endregion
 
     }
 }

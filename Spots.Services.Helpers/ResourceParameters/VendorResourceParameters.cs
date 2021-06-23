@@ -10,5 +10,6 @@ namespace Spots.Services.Helpers.ResourceParameters
     public class VendorResourceParameters : IndexResourceParameters
     {
         public Guid CategoryId { get; set; }
+        public bool Trusted { get; set; }
     }
 }

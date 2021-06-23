@@ -53,10 +53,22 @@ namespace Spots.Services
         void DeleteFollow(Follow follow);
         Follow VendorIsFollowedByUser(Guid vendorId, Guid userId);
 
+        List<VendorVideo> GetVideosForVendor(Guid vendorId);
+        VendorVideo GetVideoById(Guid id);
+        void AddVideo(Guid vendorId, VendorVideo video);
+        void DeleteVideo(VendorVideo video);
+
+        List<VendorGallery> GetGalleriesForVendor(Guid vendorId);
+        VendorGallery GetGalleryById(Guid id);
+        void AddGallery(Guid vendorId, VendorGallery gallery);
+        void DeleteGallery(VendorGallery gallery);
+
 
         Setting GetSetting();
         void UpdateSetting();
         bool SettingExists();
         bool Save();
+
+
     }
 }
