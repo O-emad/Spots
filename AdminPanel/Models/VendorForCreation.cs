@@ -11,7 +11,9 @@ namespace AdminPanel.Models
     {
         public string Name { get; set; }
         public int SortOrder { get; set; }
-        public string WorkHours { get; set; }
+        public string PhoneNumber { get; set; }
+        public bool Trusted { get; set; }
+        public string Email { get; set; }
         public DateTime OpenAt { get; set; }
         public DateTime CloseAt { get; set; }
         public string Location { get; set; }

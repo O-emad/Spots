@@ -89,7 +89,10 @@ namespace AdminPanel.Controllers
                 SortOrder = VendorCreate.SortOrder,
                 CloseAt = VendorCreate.CloseAt,
                 OpenAt = VendorCreate.OpenAt,
-                Description = VendorCreate.Description
+                Description = VendorCreate.Description,
+                PhoneNumber = "010010010010",
+                Trusted = true,
+                Email = "email@email.com"
             };
 
             // take the first (only) file in the Files list
@@ -291,7 +294,10 @@ namespace AdminPanel.Controllers
                 CloseAt = VendorEdit.CloseAt,
                 OpenAt = VendorEdit.OpenAt,
                 Description = VendorEdit.Description,
-                Categories = newSelectedCategories
+                Categories = newSelectedCategories,
+                PhoneNumber = "010010010010",
+                Trusted = true,
+                Email = "email@email.com"
             };
 
             var profileImageFile = VendorEdit.ProfileFile.FirstOrDefault();
