@@ -44,7 +44,7 @@ namespace Spots.APIs.Controllers
         private const string grantType = "authorization_code";
 
         //IdentityServer4
-        private const string idPServerBaseUri = "https://idp.rokiba.com";//"https://localhost:5001";//////
+        private const string idPServerBaseUri = "https://localhost:5001";//"https://idp.rokiba.com";////////
         private const string idPServerAuthUri = idPServerBaseUri + "/connect/authorize";
         private const string idPServerTokenUriFragment = @"connect/token";
         private const string idPServerEndSessionUri = idPServerBaseUri + @"/connect/endsession";

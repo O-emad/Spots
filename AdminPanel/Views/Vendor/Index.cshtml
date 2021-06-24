@@ -47,38 +47,40 @@
                         <tr>
                             <th class="w-300px">Name</th>
                             <th class="w-100px">Sort Order</th>
+                            <th class="w-100px ">Trusted</th>
                             <th class="text-right w-100px">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model.Vendors)
                         {
-                            <tr>
-                                <td>@item.Name</td>
-                                <td>@item.SortOrder</td>
-                                <td class="text-right table-actions">
-                                    @if (string.IsNullOrWhiteSpace(item.OwnerId))
-                                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.SortOrder</td>
+                            <td><input type="checkbox" asp-for=@item.Trusted disabled /></td>
+                            <td class="text-right table-actions">
+                                @if (string.IsNullOrWhiteSpace(item.OwnerId))
+                                {
 
-                                        <a class="table-action hover-primary"
-                                           asp-action="LinkVendor" asp-controller="Vendor"
-                                           asp-route-id=@item.Id>
-                                            <i class="fa fa-link"></i>
-                                        </a>
-                                        
-                                     }
                                     <a class="table-action hover-primary"
-                                       asp-action="ListOffer" asp-controller="Offer"
-                                       asp-route-id="@item.Id">
-                                        <i class="material-icons fs-16">local_offer</i>
-                                    </a>
-                                    <a class="table-action hover-primary"
-                                       asp-action="EditVendor" asp-controller="Vendor"
+                                       asp-action="LinkVendor" asp-controller="Vendor"
                                        asp-route-id=@item.Id>
-                                        <i class="ti-pencil"></i>
+                                        <i class="fa fa-link"></i>
                                     </a>
-                                    @if (User.IsInRole("Admin"))
-                                    {
+
+                                }
+                                <a class="table-action hover-primary"
+                                   asp-action="ListOffer" asp-controller="Offer"
+                                   asp-route-id="@item.Id">
+                                    <i class="material-icons fs-16">local_offer</i>
+                                </a>
+                                <a class="table-action hover-primary"
+                                   asp-action="EditVendor" asp-controller="Vendor"
+                                   asp-route-id=@item.Id>
+                                    <i class="ti-pencil"></i>
+                                </a>
+                                @if (User.IsInRole("Admin"))
+                                {
                                     <a id="deletebutton"
                                        class="table-action hover-danger"
                                        data-target="#modal-small" data-toggle="modal"
@@ -86,9 +88,9 @@
                                        onclick="onDelete(this.name)">
                                         <i class="ti-trash"></i>
                                     </a>
-                                    }
-                                </td>
-                            </tr>
+                                }
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>

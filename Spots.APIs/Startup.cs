@@ -42,10 +42,10 @@ namespace Spots.APIs
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public void ConfigureServices(IServiceCollection services)
         {
-            var apiConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_api;User Id=db_a707a9_api_admin;Password=msicx611";
-            var idpConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_idp;User Id=db_a707a9_idp_admin;Password=msicx611";
-            //var apiConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SpotsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            //var idpConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ExtraSwIdpDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            //var apiConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_api;User Id=db_a707a9_api_admin;Password=msicx611";
+            //var idpConnectionString = "Data Source=SQL5097.site4now.net;Initial Catalog=db_a707a9_idp;User Id=db_a707a9_idp_admin;Password=msicx611";
+            var apiConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SpotsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            var idpConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ExtraSwIdpDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             services.AddControllers(opt =>
             {
                 opt.ReturnHttpNotAcceptable = true;
@@ -94,9 +94,9 @@ namespace Spots.APIs
                 {
                     o.ApiName = "categoryapicollection";
                     //in development
-                    //o.Authority = "https://localhost:5001/";
+                    o.Authority = "https://localhost:5001/";
                     //in production
-                    o.Authority = "https://idp.rokiba.com";
+                    //o.Authority = "https://idp.rokiba.com";
 
                 });
 
@@ -119,8 +119,8 @@ namespace Spots.APIs
 
             services.AddHttpClient("IDPClient", client =>
             {
-                //client.BaseAddress = new Uri("https://localhost:5001");
-                client.BaseAddress = new Uri("https://idp.rokiba.com");
+                client.BaseAddress = new Uri("https://localhost:5001");
+                //client.BaseAddress = new Uri("https://idp.rokiba.com");
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add(Microsoft.Net.Http.Headers.HeaderNames.Accept, "application/json");
             });

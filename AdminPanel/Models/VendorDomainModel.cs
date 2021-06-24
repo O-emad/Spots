@@ -2,6 +2,7 @@
 using Spots.Domain;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,12 @@ namespace AdminPanel.Models
         public int SortOrder { get; set; }
         public string ProfilePicFileName { get; set; }
         public string BannerPicFileName { get; set; }
-
+        [MaxLength(150)]
+        public string Email { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string PhoneNumber { get; set; }
+        public bool Trusted { get; set; }
         public DateTime OpenAt { get; set; }
         public DateTime CloseAt { get; set; }
         public string Location { get; set; }

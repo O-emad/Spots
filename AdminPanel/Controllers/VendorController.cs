@@ -67,16 +67,35 @@ namespace AdminPanel.Controllers
 
         #region Create
         [Authorize(Roles ="Admin")]
-        public IActionResult CreateVendor()
+        public async Task<IActionResult> CreateVendor()
         {
             ViewData["vendor"] = "active";
-            return  View(new VendorEditAndCreateViewModel());
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+            var request = new HttpRequestMessage(
+               HttpMethod.Get,
+               $"/api/category?includeAll=true");
+
+            var response = await httpClient.SendAsync(
+               request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+            var multiselect = new List<CategoryListModel>();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer
+                    .DeserializeAsync<DeserializedResponseModel<CategoryListModel>>(responseStream);
+                multiselect = deserializedResponse.Data;
+            }
+            var viewmodel = new VendorEditAndCreateViewModel(multiselect);
+            VendorModel.Categories = multiselect;
+            return  View(viewmodel);
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateVendor(VendorEditAndCreateViewModel VendorCreate)
         {
+            ViewData["vendor"] = "active";
             if (!ModelState.IsValid)
             {
                 return View(VendorCreate);
@@ -90,9 +109,9 @@ namespace AdminPanel.Controllers
                 CloseAt = VendorCreate.CloseAt,
                 OpenAt = VendorCreate.OpenAt,
                 Description = VendorCreate.Description,
-                PhoneNumber = "010010010010",
-                Trusted = true,
-                Email = "email@email.com"
+                PhoneNumber = VendorCreate.PhoneNumber,
+                Trusted = VendorCreate.Trusted,
+                Email = VendorCreate.Email
             };
 
             // take the first (only) file in the Files list
@@ -178,11 +197,23 @@ namespace AdminPanel.Controllers
             var response = await httpClient.SendAsync(
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
-            TempData["Type"] = "alert-success";
-            TempData["CUD"] = true;
-            TempData["Message"] = "Vendor Created Successfully";
-            return RedirectToAction("Index");
+            try
+            {
+                response.EnsureSuccessStatusCode();
+                TempData["Type"] = "alert-success";
+                TempData["CUD"] = true;
+                TempData["Message"] = "Vendor Created Successfully";
+                return RedirectToAction("Index");
+            }
+            catch (Exception e)
+            {
+                TempData["Type"] = "alert-danger";
+                TempData["CUD"] = true;
+                TempData["Message"] = $"Failed to create vendor: {e.Message}";
+                return RedirectToAction("Index");
+            }
+            
+            
         }
         #endregion
         #region Delete
@@ -271,8 +302,10 @@ namespace AdminPanel.Controllers
         [HttpPost]
         public async Task<IActionResult> EditVendor(VendorEditAndCreateViewModel VendorEdit, Guid id)
         {
+            ViewData["vendor"] = "active";
             if (!ModelState.IsValid)
             {
+                VendorEdit.PopulateSelectList(VendorModel.Categories);
                 return View(VendorEdit);
             }
 
@@ -295,9 +328,9 @@ namespace AdminPanel.Controllers
                 OpenAt = VendorEdit.OpenAt,
                 Description = VendorEdit.Description,
                 Categories = newSelectedCategories,
-                PhoneNumber = "010010010010",
-                Trusted = true,
-                Email = "email@email.com"
+                PhoneNumber = VendorEdit.PhoneNumber,
+                Trusted = VendorEdit.Trusted,
+                Email = VendorEdit.Email
             };
 
             var profileImageFile = VendorEdit.ProfileFile.FirstOrDefault();
