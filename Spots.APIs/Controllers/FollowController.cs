@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Spots.APIs.Controllers
 {
     [ApiController]
-    [Route("api/vendor/{vendorId}/[controller]")]
+    [Route("vendor/{vendorId}/[controller]")]
     public class FollowController : ControllerBase
     {
         private readonly ISpotsRepositroy repositroy;

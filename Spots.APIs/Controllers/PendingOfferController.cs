@@ -14,7 +14,7 @@ namespace Spots.APIs.Controllers
 {
     [Authorize(Roles = "Admin")]
     [ApiController]
-    [Route("/api/[controller]")]
+    [Route("[controller]")]
     public class PendingOfferController : ControllerBase
     {
         private readonly IMapper mapper;

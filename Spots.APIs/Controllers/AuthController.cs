@@ -21,7 +21,7 @@ using System.Security.Cryptography;
 namespace Spots.APIs.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly ILocalUserService localUserService;
@@ -44,13 +44,13 @@ namespace Spots.APIs.Controllers
         private const string grantType = "authorization_code";
 
         //IdentityServer4
-        private const string idPServerBaseUri = "https://localhost:5001";//"https://idp.rokiba.com";////////
+        private const string idPServerBaseUri = "https://www.rokiba.com/idp";//"https://localhost:5001";//////////
         private const string idPServerAuthUri = idPServerBaseUri + "/connect/authorize";
         private const string idPServerTokenUriFragment = @"connect/token";
         private const string idPServerEndSessionUri = idPServerBaseUri + @"/connect/endsession";
 
         //These are also registered in the IdP (or Clients.cs of test IdP)
-        private const string redirectUri = "https://api.rokiba.com";
+        private const string redirectUri = "https://www.rokiba.com/api";
         private const string clientId = "adminpanelclient";
         private const string clientSecret = "secret";
         private const string audience = "SomeSecureCompany/resources";
@@ -84,7 +84,7 @@ namespace Spots.APIs.Controllers
 
             var state = Guid.NewGuid().ToString("N");
 
-            var url = "/connect/authorize" +
+            var url = "/idp/connect/authorize" +
                         "?client_id=" + clientId +
                         "&response_type=" + response_type +
                         "&redirect_uri=" + redirectUri +
@@ -104,7 +104,7 @@ namespace Spots.APIs.Controllers
 
             request = new HttpRequestMessage(
                 HttpMethod.Post,
-                $"/api/externallogin");
+                $"idp/api/externallogin");
 
             request.Content = new StringContent(
                 serializeduser,

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace Spots.APIs.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [Authorize(Roles = "Admin")]
     public class SettingController : ControllerBase
     {

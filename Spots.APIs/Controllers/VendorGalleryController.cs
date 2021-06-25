@@ -15,7 +15,7 @@ namespace Spots.APIs.Controllers
 {
 
     [ApiController]
-    [Route("api/vendor/{vendorId}/[controller]")]
+    [Route("vendor/{vendorId}/[controller]")]
     [Produces("application/json")]
     public class VendorGalleryController : ControllerBase
     {

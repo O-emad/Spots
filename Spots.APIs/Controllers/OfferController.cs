@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace Spots.APIs.Controllers
 {
     [ApiController]
-    [Route("api/vendor/{vendorId}/[controller]")]
+    [Route("vendor/{vendorId}/[controller]")]
     [Produces("application/json")]
     [Authorize(Roles = "Admin ,Vendor")]
     public class OfferController : ControllerBase

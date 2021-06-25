@@ -15,7 +15,7 @@ namespace Spots.APIs.Controllers
 {
     [Produces("application/json")]
     [ApiController]
-    [Route("api/vendor/{vendorId}/[controller]")]
+    [Route("vendor/{vendorId}/[controller]")]
     public class ReviewController : ControllerBase
     {
         private readonly ISpotsRepositroy repositroy;

@@ -192,7 +192,7 @@ namespace AdminPanel.Controllers
             if (TempData.ContainsKey("todash"))
             {
                 if ((bool)TempData["todash"] == true)
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Dashboard");
             }
             return RedirectToAction("ListOffer", "Offer", new { id = vendorId });
 

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Spots.APIs.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class OfferQrScanController : ControllerBase
     {
         private readonly ISpotsRepositroy repositroy;

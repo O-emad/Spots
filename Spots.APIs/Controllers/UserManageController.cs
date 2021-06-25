@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace ExtraSW.IDP.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class UserManageController : ControllerBase
     {
         private readonly ILocalUserService localUserService;

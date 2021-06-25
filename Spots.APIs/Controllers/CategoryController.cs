@@ -23,7 +23,7 @@ namespace Spots.APIs.Controllers
 {
     [Produces("application/json")]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class CategoryController : ControllerBase
     {
         private readonly IMapper mapper;

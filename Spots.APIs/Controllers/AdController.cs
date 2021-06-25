@@ -20,7 +20,7 @@ namespace Spots.APIs.Controllers
 {
     [Produces("application/json")]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     //[Authorize(Roles = "Admin")]
     public class AdController : ControllerBase
     {

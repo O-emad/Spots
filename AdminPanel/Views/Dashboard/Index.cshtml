@@ -1,0 +1,113 @@
+﻿@model AdminPanel.ViewModels.HomeIndexViewModel
+
+@if (TempData.ContainsKey("CUD"))
+{
+    if ((bool)TempData["CUD"] == true)
+    {
+        <div class="alert @TempData["Type"] alert-dismissible fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            @TempData["Message"]
+        </div>
+    }
+}
+
+<main class="main-container">
+    <div class="main-content">
+        <div class="row">
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="col-md-4 col-lg-4">
+                    <div class="card shadow-1 bg-pale-info">
+                        <header class="card-header">
+                            <h4 class="card-title"><strong>Categories</strong> <small class="sidetitle">Count of available categories</small></h4>
+                        </header>
+                        <div class="card-body">
+                            <div class="text-center my-2">
+                                <div class="fs-60 fw-400 text-info">@Model.CategoriesCount</div>
+                                <span class="fw-400 text-muted">Total</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <div class="card shadow-1 bg-pale-warning">
+                        <header class="card-header">
+                            <h4 class="card-title"><strong>Vendors</strong> <small class="sidetitle">Count of listed vendors</small></h4>
+                        </header>
+                        <div class="card-body">
+                            <div class="text-center my-2">
+                                <div class="fs-60 fw-400 text-warning">@Model.VendorsCount</div>
+                                <span class="fw-400 text-muted">Total</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <div class="card shadow-1 bg-pale-info">
+                        <header class="card-header">
+                            <h4 class="card-title"><strong>Ads</strong> <small class="sidetitle">Count of listed ads</small></h4>
+                        </header>
+                        <div class="card-body">
+                            <div class="text-center my-2">
+                                <div class="fs-60 fw-400 text-info">@Model.AdsCount</div>
+                                <span class="fw-400 text-muted">Total</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <h4 class="card-title"><strong>Pending Offers</strong></h4>
+
+                        <div class="card-body">
+                            <table class="table table-separated">
+                                <thead>
+                                    <tr>
+                                        <th class="w-300px">Title</th>
+                                        <th class="w-100px">Vendor Name</th>
+                                        <th class="text-right w-100px">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.PendingOffers)
+                                    {
+                                        <tr>
+                                            <td>@item.OfferTitle</td>
+                                            <td>@item.VendorName</td>
+                                            <td class="text-right table-actions">
+                                                <a class="table-action hover-primary"
+                                                   asp-action="GetSingleOffer" asp-controller="Offer"
+                                                   asp-route-id=@item.OfferId asp-route-vendorId=@item.VendorId
+                                                   asp-route-toDash =@true>
+                                                    <i class="ti-more-alt"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("Vendor"))
+            {
+                <div class="col-md-4 col-lg-4">
+                    <div class="card bg-pale-info">
+                        <header class="card-header">
+                            <h4 class="card-title"><strong>Followers</strong> <small class="sidetitle">Count of current followers</small></h4>
+                        </header>
+                        <div class="card-body">
+                            <div class="text-center my-2">
+                                <div class="fs-60 fw-400 text-info">@Model.FollowsCount</div>
+                                <span class="fw-400 text-muted">Total</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</main>
