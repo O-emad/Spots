@@ -107,6 +107,39 @@ namespace Marvin.IDP.Services
             return (user.Password == password);
         }
 
+        public async Task<bool> ValidateUsernameAndPassword(string userName, string password)
+        {
+            if (string.IsNullOrWhiteSpace(userName) ||
+                string.IsNullOrWhiteSpace(password))
+            {
+                return false;
+            }
+
+            var user = await GetUserByUserNameAsync(userName);
+            if (user == null)
+            {
+                return false;
+            }
+            // Validate credentials
+            return (user.Password == password);
+        }
+
+        public async Task<bool> ValidateUserActive(string userName)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                return false;
+            }
+
+            var user = await GetUserByUserNameAsync(userName);
+            if (user == null)
+            {
+                return false;
+            }
+            // Validate credentials
+            return (user.Active);
+        }
+
         //public async Task<bool> ValidateCredentialsAsync(string userName, 
         //    string password)
         //{

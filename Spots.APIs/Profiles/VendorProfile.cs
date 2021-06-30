@@ -14,7 +14,9 @@ namespace Spots.APIs.Profiles
         public VendorProfile()
         {
             CreateMap<Vendor, VendorDto>()
-                .ForMember(dest => dest.Follows, opt => opt.MapFrom(src => src.Follows.Count));
+                .ForMember(dest => dest.Follows, opt => opt.MapFrom(src => src.Follows.Count))
+                .ForMember(dest => dest.HasOffer, opt => opt.MapFrom(src =>  src.Offers.Count > 0));
+
             CreateMap<VendorForCreationDto, Vendor>();
             CreateMap<VendorForUpdateDto, Vendor>()
                 .ForMember(dest => dest.OwnerId, opt => opt.PreCondition(c => !string.IsNullOrWhiteSpace(c.OwnerId)))

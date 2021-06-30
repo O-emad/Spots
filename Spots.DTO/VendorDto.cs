@@ -37,6 +37,7 @@ namespace Spots.DTO
         [MaxLength(50)]
         public string PhoneNumber { get; set; }
         public bool Trusted { get; set; }
+        public bool HasOffer { get; set; }
         public int Follows { get; set; }
         public List<Offer> Offers { get; set; }
         public List<CategoryDto> Categories { get; set; }

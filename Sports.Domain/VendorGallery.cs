@@ -15,6 +15,8 @@ namespace Spots.Domain
         [Required]
         [MaxLength(50)]
         public string FileName { get; set; }
+        [StringLength(50)]
+        public string Title { get; set; }
 
         [ForeignKey("Vendor")]
         public Guid VendorId { get; set; }

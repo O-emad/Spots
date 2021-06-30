@@ -12,5 +12,7 @@ namespace Spots.DTO
         [Required]
 
         public byte[] FileBytes { get; set; }
+        [StringLength(50)]
+        public string Title { get; set; }
     }
 }

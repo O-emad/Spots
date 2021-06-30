@@ -222,6 +222,9 @@ namespace Spots.Data.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<bool>("HasOffer")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Location")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
@@ -275,6 +278,10 @@ namespace Spots.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("Title")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<Guid>("VendorId")
                         .HasColumnType("uniqueidentifier");
 
@@ -290,6 +297,11 @@ namespace Spots.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid>("VendorId")
                         .HasColumnType("uniqueidentifier");

@@ -53,15 +53,15 @@ namespace AdminPanel
             services.AddTransient<BearerTokenHandler>();
             services.AddHttpClient("APIClient", client =>
             {
-                //client.BaseAddress = new Uri("https://localhost:44308");
-                client.BaseAddress = new Uri("https://www.rokiba.com");
+                client.BaseAddress = new Uri("https://localhost:44308");
+                //client.BaseAddress = new Uri("https://www.rokiba.com");
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add(Microsoft.Net.Http.Headers.HeaderNames.Accept, "application/json");
             }).AddHttpMessageHandler<BearerTokenHandler>();
 
             services.AddHttpClient("IDPClient", client =>
             {
-                //client.BaseAddress = new Uri("https://localhost:5001");
+                client.BaseAddress = new Uri("https://localhost:5001");
                 //client.BaseAddress = new Uri("https://www.rokiba.com");
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add(Microsoft.Net.Http.Headers.HeaderNames.Accept, "application/json");
@@ -89,8 +89,8 @@ namespace AdminPanel
             {
                 //o.RequireHttpsMetadata = false;
                 o.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                //o.Authority = "https://localhost:5001";
-                o.Authority = "https://www.rokiba.com/idp";
+                o.Authority = "https://localhost:5001";
+                //o.Authority = "https://www.rokiba.com/idp";
                 o.ClientId = "adminpanelclient";
                 o.ResponseType = "code";
                 //o.Scope.Add("openid");
@@ -98,6 +98,7 @@ namespace AdminPanel
                 o.Scope.Add("roles");
                 o.Scope.Add("categoryapi");
                 o.Scope.Add("idpapi");
+                o.Scope.Add("offline_access");
                 //o.UsePkce = true;
                 //o.ClaimActions.Remove("nbf");
                 o.ClaimActions.MapUniqueJsonKey("role", "role");

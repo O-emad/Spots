@@ -10,7 +10,7 @@ namespace Spots.DTO
 {
     public class VendorForUpdateDto
     {
-        [Required]
+        //[Required]
         [MaxLength(150)]
         public string Name { get; set; }
         public int SortOrder { get; set; }
@@ -24,7 +24,7 @@ namespace Spots.DTO
         public string Description { get; set; }
         [MaxLength(150)]
         public string Email { get; set; }
-        [Required]
+        //[Required]
         [MaxLength(50)]
         public string PhoneNumber { get; set; }
         public bool Trusted { get; set; }

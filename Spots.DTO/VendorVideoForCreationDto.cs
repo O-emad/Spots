@@ -12,5 +12,8 @@ namespace Spots.DTO
         [Required]
         [MaxLength(250)]
         public string VideoUrl { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string Title { get; set; }
     }
 }

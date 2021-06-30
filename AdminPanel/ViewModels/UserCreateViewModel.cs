@@ -23,12 +23,10 @@ namespace AdminPanel.ViewModels
         [Display(Name = "Password")]
         public string Password { get; set; }
         [MaxLength(250)]
-        [Required]
-        [Display(Name = "Given name")]
+        [Display(Name = "First name")]
         public string GivenName { get; set; }
         [MaxLength(250)]
-        [Required]
-        [Display(Name = "Family name")]
+        [Display(Name = "Last name")]
         public string FamilyName { get; set; }
         [Display(Name = "Active Status")]
         public bool Active { get; set; }

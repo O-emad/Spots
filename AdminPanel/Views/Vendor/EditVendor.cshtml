@@ -99,7 +99,8 @@
                                 <textarea type="text" class="form-control" asp-for="Description"></textarea>
                                 <span asp-validation-for="Description" class="text-danger invalid-feedback"></span>
                             </div>
-
+                            @if (User.IsInRole("Admin"))
+                            {
                             <div class="form-group">
                                 <label>Selected Categories</label>
                                 <select asp-for="SelectedCategories" asp-items="@Model.CategoriesSelectList"
@@ -115,7 +116,7 @@
                                     <span class="switch-description">Trusted</span>
                                 </label>
                             </div>
-
+                            }
 
                         </div>
                     </div>
@@ -124,14 +125,18 @@
                 <footer class="card-footer text-right">
                     <button class="btn btn-secondary" asp-action="Index">Cancel</button>
                     <button class="btn btn-primary" type="submit" asp-action="EditVendor">Submit</button>
+                    @if (User.IsInRole("Admin"))
+                    {
                     <button class="btn btn-primary btn-danger" type="button" href="#"
                             data-target="#ineditdelete" data-toggle="modal">
                         Delete
                     </button>
+                    }
                 </footer>
             </form>
         </div>
-
+        @if (User.IsInRole("Admin"))
+        {
         <form method="get" asp-action="DeleteVendor" asp-route-id="@Model.Id" class="modal fade" id="ineditdelete"
               tabindex="-1" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-sm">
@@ -155,6 +160,6 @@
                 </div>
             </div>
         </form>
-
+        }
     </main>
 

@@ -35,6 +35,7 @@ namespace Spots.Domain
         [MaxLength(50)]
         public string PhoneNumber { get; set; }
         public bool Trusted { get; set; }
+        public bool HasOffer { get; set; }
         public List<Offer> Offers { get; set; }
         public List<Category> Categories { get; set; }
         public List<Follow> Follows { get; set; }

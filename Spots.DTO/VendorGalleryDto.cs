@@ -13,6 +13,8 @@ namespace Spots.DTO
         [Required]
         [MaxLength(50)]
         public string FileName { get; set; }
+        [StringLength(50)]
+        public string Title { get; set; }
         public Guid VendorId { get; set; }
     }
 }

@@ -63,7 +63,7 @@ namespace ExtraSW.IDP
             new Client[]
             {   new Client
             {
-                AccessTokenLifetime = 1200,
+                AccessTokenLifetime = 3600,
                 AllowOfflineAccess = true,
                 UpdateAccessTokenClaimsOnRefresh = true,
                 ClientName = "Admin Panel",
@@ -74,7 +74,7 @@ namespace ExtraSW.IDP
                 
                 RedirectUris = new List<string>()
                 {
-                    //"https://localhost:44343/signin-oidc",
+                    "https://localhost:44343/signin-oidc",
                     "https://www.rokiba.com/api",
                     "https://rokiba.com/api",
                     "https://www.rokiba.com/admin/signin-oidc",
@@ -82,7 +82,7 @@ namespace ExtraSW.IDP
                 },
                 PostLogoutRedirectUris = new List<string>()
                 {
-                    //"https://localhost:44343/signout-callback-oidc"
+                    "https://localhost:44343/signout-callback-oidc",
                     "https://www.rokiba.com/admin/signout-callback-oidc",
                     "https://rokiba.com/admin/signout-callback-oidc"
                 },

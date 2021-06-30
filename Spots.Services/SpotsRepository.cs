@@ -218,6 +218,7 @@ namespace Spots.Services
             #endregion
 
             collection = collection.Include(v=>v.Follows)
+                                   .Include(v=>v.Offers)
                                    .OrderBy(c => c.SortOrder);
       //          .Include(v=>v.Categories);
 

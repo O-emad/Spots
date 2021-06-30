@@ -17,34 +17,40 @@
 
 
                         <div class="form-group">
-                            <label asp-for="GivenName" class="require"></label>
-                            <input type="text" class="form-control" asp-for="GivenName" required>
+                            <label asp-for="GivenName"></label>
+                            <input type="text" class="form-control" asp-for="GivenName" >
                             <span asp-validation-for="GivenName" class="text-danger invalid-feedback"></span>
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="FamilyName" class="require"></label>
-                            <input type="text" class="form-control" asp-for="FamilyName" required>
+                            <label asp-for="FamilyName"></label>
+                            <input type="text" class="form-control" asp-for="FamilyName" >
                             <span asp-validation-for="FamilyName" class="text-danger invalid-feedback"></span>
                         </div>
 
                         @if (User.IsInRole("Admin"))
                         {
-                        <div class="form-group">
-                            <label asp-for="Role" class="require"></label>
-                            <select asp-for="Role" asp-items=@Model.Roles required
-                                    data-provide="selectpicker" data-live-search="true"
-                                    class="chzn-select form-control multiselect">
-                            </select>
-                            <span asp-validation-for="Role" class="text-danger invalid-feedback"></span>
-                        </div>
+                            <div class="form-group">
+                                <label asp-for="Password" class="require"></label>
+                                <input type="password" class="form-control" asp-for="Password" required>
+                                <span asp-validation-for="Password" class="text-danger invalid-feedback"></span>
+                            </div>
 
-                        <label class="switch switch-lg">
-                            <label></label>
-                            <input asp-for="Active" type="checkbox" />
-                            <span class="switch-indicator"></span>
-                            <span class="switch-description" asp-validation-for="Active">Active Status</span>
-                        </label>
+                            <div class="form-group">
+                                <label asp-for="Role" class="require"></label>
+                                <select asp-for="Role" asp-items=@Model.Roles required
+                                        data-provide="selectpicker" data-live-search="true"
+                                        class="chzn-select form-control multiselect">
+                                </select>
+                                <span asp-validation-for="Role" class="text-danger invalid-feedback"></span>
+                            </div>
+
+                            <label class="switch switch-lg">
+                                <label></label>
+                                <input asp-for="Active" type="checkbox" />
+                                <span class="switch-indicator"></span>
+                                <span class="switch-description" asp-validation-for="Active">Active Status</span>
+                            </label>
                         }
                         @*<div class="form-group">
             <label class="require">Ad Image</label>
@@ -68,13 +74,15 @@
                 @if (User.IsInRole("Admin"))
                 {
                     <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+                    <button class="btn btn-primary" type="submit">Submit</button>
                 }
                 else
                 {
+                    <a class="btn btn-primary" asp-action="ChangePassword">Change Password</a>
                     <a class="btn btn-secondary" asp-controller="Dashboard" asp-action="Index">Return</a>
                 }
 
-                @*<button class="btn btn-primary" type="submit">Submit</button>*@
+
             </footer>
         </form>
     </div>

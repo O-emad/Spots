@@ -16,10 +16,12 @@ namespace Marvin.IDP.Services
         PagedList<User> GetUsers(IndexResourceParameters userParameters);
         Task<bool> ValidateClearTextCredentialsAsync(
             string userName, 
-            string password); 
+            string password);
         //Task<bool> ValidateCredentialsAsync(
         //    string userName,
         //    string password);
+        Task<bool> ValidateUsernameAndPassword(string userName, string password);
+        Task<bool> ValidateUserActive(string userName);
         Task<IEnumerable<UserClaim>> GetUserClaimsBySubjectAsync(
             string subject);         
         Task<User> GetUserByUserNameAsync(

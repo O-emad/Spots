@@ -426,6 +426,224 @@ namespace AdminPanel.Controllers
         }
         #endregion
 
+        public async Task<IActionResult> Media(Guid id)
+        {
+            ViewData["vendor"] = "active";
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"/api/vendor/{id}/vendorgallery");
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            using var galleryResponseStream = await response.Content.ReadAsStreamAsync();
+            var galleryDeserializedResponse = await JsonSerializer
+                    .DeserializeAsync<DeserializedJsonModel<VendorGalleryListModel>>(galleryResponseStream);
+            var vendorGallery = galleryDeserializedResponse.Data.gallery;
+
+            request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"/api/vendor/{id}/vendorvideo");
+            response = await httpClient.SendAsync(request,
+                HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            using var videoResponseStream = await response.Content.ReadAsStreamAsync();
+            var videoDeserializedResponse = await JsonSerializer
+                .DeserializeAsync<DeserializedJsonModel<VendorVideoListModel>>(videoResponseStream);
+            var vendorVideo = videoDeserializedResponse.Data.video;
+
+            var vm = new VendorMediaViewModel(vendorGallery, vendorVideo);
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Media(VendorMediaViewModel vm, Guid id, bool galleryUpload = false, bool videoUpload = false)
+        {
+            ViewData["vendor"] = "active";
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+            if (galleryUpload)
+            {
+                var vendorGalleryForCreation = new VendorGalleryForCreation()
+                {
+                    Title = vm.GalleryTitle
+                };
+                var profileImageFile = vm.GalleryFile;
+                try
+                {
+                    if (profileImageFile.Length > 0)
+                    {
+                        using (var fileStream = profileImageFile.OpenReadStream())
+                        {
+                            using (var image = Image.Load(profileImageFile.OpenReadStream()))
+                            {
+                                image.Mutate(h => h.Resize(300, 300));
+                                using (var ms = new MemoryStream())
+                                {
+                                    image.SaveAsJpeg(ms);
+                                    vendorGalleryForCreation.FileBytes = ms.ToArray();
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (e.GetType() == typeof(UnknownImageFormatException))
+                    {
+                        TempData["Type"] = "alert-danger";
+                        TempData["CUD"] = true;
+                        TempData["Message"] = "Action Failed : Bad Image Format";
+                        return RedirectToAction("index");
+                    }
+                    if (!(e.GetType() == typeof(NullReferenceException)))
+                        throw;
+                }
+                var serializedVendorGallery = JsonSerializer.Serialize(vendorGalleryForCreation);
+                var httpClient = httpClientFactory.CreateClient("APIClient");
+                var request = new HttpRequestMessage(
+                    HttpMethod.Post,
+                    $"api/vendor/{id}/vendorgallery");
+                request.Content = new StringContent(
+                    serializedVendorGallery,
+                    System.Text.Encoding.Unicode,
+                    "application/json");
+                var response = await httpClient.SendAsync(
+                    request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+                try
+                {
+                    response.EnsureSuccessStatusCode();
+                    TempData["Type"] = "alert-success";
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Photo uploaded Successfully";
+                    return RedirectToAction("Media", new { id = id });
+                }
+                catch (Exception e)
+                {
+                    TempData["Type"] = "alert-danger";
+                    TempData["CUD"] = true;
+                    TempData["Message"] = $"Failed to upload photo: {e.Message}";
+                    return RedirectToAction("Media", new { id = id });
+                }
+            }
+            if (videoUpload)
+            {
+                var vendorVideoForCreation = new VendorVideoForCreation()
+                {
+                    Title = vm.VideoTitle,
+                    VideoUrl = vm.VideoUrl
+                };
+                var serializedVendorVideo = JsonSerializer.Serialize(vendorVideoForCreation);
+                var httpClient = httpClientFactory.CreateClient("APIClient");
+                var request = new HttpRequestMessage(
+                    HttpMethod.Post,
+                    $"api/vendor/{id}/vendorvideo");
+                request.Content = new StringContent(
+                    serializedVendorVideo,
+                    System.Text.Encoding.Unicode,
+                    "application/json");
+                var response = await httpClient.SendAsync(
+                    request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+                try
+                {
+                    response.EnsureSuccessStatusCode();
+                    TempData["Type"] = "alert-success";
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Video added Successfully";
+                    return RedirectToAction("Media", new { id = id });
+                }
+                catch (Exception e)
+                {
+                    TempData["Type"] = "alert-danger";
+                    TempData["CUD"] = true;
+                    TempData["Message"] = $"Failed to add video: {e.Message}";
+                    return RedirectToAction("Media", new { id = id });
+                }
+
+            }
+            return View(vm);
+        }
+
+        public async Task<IActionResult> DeleteGallery(Guid id, Guid vendorId)
+        {
+            ViewData["vendor"] = "active";
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+            var request = new HttpRequestMessage(
+                HttpMethod.Delete,
+                $"api/vendor/{vendorId}/vendorgallery/{id}");
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+                TempData["Type"] = "alert-danger";
+                if (e.StatusCode == HttpStatusCode.NotFound)
+                {
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Photo not found";
+                }
+                else
+                {
+                    throw;
+                }
+                return RedirectToAction("Media",new { id = vendorId });
+            }
+
+            TempData["CUD"] = true;
+            TempData["Message"] = "Photo Deleted Successfully";
+            TempData["Type"] = "alert-success";
+            return RedirectToAction("Media", new { id = vendorId });
+
+        }
+
+        public async Task<IActionResult> DeleteVideo(Guid id, Guid vendorId)
+        {
+            ViewData["vendor"] = "active";
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+            var request = new HttpRequestMessage(
+                HttpMethod.Delete,
+                $"api/vendor/{vendorId}/vendorvideo/{id}");
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+                TempData["Type"] = "alert-danger";
+                if (e.StatusCode == HttpStatusCode.NotFound)
+                {
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Video not found";
+                }
+                else
+                {
+                    throw;
+                }
+                return RedirectToAction("Media", new { id = vendorId });
+            }
+
+            TempData["CUD"] = true;
+            TempData["Message"] = "Video Deleted Successfully";
+            TempData["Type"] = "alert-success";
+            return RedirectToAction("Media", new { id = vendorId });
+
+        }
+
+
+
         public async Task<IActionResult> LinkVendor(Guid id)
         {
             ViewData["vendor"] = "active";

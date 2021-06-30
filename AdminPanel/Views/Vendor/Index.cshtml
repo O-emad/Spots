@@ -59,7 +59,8 @@
                             <td>@item.SortOrder</td>
                             <td><input type="checkbox" asp-for=@item.Trusted disabled /></td>
                             <td class="text-right table-actions">
-                                @if (string.IsNullOrWhiteSpace(item.OwnerId))
+
+                                @if (string.IsNullOrWhiteSpace(item.OwnerId) && User.IsInRole("Admin"))
                                 {
 
                                     <a class="table-action hover-primary"
@@ -69,6 +70,11 @@
                                     </a>
 
                                 }
+                                <a class="table-action hover-primary"
+                                   asp-action="Media" asp-controller="Vendor"
+                                   asp-route-id="@item.Id">
+                                    <i class="material-icons fs-16">perm_media</i>
+                                </a>
                                 <a class="table-action hover-primary"
                                    asp-action="ListOffer" asp-controller="Offer"
                                    asp-route-id="@item.Id">
@@ -128,6 +134,8 @@
             </div>
         </div>
 
+        @if (User.IsInRole("Admin"))
+        {
         <div class="modal fade" id="modal-small" tabindex="-1" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-sm">
                 <div class="modal-content">
@@ -150,7 +158,7 @@
                 </div>
             </div>
         </div>
-
+        }
         <script>
             function onDelete(itemid) {
                 newhref = $('#assertDelete').attr('href') + '/' + itemid;

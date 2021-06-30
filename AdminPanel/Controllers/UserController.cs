@@ -71,7 +71,16 @@ namespace AdminPanel.Controllers
                 return View(new UserCreateViewModel(deserializedResponse.Data.FirstOrDefault()));
             }
         }
+        [HttpPost]
+        public IActionResult EditUser(UserCreateViewModel vm,  Guid id)
+        {
+            //ViewData["user"] = "active";
+            //if (!ModelState.IsValid)
+            //{
+                return View(vm);
+            //}
 
+        }
 
         public IActionResult CreateUser()
         {
@@ -93,24 +102,29 @@ namespace AdminPanel.Controllers
                 Password = vm.Password,
                 UserName = vm.Username,
                 Subject = Guid.NewGuid().ToString(),
-                Active = vm.Active
+                Active = true
             };
             userToCreate.Claims.Add(new UserClaimForCreation()
             {
                 Type = "role",
                 Value = vm.Role
             });
-            userToCreate.Claims.Add(new UserClaimForCreation()
+            if (!string.IsNullOrWhiteSpace(vm.GivenName))
             {
-                Type = "given_name",
-                Value = vm.GivenName
-            });
-            userToCreate.Claims.Add(new UserClaimForCreation()
+                userToCreate.Claims.Add(new UserClaimForCreation()
+                {
+                    Type = "given_name",
+                    Value = vm.GivenName
+                });
+            }
+            if (!string.IsNullOrWhiteSpace(vm.FamilyName))
             {
-                Type = "family_name",
-                Value = vm.FamilyName
-            });
-
+                userToCreate.Claims.Add(new UserClaimForCreation()
+                {
+                    Type = "family_name",
+                    Value = vm.FamilyName
+                });
+            }
             var serializedNewUser = JsonSerializer.Serialize(userToCreate);
 
             var httpClient = httpClientFactory.CreateClient("APIClient");
@@ -148,6 +162,11 @@ namespace AdminPanel.Controllers
             TempData["CUD"] = true;
             TempData["Message"] = "User Created Successfully";
             return RedirectToAction("Index");
+        }
+
+        public IActionResult ChangePassword()
+        {
+            return View();
         }
 
     }
