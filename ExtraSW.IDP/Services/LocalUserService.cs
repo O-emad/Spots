@@ -60,7 +60,6 @@ namespace Marvin.IDP.Services
 
             collection = (IQueryable<User>)collection.OrderBy(c => c.Active)
                 .Include(u => u.Claims);
-
             return PagedList<User>.Create(collection, userParameters.PageNumber
                 , userParameters.PageSize, userParameters.IncludeAll);
         }
@@ -140,6 +139,10 @@ namespace Marvin.IDP.Services
             return (user.Active);
         }
 
+        public void DeleteUser(User user)
+        {
+            _context.Remove(user);
+        }
         //public async Task<bool> ValidateCredentialsAsync(string userName, 
         //    string password)
         //{

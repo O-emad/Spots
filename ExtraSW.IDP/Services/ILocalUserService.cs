@@ -40,6 +40,7 @@ namespace Marvin.IDP.Services
         Task<User> GetOrCreateExternalLoginUser(string provider, string key, string email, string firstName, string lastName);
         //Task<bool> ActivateUser(
         //    string securityCode);
+        void DeleteUser(User user);
         Task<bool> SaveChangesAsync();
         //Task<string> InitiatePasswordResetRequest(
         //    string email);

@@ -1,4 +1,4 @@
-﻿@model AdminPanel.ViewModels.UserCreateViewModel
+﻿@model AdminPanel.ViewModels.UserEditViewModel
 
 <main class="main-container">
     <div class="main-content">
@@ -31,19 +31,19 @@
                         @if (User.IsInRole("Admin"))
                         {
                             <div class="form-group">
-                                <label asp-for="Password" class="require"></label>
-                                <input type="password" class="form-control" asp-for="Password" required>
+                                <label asp-for="Password"></label>
+                                <input type="password" class="form-control" asp-for="Password">
                                 <span asp-validation-for="Password" class="text-danger invalid-feedback"></span>
                             </div>
 
-                            <div class="form-group">
+                            @*<div class="form-group">
                                 <label asp-for="Role" class="require"></label>
                                 <select asp-for="Role" asp-items=@Model.Roles required
                                         data-provide="selectpicker" data-live-search="true"
                                         class="chzn-select form-control multiselect">
                                 </select>
                                 <span asp-validation-for="Role" class="text-danger invalid-feedback"></span>
-                            </div>
+                            </div>*@
 
                             <label class="switch switch-lg">
                                 <label></label>

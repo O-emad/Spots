@@ -135,6 +135,55 @@ namespace ExtraSW.IDP.Controllers
             return CreatedAtRoute("GetUser", new { createdUserToReturn.Id }, response);
         }
 
+        [Authorize(Roles = "Admin,Vendor")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditUser([FromBody]UserForUpdateDto user, Guid id)
+        {
+            var response = new ResponseModel();
+
+            if (!ModelState.IsValid)
+            {
+                response.StatusCode = StatusCodes.Status400BadRequest;
+                response.Message = "Invalid User Format";
+                return BadRequest(response);
+            }
+            var _user = await localUserService.GetUserByIdAsync(id);
+            if(_user == null)
+            {
+                response.StatusCode = StatusCodes.Status404NotFound;
+                response.Message = "User not found";
+                return NotFound(response);
+            }
+            var role = _user.Claims.FirstOrDefault(c => c.Type == "role");
+            if(role != null)
+            {
+                var _role = mapper.Map<UserClaimForCreation>(role);
+                user.Claims.Add(_role);
+            }
+            mapper.Map(user, _user);
+            //foreach(var claim in user.Claims)
+            //{
+            //    if(_user.Claims.)
+            //}
+            await localUserService.SaveChangesAsync();
+            return NoContent();
+
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            var user = await localUserService.GetUserByIdAsync(id);
+            if(user == null)
+            {
+                return NotFound(new ResponseModel() { StatusCode = StatusCodes.Status404NotFound, Message = "User not found" });
+            }
+            localUserService.DeleteUser(user);
+            await localUserService.SaveChangesAsync();
+            return NoContent();
+        }
+
         private string CreateUsersResourceUri(IndexResourceParameters usersParameters,
             ResourceUriType type)
         {

@@ -16,7 +16,11 @@ namespace Spots.APIs.Profiles
             CreateMap<User, UserDto>();
             CreateMap<ExtraSW.IDP.Entities.UserClaim, Spots.DTO.UserClaim>();
             CreateMap<UserForCreationDto, User>();
-            CreateMap<UserClaimForCreation, ExtraSW.IDP.Entities.UserClaim>();
+            CreateMap<UserClaimForCreation, ExtraSW.IDP.Entities.UserClaim>()
+                .ReverseMap();
+
+            CreateMap<UserForUpdateDto, User>()
+                .ForMember(dest=>dest.Password, opt=>opt.PreCondition(src=>!string.IsNullOrWhiteSpace(src.Password)));
         }
     }
 }

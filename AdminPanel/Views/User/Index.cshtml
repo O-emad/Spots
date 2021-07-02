@@ -53,9 +53,11 @@
                     <tbody>
                         @foreach (var item in Model.Users)
                         {
+                            var role = item.Claims.FirstOrDefault(c => c.Type == "role");
+                            if (role != null) {
                             <tr>
                                 <td>@item.UserName</td>
-                                <td>@item.Claims.Where(c => c.Type == "role").FirstOrDefault().Value
+                                <td>@role.Value
                                         </td>
                                 <td><input type="checkbox" asp-for=@item.Active disabled/></td>
                                 
@@ -74,6 +76,7 @@
                                     </a>
                                 </td>
                             </tr>
+                            }
                         }
                     </tbody>
                 </table>
@@ -126,7 +129,7 @@
                     <div class="modal-footer" id="sdsd">
                         <button type="button" class="btn btn-bold btn-pure btn-secondary" data-dismiss="modal">Cancel</button>
                         <a id="assertDelete" type="submit" class="btn btn-bold btn-pure btn-primary"
-                           asp-action="DeleteAd" asp-controller="Ad">
+                           asp-action="DeleteUser" asp-controller="User">
                             Delete
                         </a>
                     </div>
