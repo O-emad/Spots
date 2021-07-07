@@ -16,7 +16,8 @@ namespace AdminPanel.ViewModels
         [MaxLength(200)]
         [Display(Name = "Username")]
         public string Username { get; set; }
-        [StringLength(20)]
+        [StringLength(20, MinimumLength = 8,
+            ErrorMessage = "Password must be with minimum length 8 and maximum length 20")]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
@@ -55,8 +56,8 @@ namespace AdminPanel.ViewModels
             Username = user.UserName;
             Password = user.Password;
             Active = user.Active;
-            GivenName = user.Claims.Where(c => c.Type == "given_name").FirstOrDefault().Value;
-            FamilyName = user.Claims.Where(c => c.Type == "family_name").FirstOrDefault().Value;
+            GivenName = user.Claims.Where(c => c.Type == "given_name").FirstOrDefault()?.Value;
+            FamilyName = user.Claims.Where(c => c.Type == "family_name").FirstOrDefault()?.Value;
             //Role = user.Claims.Where(c => c.Type == "role").FirstOrDefault().Value;
         }
     }

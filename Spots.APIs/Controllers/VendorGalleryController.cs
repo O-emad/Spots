@@ -76,7 +76,7 @@ namespace Spots.APIs.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(VendorGalleryDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult AddGallery(Guid vendorId, [FromBody] VendorGalleryForCreationDto vendorGallery)
+        public IActionResult AddGallery(Guid vendorId, [FromBody] List<VendorGalleryForCreationDto> vendorGalleries)
         {
 
             if (!repositroy.VendorExists(vendorId))
@@ -86,14 +86,20 @@ namespace Spots.APIs.Controllers
                 response.Message = "Vendor doesn't exist";
                 return NotFound(response);
             }
-            var gallery = mapper.Map<VendorGallery>(vendorGallery);
-            var mediaManager = new MediaManager(hostEnvironment);
-            gallery.FileName = mediaManager.UploadPhoto(vendorGallery.FileBytes);
-            repositroy.AddGallery(vendorId, gallery);
-            repositroy.Save();
-            var createdGalleryToReturn = mapper.Map<VendorGalleryDto>(gallery);
-            return CreatedAtRoute("GetGallery", new { createdGalleryToReturn.VendorId, createdGalleryToReturn.Id }
-                                  , createdGalleryToReturn);
+            var result = new List<CreatedAtRouteResult>();
+            foreach (var vendorGallery in vendorGalleries)
+            {
+                var gallery = mapper.Map<VendorGallery>(vendorGallery);
+                var mediaManager = new MediaManager(hostEnvironment);
+                gallery.FileName = mediaManager.UploadPhoto(vendorGallery.FileBytes);
+                repositroy.AddGallery(vendorId, gallery);
+                repositroy.Save();
+                var createdGalleryToReturn = mapper.Map<VendorGalleryDto>(gallery);
+                var route = CreatedAtRoute("GetGallery", new { createdGalleryToReturn.VendorId, createdGalleryToReturn.Id }
+                                      , createdGalleryToReturn);
+                result.Add(route);
+            }
+            return Created("GetGallery", result);
         }
 
         [HttpDelete("{id}")]

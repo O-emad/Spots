@@ -30,6 +30,8 @@ namespace Spots.DTO
         public bool Trusted { get; set; }
         public byte[] ProfileBytes { get; set; }
         public byte[] BannerBytes { get; set; }
+        public bool AutoAcceptOffer { get; set; }
+        public bool Enabled { get; set; }
         //public List<byte[]> GalleryByets { get; set; }
         //public List<string> VideosUrls { get; set; }
         public List<CategoryDto> Categories { get; set; }

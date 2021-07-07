@@ -18,5 +18,6 @@ namespace Spots.Domain
         public byte[] File { get; set; }
         [MaxLength(150)]
         public string ExternalLink { get; set; }
+        public Guid? VendorId { get; set; }
     }
 }

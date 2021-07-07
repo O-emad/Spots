@@ -17,7 +17,9 @@ namespace AdminPanel.ViewModels
         [Required]
         [Display(Name ="Username")]
         public string Username { get; set; }
-        [MaxLength(200)]
+        //[MaxLength(20)]
+        [StringLength(20,MinimumLength = 8,
+            ErrorMessage = "Password must be with minimum length 8 and maximum length 20")]
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
@@ -30,25 +32,32 @@ namespace AdminPanel.ViewModels
         public string FamilyName { get; set; }
         [Display(Name = "Active Status")]
         public bool Active { get; set; }
-        [MaxLength(50)]
-        [Required]
-        [Display(Name = "Account Type")]
-        public string Role { get; set; }
+        public string AccountType { get; set; }
+        public Guid VendorId { get; set; }
+        //[MaxLength(50)]
+        //[Required]
+        //[Display(Name = "Account Type")]
+        //public string Role { get; set; }
 
-        public SelectList Roles { get; set; } =
-            new SelectList(
-                new[]
-                {
-                    new {Type = "Admin", Value = "Admin"},
-                    new {Type = "Vendor", Value = "Vendor"}
-                },
-                "Type",
-                "Value"
-                );
+        //public SelectList Roles { get; set; } =
+        //    new SelectList(
+        //        new[]
+        //        {
+        //            new {Type = "Admin", Value = "Admin"},
+        //            new {Type = "Vendor", Value = "Vendor"}
+        //        },
+        //        "Type",
+        //        "Value"
+        //        );
 
         public UserCreateViewModel()
         {
 
+        }
+        public UserCreateViewModel(string accountType, Guid vendorId)
+        {
+            AccountType = accountType;
+            VendorId = vendorId;
         }
 
         public UserCreateViewModel(UserModel user)
@@ -59,7 +68,7 @@ namespace AdminPanel.ViewModels
             Active = user.Active;
             GivenName = user.Claims.Where(c => c.Type == "given_name").FirstOrDefault().Value;
             FamilyName = user.Claims.Where(c => c.Type == "family_name").FirstOrDefault().Value;
-            Role = user.Claims.Where(c => c.Type == "role").FirstOrDefault().Value;
+            //Role = user.Claims.Where(c => c.Type == "role").FirstOrDefault().Value;
         }
     }
 }

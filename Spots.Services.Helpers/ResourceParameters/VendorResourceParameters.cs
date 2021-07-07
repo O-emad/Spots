@@ -11,5 +11,6 @@ namespace Spots.Services.Helpers.ResourceParameters
     {
         public Guid CategoryId { get; set; }
         public bool Trusted { get; set; }
+        public bool Enabled { get; set; }
     }
 }

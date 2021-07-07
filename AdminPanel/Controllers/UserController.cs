@@ -1,4 +1,5 @@
-﻿using AdminPanel.Models;
+﻿using AdminPanel.Base;
+using AdminPanel.Models;
 using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Spots.Services.Helpers;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 namespace AdminPanel.Controllers
 {
     
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly IHttpClientFactory httpClientFactory;
 
@@ -28,6 +29,7 @@ namespace AdminPanel.Controllers
         {
             if (User.IsInRole("Vendor"))
             {
+                ViewData["vendor"] = "active";
                 return RedirectToAction("EditUser", Guid.Empty);
             }
             ViewData["user"] = "active";
@@ -55,7 +57,14 @@ namespace AdminPanel.Controllers
 
         public async Task<IActionResult> EditUser(Guid id)
         {
-            ViewData["user"] = "active";
+            if (User.IsInRole("Vendor"))
+            {
+                ViewData["vendor"] = "active";
+            }
+            else {
+                ViewData["user"] = "active";
+            }
+            
             var httpClient = httpClientFactory.CreateClient("APIClient");
 
             var request = new HttpRequestMessage(
@@ -73,7 +82,14 @@ namespace AdminPanel.Controllers
         [HttpPost]
         public async Task<IActionResult> EditUser(UserEditViewModel vm,  Guid id)
         {
-            ViewData["user"] = "active";
+            if (User.IsInRole("Vendor"))
+            {
+                ViewData["vendor"] = "active";
+            }
+            else
+            {
+                ViewData["user"] = "active";
+            }
             if (!ModelState.IsValid)
             {
                 return View(vm);
@@ -144,17 +160,43 @@ namespace AdminPanel.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult CreateUser()
+        public async Task<IActionResult> CreateUser(string accountType = "Admin", string vendorName = "")
         {
-            ViewData["user"] = "active";
-            return View(new UserCreateViewModel());
+            var vendorId = Guid.Empty;
+            if(accountType == "Vendor")
+            {
+                ViewData["vendor"] = "active";
+                var httpClient = httpClientFactory.CreateClient("APIClient");
+
+                var request = new HttpRequestMessage(
+                    HttpMethod.Get,
+                    $"/api/vendor?pageSize=15&pageNumber={1}&searchQuery={vendorName}");
+
+                var response = await httpClient.SendAsync(
+                    request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+                response.EnsureSuccessStatusCode();
+                
+                using (var responseStream = await response.Content.ReadAsStreamAsync())
+                {
+                    var deserializedResponse = await JsonSerializer
+                        .DeserializeAsync<DeserializedResponseModel<VendorDomainModel>>(responseStream);
+                    var vendor = deserializedResponse.Data.FirstOrDefault();
+                    vendorId = vendor.Id;
+                }
+            }
+            else
+            {
+                ViewData["user"] = "active";
+            }
+            return View(new UserCreateViewModel(accountType, vendorId));
         }
 
 
         [HttpPost]
         public async Task<IActionResult> CreateUser(UserCreateViewModel vm)
         {
-            ViewData["user"] = "active";
+            
             if (!ModelState.IsValid)
             {
                 return View(vm);
@@ -169,7 +211,7 @@ namespace AdminPanel.Controllers
             userToCreate.Claims.Add(new UserClaimForCreation()
             {
                 Type = "role",
-                Value = vm.Role
+                Value = vm.AccountType
             });
             if (!string.IsNullOrWhiteSpace(vm.GivenName))
             {
@@ -223,6 +265,12 @@ namespace AdminPanel.Controllers
             TempData["Type"] = "alert-success";
             TempData["CUD"] = true;
             TempData["Message"] = "User Created Successfully";
+            if(vm.AccountType == "Vendor")
+            {
+                ViewData["vendor"] = "active";
+                return RedirectToAction("LinkVendorBack","Vendor", new { vendorId = vm.VendorId, userSubject = userToCreate.Subject });
+            }
+            ViewData["user"] = "active";
             return RedirectToAction("Index");
         }
 
@@ -264,7 +312,63 @@ namespace AdminPanel.Controllers
         }
         public IActionResult ChangePassword()
         {
+            ViewData["vendor"] = "active";
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel vm)
+        {
+            ViewData["vendor"] = "active";
+            if (vm.NewPassword != vm.ConfirmNewPassword)
+            {
+                ModelState.AddModelError("passwordvalidation", "New Password and Confirmed New Password Does Not Match");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+            var passwordChange = new PasswordChangeModel();
+            passwordChange.OldPassword = vm.OldPassword;
+            passwordChange.NewPassword = vm.NewPassword;
+            var serializedEditedUser = JsonSerializer.Serialize(passwordChange);
+
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+
+            var request = new HttpRequestMessage(
+                HttpMethod.Patch,
+                $"/api/usermanage/");
+
+            request.Content = new StringContent(
+                serializedEditedUser,
+                System.Text.Encoding.Unicode,
+                "application/json");
+
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+                TempData["Type"] = "alert-danger";
+                if (e.StatusCode == HttpStatusCode.Conflict)
+                {
+                    TempData["CUD"] = true;
+                    TempData["Message"] = "Old Password doesn't match account password";
+                    return View(vm);
+
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            TempData["Type"] = "alert-success";
+            TempData["CUD"] = true;
+            TempData["Message"] = "Password Changed Successfully";
+            return RedirectToAction("Index","Vendor");
         }
 
     }

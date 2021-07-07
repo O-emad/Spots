@@ -70,6 +70,23 @@
                         <span class="title">Vendor</span>
                     </a>
                 </li>
+                
+                @if (User.IsInRole("Vendor"))
+                {
+                    <li class="menu-item @ViewData["media"]">
+                        <a class="menu-link" asp-controller="Vendor" asp-action="Media">
+                            <span class="icon fa fa-photo"></span>
+                            <span class="title">Gallery</span>
+                        </a>
+                    </li>
+                    <li class="menu-item @ViewData["offer"]">
+                        <a class="menu-link" asp-controller="Offer" asp-action="ListOffer">
+                            <span class="icon fa fa-percent"></span>
+                            <span class="title">Offer</span>
+                        </a>
+                    </li>
+                }
+
                 @if (User.IsInRole("Admin"))
                 {
                     <li class="menu-item @ViewData["ad"]">
@@ -79,7 +96,7 @@
                         </a>
                     </li>
                 }
-                @if (User.IsInRole("Admin") || User.IsInRole("Vendor"))
+                @if (User.IsInRole("Admin"))
                 {
                     <li class="menu-item @ViewData["user"]">
                         <a class="menu-link" asp-controller="User" asp-action="Index">

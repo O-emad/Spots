@@ -26,6 +26,7 @@ namespace Spots.Data
         public DbSet<Follow> Follows { get; set; }
         public DbSet<VendorGallery> VendorGallery { get; set; }
         public DbSet<VendorVideo> VendorVideos { get; set; }
+        public DbSet<OfferUse> OfferUses { get; set; }
 
 
     }

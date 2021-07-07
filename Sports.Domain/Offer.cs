@@ -15,7 +15,10 @@ namespace Spots.Domain
         public string Description { get; set; }
         public bool OfferApproved { get; set; }
         public string FileName { get; set; }
+        public int AllowedUses { get; set; }
+        public bool Enabled { get; set; }
         public Guid VendorId { get; set; }
+        public List<OfferUse> OfferUses { get; set; }
 
     }
 

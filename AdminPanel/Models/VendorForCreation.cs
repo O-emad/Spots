@@ -21,6 +21,8 @@ namespace AdminPanel.Models
         public byte[] BannerBytes { get; set; }
         public string Description { get; set; }
         public string OwnerId { get; set; }
+        public bool AutoAcceptOffer { get; set; }
+        public bool Enabled { get; set; }
         public List<CategoryListModel> Categories { get; set; }
     }
 }

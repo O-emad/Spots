@@ -16,14 +16,16 @@ namespace ExtraSW.IDP
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
                 new IdentityResource("roles", "Your role(s)",
-                    new List<string>(){ "role" })
+                    new List<string>(){ "role" }),
+                new IdentityResource("vendors", "Your vendor(s)",
+                    new List<string>(){ "vendor" })
             };
 
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             { 
                 new ApiScope("categoryapi", "Category API",
-                    new List<string>(){ "role"}),
+                    new List<string>(){ "role", "vendor"}),
                 new ApiScope("idpapi", "IDP API")
             };
 
@@ -41,7 +43,8 @@ namespace ExtraSW.IDP
                     ShowInDiscoveryDocument = true,
                     UserClaims = new List<string>()
                     {
-                        "role"
+                        "role",
+                        "vendor"
                     }
                     
 
@@ -92,7 +95,8 @@ namespace ExtraSW.IDP
                     IdentityServerConstants.StandardScopes.Profile,
                     "roles",
                     "categoryapi",
-                    "idpapi"
+                    "idpapi",
+                    "vendors"
                 },
                 ClientSecrets =
                 {

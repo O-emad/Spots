@@ -13,5 +13,6 @@ namespace Spots.DTO
         public int SortOrder { get; set; }
         public byte[] File { get; set; }
         public string ExternalLink { get; set; }
+        public Guid? VendorId { get; set; }
     }
 }

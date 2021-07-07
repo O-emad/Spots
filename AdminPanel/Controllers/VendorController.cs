@@ -1,4 +1,5 @@
-﻿using AdminPanel.Models;
+﻿using AdminPanel.Base;
+using AdminPanel.Models;
 using AdminPanel.Models.Category;
 using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -21,8 +22,8 @@ using System.Threading.Tasks;
 
 namespace AdminPanel.Controllers
 {
-    [Authorize(Roles ="Admin, Vendor")]
-    public class VendorController : Controller
+    [Authorize(Roles = "Admin, Vendor")]
+    public class VendorController : BaseController
     {
         private readonly IHttpClientFactory httpClientFactory;
         private VendorModel VendorModel;
@@ -33,10 +34,23 @@ namespace AdminPanel.Controllers
         }
 
         #region List
-        
+
         public async Task<IActionResult> Index(int pageNumber, string searchQuery)
         {
+            
             ViewData["vendor"] = "active";
+            if (User.IsInRole("Vendor"))
+            {
+                //var id = await VendorModel.GetVendorId(httpClientFactory);
+                //if (id == null)
+                //{
+                //    TempData["Type"] = "alert-danger";
+                //    TempData["CUD"] = true;
+                //    TempData["Message"] = "No vendor is linked to this user";
+                //    return RedirectToAction("index", "Dashboard");
+                //}
+                return RedirectToAction("EditVendor", "Vendor", new { id = VendorId});
+            }
             ViewData["searchString"] = (string.IsNullOrEmpty(searchQuery)) ? "" : searchQuery;
             if (pageNumber < 1)
             {
@@ -66,7 +80,7 @@ namespace AdminPanel.Controllers
         #endregion
 
         #region Create
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateVendor()
         {
             ViewData["vendor"] = "active";
@@ -88,7 +102,7 @@ namespace AdminPanel.Controllers
             }
             var viewmodel = new VendorEditAndCreateViewModel(multiselect);
             VendorModel.Categories = multiselect;
-            return  View(viewmodel);
+            return View(viewmodel);
         }
 
         [HttpPost]
@@ -100,9 +114,18 @@ namespace AdminPanel.Controllers
             {
                 return View(VendorCreate);
             }
-
+            var newSelectedCategories = new List<CategoryListModel>();
+            if (VendorModel != null && VendorCreate.SelectedCategories != null)
+            {
+                foreach (var selectedCategoryId in VendorCreate.SelectedCategories)
+                {
+                    var selectedCategory = VendorModel.Categories.Where(c => c.Id == selectedCategoryId).FirstOrDefault();
+                    newSelectedCategories.Add(selectedCategory);
+                }
+            }
             var VendorForCreation = new VendorForCreation()
             {
+                Categories = newSelectedCategories,
                 Name = VendorCreate.Name,
                 Location = VendorCreate.Location,
                 SortOrder = VendorCreate.SortOrder,
@@ -111,7 +134,9 @@ namespace AdminPanel.Controllers
                 Description = VendorCreate.Description,
                 PhoneNumber = VendorCreate.PhoneNumber,
                 Trusted = VendorCreate.Trusted,
-                Email = VendorCreate.Email
+                Email = VendorCreate.Email,
+                AutoAcceptOffer = VendorCreate.AutoAcceptOffer,
+                Enabled = VendorCreate.Enabled
             };
 
             // take the first (only) file in the Files list
@@ -203,7 +228,7 @@ namespace AdminPanel.Controllers
                 TempData["Type"] = "alert-success";
                 TempData["CUD"] = true;
                 TempData["Message"] = "Vendor Created Successfully";
-                return RedirectToAction("Index");
+                return RedirectToAction("CreateUser","User",new { accountType = "Vendor", vendorName = VendorForCreation.Name});
             }
             catch (Exception e)
             {
@@ -212,8 +237,8 @@ namespace AdminPanel.Controllers
                 TempData["Message"] = $"Failed to create vendor: {e.Message}";
                 return RedirectToAction("Index");
             }
-            
-            
+
+
         }
         #endregion
         #region Delete
@@ -276,7 +301,7 @@ namespace AdminPanel.Controllers
                 var deserializedResponse = await JsonSerializer
                     .DeserializeAsync<DeserializedResponseModel<VendorDomainModel>>(responseStream);
                 vendor = deserializedResponse.Data.FirstOrDefault();
-                
+
             }
             #endregion
 
@@ -284,8 +309,8 @@ namespace AdminPanel.Controllers
                 HttpMethod.Get,
                 $"/api/category?includeAll=true");
 
-             response = await httpClient.SendAsync(
-                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            response = await httpClient.SendAsync(
+               request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
             var multiselect = new List<CategoryListModel>();
@@ -293,9 +318,9 @@ namespace AdminPanel.Controllers
             {
                 var deserializedResponse = await JsonSerializer
                     .DeserializeAsync<DeserializedResponseModel<CategoryListModel>>(responseStream);
-                 multiselect = deserializedResponse.Data;
+                multiselect = deserializedResponse.Data;
             }
-            var viewmodel = new VendorEditAndCreateViewModel(vendor,multiselect);
+            var viewmodel = new VendorEditAndCreateViewModel(vendor, multiselect);
             VendorModel.Categories = multiselect;
             return View(viewmodel);
         }
@@ -318,7 +343,7 @@ namespace AdminPanel.Controllers
                     newSelectedCategories.Add(selectedCategory);
                 }
             }
-            
+
             var editedVendor = new VendorForCreation()
             {
                 Name = VendorEdit.Name,
@@ -330,7 +355,9 @@ namespace AdminPanel.Controllers
                 Categories = newSelectedCategories,
                 PhoneNumber = VendorEdit.PhoneNumber,
                 Trusted = VendorEdit.Trusted,
-                Email = VendorEdit.Email
+                Email = VendorEdit.Email,
+                AutoAcceptOffer = VendorEdit.AutoAcceptOffer,
+                Enabled = VendorEdit.Enabled
             };
 
             var profileImageFile = VendorEdit.ProfileFile.FirstOrDefault();
@@ -404,16 +431,16 @@ namespace AdminPanel.Controllers
             // serialize it
             var serializedVendorForEdit = JsonSerializer.Serialize(editedVendor);
 
-             var httpClient = httpClientFactory.CreateClient("APIClient");
+            var httpClient = httpClientFactory.CreateClient("APIClient");
 
-             var request = new HttpRequestMessage(
-                HttpMethod.Put,
-                $"/api/vendor/{id}?imageChanged={imageChanged}");
+            var request = new HttpRequestMessage(
+               HttpMethod.Put,
+               $"/api/vendor/{id}?imageChanged={imageChanged}");
 
-             request.Content = new StringContent(
-                serializedVendorForEdit,
-                System.Text.Encoding.Unicode,
-                "application/json");
+            request.Content = new StringContent(
+               serializedVendorForEdit,
+               System.Text.Encoding.Unicode,
+               "application/json");
 
             var response = await httpClient.SendAsync(
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -428,7 +455,28 @@ namespace AdminPanel.Controllers
 
         public async Task<IActionResult> Media(Guid id)
         {
-            ViewData["vendor"] = "active";
+
+
+            if (User.IsInRole("Vendor"))
+            {
+                //var vendorId = await VendorModel.GetVendorId(httpClientFactory);
+                //if (vendorId == null)
+                //{
+                //    TempData["Type"] = "alert-danger";
+                //    TempData["CUD"] = true;
+                //    TempData["Message"] = "No vendor is linked to this user";
+                //    return RedirectToAction("index", "Dashboard");
+                //}
+                ViewData["media"] = "active";
+                if (VendorId != id)
+                {
+                    return RedirectToAction("Media", new { id = VendorId });
+                }
+            }
+            else
+            {
+                ViewData["vendor"] = "active";
+            }
             var httpClient = httpClientFactory.CreateClient("APIClient");
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
@@ -470,42 +518,44 @@ namespace AdminPanel.Controllers
             }
             if (galleryUpload)
             {
-                var vendorGalleryForCreation = new VendorGalleryForCreation()
+                var vendorGallery = new List<VendorGalleryForCreation>();
+                foreach (var item in vm.GalleryFile)
                 {
-                    Title = vm.GalleryTitle
-                };
-                var profileImageFile = vm.GalleryFile;
-                try
-                {
-                    if (profileImageFile.Length > 0)
+                    var vendorGalleryForCreation = new VendorGalleryForCreation();
+                    var profileImageFile = item;
+                    try
                     {
-                        using (var fileStream = profileImageFile.OpenReadStream())
+                        if (profileImageFile.Length > 0)
                         {
-                            using (var image = Image.Load(profileImageFile.OpenReadStream()))
+                            using (var fileStream = profileImageFile.OpenReadStream())
                             {
-                                image.Mutate(h => h.Resize(300, 300));
-                                using (var ms = new MemoryStream())
+                                using (var image = Image.Load(profileImageFile.OpenReadStream()))
                                 {
-                                    image.SaveAsJpeg(ms);
-                                    vendorGalleryForCreation.FileBytes = ms.ToArray();
+                                    image.Mutate(h => h.Resize(300, 300));
+                                    using (var ms = new MemoryStream())
+                                    {
+                                        image.SaveAsJpeg(ms);
+                                        vendorGalleryForCreation.FileBytes = ms.ToArray();
+                                        vendorGallery.Add(vendorGalleryForCreation);
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                catch (Exception e)
-                {
-                    if (e.GetType() == typeof(UnknownImageFormatException))
+                    catch (Exception e)
                     {
-                        TempData["Type"] = "alert-danger";
-                        TempData["CUD"] = true;
-                        TempData["Message"] = "Action Failed : Bad Image Format";
-                        return RedirectToAction("index");
+                        if (e.GetType() == typeof(UnknownImageFormatException))
+                        {
+                            TempData["Type"] = "alert-danger";
+                            TempData["CUD"] = true;
+                            TempData["Message"] = "Action Failed : Bad Image Format";
+                            return RedirectToAction("index");
+                        }
+                        if (!(e.GetType() == typeof(NullReferenceException)))
+                            throw;
                     }
-                    if (!(e.GetType() == typeof(NullReferenceException)))
-                        throw;
                 }
-                var serializedVendorGallery = JsonSerializer.Serialize(vendorGalleryForCreation);
+                var serializedVendorGallery = JsonSerializer.Serialize(vendorGallery);
                 var httpClient = httpClientFactory.CreateClient("APIClient");
                 var request = new HttpRequestMessage(
                     HttpMethod.Post,
@@ -596,7 +646,7 @@ namespace AdminPanel.Controllers
                 {
                     throw;
                 }
-                return RedirectToAction("Media",new { id = vendorId });
+                return RedirectToAction("Media", new { id = vendorId });
             }
 
             TempData["CUD"] = true;
@@ -664,6 +714,32 @@ namespace AdminPanel.Controllers
             }
         }
 
+        public async Task<IActionResult> LinkVendorBack(Guid vendorId, string userSubject)
+        {
+            var vendor = new VendorForCreation();
+            var serializedVendorForEdit = JsonSerializer.Serialize(vendor);
+
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+
+            var request = new HttpRequestMessage(
+              HttpMethod.Put,
+              $"/api/vendor/{vendorId}?linkOwner={userSubject}");
+
+            request.Content = new StringContent(
+               serializedVendorForEdit,
+               System.Text.Encoding.Unicode,
+               "application/json");
+
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+            TempData["Type"] = "alert-success";
+            TempData["CUD"] = true;
+            TempData["Message"] = "Vendor Created Successfully";
+            return RedirectToAction("Index");
+        }
+
         [HttpPost]
         public async Task<IActionResult> LinkVendor(Guid id, LinkVendorViewModel vm)
         {
@@ -689,11 +765,11 @@ namespace AdminPanel.Controllers
             var vendor = new VendorForCreation();
             var serializedVendorForEdit = JsonSerializer.Serialize(vendor);
 
-             var httpClient = httpClientFactory.CreateClient("APIClient");
+            var httpClient = httpClientFactory.CreateClient("APIClient");
 
-             var request = new HttpRequestMessage(
-               HttpMethod.Put,
-               $"/api/vendor/{id}?linkOwner={vm.SelectedUserSubject}");
+            var request = new HttpRequestMessage(
+              HttpMethod.Put,
+              $"/api/vendor/{id}?linkOwner={vm.SelectedUserSubject}");
 
             request.Content = new StringContent(
                serializedVendorForEdit,

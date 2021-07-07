@@ -62,10 +62,26 @@ namespace AdminPanel.Controllers
         }
         #endregion
         #region Create
-        public IActionResult CreateAd()
+        public async Task<IActionResult> CreateAd()
         {
             ViewData["ad"] = "active";
-            return View(new AdEditAndCreateViewModel());
+            var vm = new AdEditAndCreateViewModel();
+            var httpClient = httpClientFactory.CreateClient("APIClient");
+            var request = new HttpRequestMessage(
+               HttpMethod.Get,
+               $"/api/vendor?includeAll=true");
+
+            var response = await httpClient.SendAsync(
+               request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer
+                    .DeserializeAsync<DeserializedResponseModel<VendorDomainModel>>(responseStream);
+                vm.PopulateSelectList(deserializedResponse.Data);
+            }
+            return View(vm);
         }
         [HttpPost]
         public async Task<IActionResult> CreateAd(AdEditAndCreateViewModel createAdVM)
@@ -80,7 +96,8 @@ namespace AdminPanel.Controllers
             {
                 Name = createAdVM.Name,
                 SortOrder = createAdVM.SortOrder,
-                ExternalLink = createAdVM.ExternalLink
+                ExternalLink = createAdVM.ExternalLink,
+                VendorId = createAdVM.VendorId
             };
 
             var adImage = createAdVM.Files.FirstOrDefault();
@@ -161,8 +178,23 @@ namespace AdminPanel.Controllers
                     DeserializeAsync<DeserializedResponseModel<Ad>>(responseStream);
                 ad = deserializedResponse.Data.FirstOrDefault();
             }
+            var vm = new AdEditAndCreateViewModel(ad);
+            request = new HttpRequestMessage(
+               HttpMethod.Get,
+               $"/api/vendor?includeAll=true");
 
-            return View(new AdEditAndCreateViewModel(ad));
+            response = await httpClient.SendAsync(
+               request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var deserializedResponse = await JsonSerializer
+                    .DeserializeAsync<DeserializedResponseModel<VendorDomainModel>>(responseStream);
+                vm.PopulateSelectList(deserializedResponse.Data);
+            }
+
+            return View(vm);
         }
         [HttpPost]
         public async Task<IActionResult> EditAd(AdEditAndCreateViewModel editAdVM, Guid id)
@@ -176,7 +208,9 @@ namespace AdminPanel.Controllers
             {
                 Name = editAdVM.Name,
                 SortOrder = editAdVM.SortOrder,
-                ExternalLink = editAdVM.ExternalLink
+                ExternalLink = editAdVM.ExternalLink,
+                VendorId = editAdVM.VendorId
+                
             };
 
             var adImage = editAdVM.Files.FirstOrDefault();

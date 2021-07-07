@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Marvin.IDP.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -27,12 +28,14 @@ namespace Spots.APIs.Controllers
         private readonly ISpotsRepositroy repositroy;
         private readonly IMapper mapper;
         private readonly IWebHostEnvironment hostEnvironment;
+        private readonly ILocalUserService localUserService;
 
-        public VendorController(ISpotsRepositroy repositroy, IMapper mapper, IWebHostEnvironment hostEnvironment)
+        public VendorController(ISpotsRepositroy repositroy, IMapper mapper, IWebHostEnvironment hostEnvironment, ILocalUserService localUserService)
         {
             this.repositroy = repositroy ?? throw new ArgumentNullException(nameof(repositroy));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.hostEnvironment = hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
+            this.localUserService = localUserService ?? throw new ArgumentNullException(nameof(localUserService));
         }
 
         [AllowAnonymous]
@@ -92,6 +95,11 @@ namespace Spots.APIs.Controllers
         [AllowAnonymous]
         public IActionResult GetVendorById(Guid id, bool includeOffer = false)
         {
+            if (User.IsInRole("Vendor"))
+            {
+                var ownerId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+                id = repositroy.GetVendorIdByOwner(ownerId);
+            }
             if (repositroy.VendorExists(id))
             {
                 var vendor = repositroy.GetVendorById(id,includeOffer);
@@ -182,6 +190,12 @@ namespace Spots.APIs.Controllers
                 // fill out the filename
                 _vendor.BannerPicFileName = fileName;
             }
+            var categories = new List<Category>();
+            foreach (var cat in vendor.Categories)
+            {
+                categories.Add(repositroy.GetCategoryById(cat.Id));
+            }
+            _vendor.Categories = categories;
             repositroy.AddVendor(_vendor);
             repositroy.Save();
             var createdVendorToReturn = mapper.Map<VendorDto>(_vendor);
@@ -194,7 +208,7 @@ namespace Spots.APIs.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin ,Vendor")]
-        public IActionResult UpdateVendor(Guid id, [FromBody] VendorForUpdateDto vendor, 
+        public async Task<IActionResult> UpdateVendor(Guid id, [FromBody] VendorForUpdateDto vendor, 
             [FromQuery] bool imageChanged = false, [FromQuery] string linkOwner = "")
         {
 
@@ -229,7 +243,16 @@ namespace Spots.APIs.Controllers
             _vendor = repositroy.GetVendorById(id, false);
             if (!string.IsNullOrWhiteSpace(linkOwner))
             {
-                _vendor.OwnerId = linkOwner.Trim();
+                var userSub = linkOwner.Trim();
+                var user = await localUserService.GetUserBySubjectAsync(userSub);
+                var vendorIdClaim = new ExtraSW.IDP.Entities.UserClaim()
+                {
+                    Type = "vendor",
+                    Value = _vendor.Id.ToString()
+                };
+                user.Claims.Add(vendorIdClaim);
+                await localUserService.SaveChangesAsync();
+                _vendor.OwnerId = userSub;
                 repositroy.Save();
                 return NoContent();
             }

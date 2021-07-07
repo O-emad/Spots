@@ -58,7 +58,8 @@ namespace Spots.APIs.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OfferDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
-        public IActionResult GetOffer(Guid vendorId, Guid id)
+        public IActionResult GetOffer(Guid vendorId, Guid id, 
+                                       [FromQuery] bool includeOfferUses = false)
         {
             var response = new ResponseModel();
             if (!repositroy.VendorExists(vendorId))
@@ -68,7 +69,7 @@ namespace Spots.APIs.Controllers
                 response.Data = new { };
                 return NotFound(response);
             }
-            var offer = repositroy.GetOfferById(vendorId, id);
+            var offer = repositroy.GetOfferById(vendorId, id, includeOfferUses);
             var offers = new List<Offer>();
             offers.Add(offer);
             response.StatusCode = StatusCodes.Status200OK;

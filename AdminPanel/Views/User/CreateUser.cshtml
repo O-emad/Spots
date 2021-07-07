@@ -3,7 +3,7 @@
 <main class="main-container">
     <div class="main-content">
         <form class="card" method="post" asp-action="CreateUser" role="form" enctype="multipart/form-data">
-            <h4 class="card-title"><strong>Create Ad</strong></h4>
+            <h4 class="card-title"><strong>Create User</strong></h4>
 
             <div asp-validation-summary="All" class="text-danger"></div>
 
@@ -35,28 +35,29 @@
                             <input type="text" class="form-control" asp-for="FamilyName">
                             <span asp-validation-for="FamilyName" class="text-danger invalid-feedback"></span>
                         </div>
-
+                        <input type="text" class="form-control hidden" asp-for="AccountType" hidden>
+                        <input type="text" class="form-control hidden" asp-for="VendorId" hidden>
                         @*<div>
             <label asp-for="Active" class="require"></label>
             <input type="checkbox" asp-for="Active" required>
             <span asp-validation-for="Active" class="text-danger invalid-feedback"></span>
         </div>*@
 
-                        <div class="form-group">
-                            <label asp-for="Role" class="require"></label>
-                            <select asp-for="Role" asp-items=@Model.Roles required
-                                    data-provide="selectpicker" data-live-search="true"
-                                    class="chzn-select form-control multiselect">
-                            </select>
-                            <span asp-validation-for="Role" class="text-danger invalid-feedback"></span>
-                        </div>
+                        @*<div class="form-group">
+            <label asp-for="Role" class="require"></label>
+            <select asp-for="Role" asp-items=@Model.Roles required
+                    data-provide="selectpicker" data-live-search="true"
+                    class="chzn-select form-control multiselect">
+            </select>
+            <span asp-validation-for="Role" class="text-danger invalid-feedback"></span>
+        </div>*@
 
                         @*<label class="switch switch-lg">
-                            <label></label>
-                            <input asp-for="Active" type="checkbox" />
-                            <span class="switch-indicator"></span>
-                            <span class="switch-description" asp-validation-for="Active">Active Status</span>
-                        </label>*@
+            <label></label>
+            <input asp-for="Active" type="checkbox" />
+            <span class="switch-indicator"></span>
+            <span class="switch-description" asp-validation-for="Active">Active Status</span>
+        </label>*@
 
                         @*<div class="form-group">
             <label class="require">Ad Image</label>

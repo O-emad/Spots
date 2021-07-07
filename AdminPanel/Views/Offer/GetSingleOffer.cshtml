@@ -27,6 +27,11 @@
                             <input class="form-control" asp-for="Offer.Value" readonly disabled>
                         </div>
 
+                        <div class="form-group">
+                            <label>Redeem Times</label>
+                            <input class="form-control" asp-for="Offer.AllowedUses" readonly disabled>
+                        </div>
+
 
                         <div class="form-group">
                             <label>Value Type</label>
@@ -41,6 +46,48 @@
                     </div>
                 </div>
             </div>
+
+            @if (User.IsInRole("Vendor"))
+            {
+                <div class="card">
+                    <h4 class="card-title"><strong>Offer Consumers</strong></h4>
+
+                    <div class="card-body">
+                        <br>
+
+                        <table class="table table-striped table-bordered" cellspacing="0" data-provide="datatables">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>UserName</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>UserName</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                @foreach (var use in Model.Offer.OfferUses)
+                                {
+                                    <tr>
+                                        <td>@use.Name</td>
+                                        <td>@use.UserName</td>
+                                        <td>@use.CreatedUtc.ToLongDateString()</td>
+                                        <td>@use.CreatedUtc.ToLongTimeString()</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
 
 
             <footer class="card-footer text-right">

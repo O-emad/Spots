@@ -135,6 +135,37 @@ namespace ExtraSW.IDP.Controllers
             return CreatedAtRoute("GetUser", new { createdUserToReturn.Id }, response);
         }
 
+        [Authorize(Roles = "Vendor")]
+        [HttpPatch]
+        public async Task<IActionResult> ChangePassword([FromBody] PasswordChange newPass)
+        {
+            if (!ModelState.IsValid)
+            {
+                var response = new ResponseModel();
+                response.StatusCode = StatusCodes.Status400BadRequest;
+                response.Message = $"Invalid Password Format";
+                return BadRequest(response);
+            }
+            var userSub = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+                var user = await localUserService.GetUserBySubjectAsync(userSub);
+                if(user.Password != newPass.OldPassword)
+            {
+                return Conflict(new ResponseModel()
+                {
+                    StatusCode = StatusCodes.Status409Conflict,
+                    Message = "Old password doesn't match account password"
+                });
+            }
+            user.Password = newPass.NewPassword;
+            await localUserService.SaveChangesAsync();
+            return Ok(new ResponseModel()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Message = "Password changed successfully"
+            });
+
+        }
+
         [Authorize(Roles = "Admin,Vendor")]
         [HttpPut("{id}")]
         public async Task<IActionResult> EditUser([FromBody]UserForUpdateDto user, Guid id)
@@ -160,6 +191,13 @@ namespace ExtraSW.IDP.Controllers
                 var _role = mapper.Map<UserClaimForCreation>(role);
                 user.Claims.Add(_role);
             }
+            var vendor = _user.Claims.FirstOrDefault(c => c.Type == "vendor");
+            if (vendor != null)
+            {
+                var _vendor = mapper.Map<UserClaimForCreation>(vendor);
+                user.Claims.Add(_vendor);
+            }
+            
             mapper.Map(user, _user);
             //foreach(var claim in user.Claims)
             //{

@@ -39,6 +39,8 @@ namespace Spots.DTO
         public bool Trusted { get; set; }
         public bool HasOffer { get; set; }
         public int Follows { get; set; }
+        public bool AutoAcceptOffer { get; set; }
+        public bool Enabled { get; set; }
         public List<Offer> Offers { get; set; }
         public List<CategoryDto> Categories { get; set; }
     }

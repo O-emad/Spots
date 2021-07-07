@@ -14,5 +14,6 @@ namespace Spots.DTO
         public int SortOrder { get; set; }
         public string FileName { get; set; }
         public string ExternalLink { get; set; }
+        public Guid? VendorId { get; set; }
     }
 }

@@ -1,106 +1,118 @@
 ﻿@model VendorEditAndCreateViewModel
 
-    <main class="main-container">
-        <div class="main-content">
-            <form class="card " method="post" role="form" enctype="multipart/form-data">
-                <h4 class="card-title"><strong>Edit Vendor</strong></h4>
+@if (TempData.ContainsKey("CUD"))
+{
+    if ((bool)TempData["CUD"] == true)
+    {
+        <div class="alert @TempData["Type"] alert-dismissible fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            @TempData["Message"]
+        </div>
+    }
+}
+<main class="main-container">
+    <div class="main-content">
+        <form class="card " method="post" role="form" enctype="multipart/form-data">
+            <h4 class="card-title"><strong>Edit Vendor</strong></h4>
 
-                <div asp-validation-summary="All" class="text-danger"></div>
+            <div asp-validation-summary="All" class="text-danger"></div>
 
-                <div class="card-body form-type-combine">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-3">
-                                    <Label>Profile Image</Label>
-                                    @*<img src="@("https://localhost:44308/images/" + Model.ProfilePicFileName)" class="rounded">*@
-                                    <img src="@("https://www.rokiba.com/api/images/" + Model.ProfilePicFileName)" class="rounded">
-                                    <hr>
-                                    <label>Upload New Profile Image</label>
-                                    <div class="input-group file-group">
-                                        <div class="input-group-input do-float">
-                                            <input type="text" class="form-control file-value" readonly="">
-                                            <input asp-for="ProfileFile" type="file" class="form-control" multiple="" accept=".jpg,.jpeg">
-                                            <label>Choose file...</label>
-                                        </div>
-                                        <span class="input-group-append">
-                                            <button class="btn btn-light file-browser" type="button"><i class="fa fa-upload"></i></button>
-                                        </span>
+            <div class="card-body form-type-combine">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-3">
+                                <Label>Profile Image</Label>
+                                @*<img src="@("https://localhost:44308/images/" + Model.ProfilePicFileName)" class="rounded">*@
+                                <img src="@("https://www.rokiba.com/api/images/" + Model.ProfilePicFileName)" class="rounded">
+                                <hr>
+                                <label>Upload New Profile Image</label>
+                                <div class="input-group file-group">
+                                    <div class="input-group-input do-float">
+                                        <input type="text" class="form-control file-value" readonly="">
+                                        <input asp-for="ProfileFile" type="file" class="form-control" multiple="" accept=".jpg,.jpeg">
+                                        <label>Choose file...</label>
                                     </div>
-                                </div>
-                                <div class="col-9">
-                                    <Label>Banner Image</Label>
-                                    @*<img src="@("https://localhost:44308/images/" + Model.BannerPicFileName)" class="rounded">*@
-                                    <img src="@("https://www.rokiba.com/api/images/" + Model.BannerPicFileName)" class="rounded">
-                                    <hr>
-                                    <label>Upload New Banner Image</label>
-                                    <div class="input-group file-group">
-                                        <div class="input-group-input do-float">
-                                            <input type="text" class="form-control file-value" readonly="">
-                                            <input asp-for="BannerFile" type="file" class="form-control" multiple="" accept=".jpg,.jpeg">
-                                            <label>Choose file...</label>
-                                        </div>
-                                        <span class="input-group-append">
-                                            <button class="btn btn-light file-browser" type="button"><i class="fa fa-upload"></i></button>
-                                        </span>
-                                    </div>
+                                    <span class="input-group-append">
+                                        <button class="btn btn-light file-browser" type="button"><i class="fa fa-upload"></i></button>
+                                    </span>
                                 </div>
                             </div>
-                            <hr>
-                            <div class="form-group">
-                                <label asp-for="Name" class="require"></label>
-                                <input type="text" class="form-control" asp-for="Name" required>
-                                <span asp-validation-for="Name" class="text-danger invalid-feedback"></span>
-                            </div>
-
-
-                            <div class="form-group">
-                                <label asp-for="SortOrder"></label>
-                                <input type="text" class="form-control" asp-for="SortOrder">
-                                <span asp-validation-for="SortOrder" class="text-danger invalid-feedback"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="Email"></label>
-                                <input type="email" class="form-control" asp-for="Email">
-                                <span asp-validation-for="Email" class="text-danger invalid-feedback"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="PhoneNumber" class="require"></label>
-                                <input type="tel" class="form-control" asp-for="PhoneNumber" required>
-                                <span asp-validation-for="PhoneNumber" class="text-danger invalid-feedback"></span>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label asp-for="OpenAt"></label>
-                                        <input class="form-control" asp-for="OpenAt" type="time">
-                                        <span asp-validation-for="OpenAt" class="text-danger invalid-feedback"></span>
+                            <div class="col-9">
+                                <Label>Banner Image</Label>
+                                @*<img src="@("https://localhost:44308/images/" + Model.BannerPicFileName)" class="rounded">*@
+                                <img src="@("https://www.rokiba.com/api/images/" + Model.BannerPicFileName)" class="rounded">
+                                <hr>
+                                <label>Upload New Banner Image</label>
+                                <div class="input-group file-group">
+                                    <div class="input-group-input do-float">
+                                        <input type="text" class="form-control file-value" readonly="">
+                                        <input asp-for="BannerFile" type="file" class="form-control" multiple="" accept=".jpg,.jpeg">
+                                        <label>Choose file...</label>
                                     </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label asp-for="CloseAt"></label>
-                                        <input class="form-control" asp-for="CloseAt" type="time">
-                                        <span asp-validation-for="CloseAt" class="text-danger invalid-feedback"></span>
-                                    </div>
+                                    <span class="input-group-append">
+                                        <button class="btn btn-light file-browser" type="button"><i class="fa fa-upload"></i></button>
+                                    </span>
                                 </div>
                             </div>
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                            <label asp-for="Name" class="require"></label>
+                            <input type="text" class="form-control" asp-for="Name" required>
+                            <span asp-validation-for="Name" class="text-danger invalid-feedback"></span>
+                        </div>
 
-                            <div class="form-group">
-                                <label asp-for="Location"></label>
-                                <input type="text" class="form-control" asp-for="Location">
-                                <span asp-validation-for="Location" class="text-danger invalid-feedback"></span>
-                            </div>
 
-                            <div class="form-group">
-                                <label asp-for="Description"></label>
-                                <textarea type="text" class="form-control" asp-for="Description"></textarea>
-                                <span asp-validation-for="Description" class="text-danger invalid-feedback"></span>
+                        <div class="form-group">
+                            <label asp-for="SortOrder"></label>
+                            <input type="text" class="form-control" asp-for="SortOrder">
+                            <span asp-validation-for="SortOrder" class="text-danger invalid-feedback"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Email"></label>
+                            <input type="email" class="form-control" asp-for="Email">
+                            <span asp-validation-for="Email" class="text-danger invalid-feedback"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber" class="require"></label>
+                            <input type="tel" class="form-control" asp-for="PhoneNumber" required>
+                            <span asp-validation-for="PhoneNumber" class="text-danger invalid-feedback"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="OpenAt"></label>
+                                    <input class="form-control" asp-for="OpenAt" type="time">
+                                    <span asp-validation-for="OpenAt" class="text-danger invalid-feedback"></span>
+                                </div>
                             </div>
-                            @if (User.IsInRole("Admin"))
-                            {
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="CloseAt"></label>
+                                    <input class="form-control" asp-for="CloseAt" type="time">
+                                    <span asp-validation-for="CloseAt" class="text-danger invalid-feedback"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Location"></label>
+                            <input type="text" class="form-control" asp-for="Location">
+                            <span asp-validation-for="Location" class="text-danger invalid-feedback"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Description"></label>
+                            <textarea type="text" class="form-control" asp-for="Description"></textarea>
+                            <span asp-validation-for="Description" class="text-danger invalid-feedback"></span>
+                        </div>
+                        @if (User.IsInRole("Admin"))
+                        {
                             <div class="form-group">
                                 <label>Selected Categories</label>
                                 <select asp-for="SelectedCategories" asp-items="@Model.CategoriesSelectList"
@@ -116,27 +128,84 @@
                                     <span class="switch-description">Trusted</span>
                                 </label>
                             </div>
-                            }
+                            <div class="form-group">
+                                <label class="switch switch-lg">
+                                    <label></label>
+                                    <input asp-for="AutoAcceptOffer" type="checkbox" />
+                                    <span class="switch-indicator"></span>
+                                    <span class="switch-description">Auto Accept Offers</span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="switch switch-lg">
+                                    <label></label>
+                                    <input asp-for="Enabled" type="checkbox" />
+                                    <span class="switch-indicator"></span>
+                                    <span class="switch-description">Enable</span>
+                                </label>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group" hidden>
+                                <label>Selected Categories</label>
+                                <select asp-for="SelectedCategories" asp-items="@Model.CategoriesSelectList"
+                                        data-provide="selectpicker" multiple data-actions-box="true"
+                                        data-live-search="true" class="chzn-select form-control multiselect">
+                                </select>
+                            </div>
+                            <div class="form-group" hidden>
+                                <label class="switch switch-lg">
+                                    <label></label>
+                                    <input asp-for="Trusted" type="checkbox" />
+                                    <span class="switch-indicator"></span>
+                                    <span class="switch-description">Trusted</span>
+                                </label>
+                            </div>
+                            <div class="form-group" hidden>
+                                <label class="switch switch-lg">
+                                    <label></label>
+                                    <input asp-for="AutoAcceptOffer" type="checkbox" />
+                                    <span class="switch-indicator"></span>
+                                    <span class="switch-description">Auto Accept Offers</span>
+                                </label>
+                            </div>
+                            <div class="form-group" hidden>
+                                <label class="switch switch-lg">
+                                    <label></label>
+                                    <input asp-for="Enabled" type="checkbox" />
+                                    <span class="switch-indicator"></span>
+                                    <span class="switch-description">Enable</span>
+                                </label>
+                            </div>
 
-                        </div>
+                        }
+
                     </div>
                 </div>
+            </div>
 
-                <footer class="card-footer text-right">
+            <footer class="card-footer text-right">
+
+                <button class="btn btn-primary" type="submit" asp-action="EditVendor">Submit</button>
+                @if (User.IsInRole("Vendor"))
+                {
+                    <button class="btn btn-primary btn-danger" asp-action="Index" asp-controller="User">Manage Account</button>
+                    <button class="btn btn-secondary" asp-action="Index" asp-controller="Dashboard">Return</button>
+                }
+                @if (User.IsInRole("Admin"))
+                {
                     <button class="btn btn-secondary" asp-action="Index">Cancel</button>
-                    <button class="btn btn-primary" type="submit" asp-action="EditVendor">Submit</button>
-                    @if (User.IsInRole("Admin"))
-                    {
                     <button class="btn btn-primary btn-danger" type="button" href="#"
                             data-target="#ineditdelete" data-toggle="modal">
                         Delete
                     </button>
-                    }
-                </footer>
-            </form>
-        </div>
-        @if (User.IsInRole("Admin"))
-        {
+                }
+            </footer>
+        </form>
+    </div>
+    @if (User.IsInRole("Admin"))
+    {
         <form method="get" asp-action="DeleteVendor" asp-route-id="@Model.Id" class="modal fade" id="ineditdelete"
               tabindex="-1" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-sm">
@@ -160,6 +229,6 @@
                 </div>
             </div>
         </form>
-        }
-    </main>
+    }
+</main>
 

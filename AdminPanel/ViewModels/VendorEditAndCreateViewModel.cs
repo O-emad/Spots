@@ -46,6 +46,8 @@ namespace AdminPanel.ViewModels
         [StringLength(500)]
         public string Description { get; set; }
         public string OwnerId { get; set; }
+        public bool AutoAcceptOffer { get; set; }
+        public bool Enabled { get; set; }
         public List<IFormFile> ProfileFile { get; set; } = new List<IFormFile>();
         public List<IFormFile> BannerFile { get; set; } = new List<IFormFile>();
         public List<Guid> SelectedCategories { get; set; }
@@ -71,6 +73,8 @@ namespace AdminPanel.ViewModels
             Trusted = vendor.Trusted;
             Email = vendor.Email;
             PhoneNumber = vendor.PhoneNumber;
+            AutoAcceptOffer = vendor.AutoAcceptOffer;
+            Enabled = vendor.Enabled;
             SelectedCategories = vendor.Categories.Select(c => c.Id).ToList();
             CategoriesSelectList = new MultiSelectList(categories, "Id", "Name", SelectedCategories);
 

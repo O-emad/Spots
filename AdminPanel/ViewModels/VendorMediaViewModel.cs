@@ -13,7 +13,7 @@ namespace AdminPanel.ViewModels
     {
         public List<VendorGalleryModel> Gallery { get; set; }
         public List<VendorVideoModel> Video { get; set; }
-        public IFormFile GalleryFile { get; set; }
+        public List<IFormFile> GalleryFile { get; set; }
         [Display(Name = "Video Url")]
         [Url(ErrorMessage = "Enter a valid Url")]
         [StringLength(250)]
@@ -21,9 +21,9 @@ namespace AdminPanel.ViewModels
         [Display(Name = "Video Title")]
         [StringLength(50)]
         public string VideoTitle { get; set; }
-        [Display(Name = "Image Title")]
-        [StringLength(50)]
-        public string GalleryTitle { get; set; }
+        //[Display(Name = "Image Title")]
+        //[StringLength(50)]
+        //public string GalleryTitle { get; set; }
 
         public VendorMediaViewModel()
         {

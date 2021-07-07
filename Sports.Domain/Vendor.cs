@@ -33,6 +33,10 @@ namespace Spots.Domain
         public string Email { get; set; }
         [Required]
         [MaxLength(50)]
+
+        public bool AutoAcceptOffer { get; set; }
+        public bool Enabled { get; set; }
+
         public string PhoneNumber { get; set; }
         public bool Trusted { get; set; }
         public bool HasOffer { get; set; }
@@ -41,6 +45,7 @@ namespace Spots.Domain
         public List<Follow> Follows { get; set; }
         public List<VendorGallery> GalleryFileNames { get; set; }
         public List<VendorVideo> VideosUrls { get; set; }
+        public List<Ad> Ads { get; set; }
 
 
     }

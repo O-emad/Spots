@@ -57,7 +57,12 @@ namespace Spots.Data.Migrations
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("VendorId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("VendorId");
 
                     b.ToTable("Ads");
                 });
@@ -136,8 +141,14 @@ namespace Spots.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("AllowedUses")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("bit");
 
                     b.Property<string>("FileName")
                         .HasColumnType("nvarchar(max)");
@@ -162,6 +173,41 @@ namespace Spots.Data.Migrations
                     b.HasIndex("VendorId");
 
                     b.ToTable("Offers");
+                });
+
+            modelBuilder.Entity("Spots.Domain.OfferUse", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("OfferId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UserSubject")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OfferId");
+
+                    b.ToTable("OfferUses");
                 });
 
             modelBuilder.Entity("Spots.Domain.Review", b =>
@@ -207,6 +253,10 @@ namespace Spots.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("AutoAcceptOffer")
+                        .HasMaxLength(50)
+                        .HasColumnType("bit");
+
                     b.Property<string>("BannerPicFileName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -221,6 +271,9 @@ namespace Spots.Data.Migrations
                     b.Property<string>("Email")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("HasOffer")
                         .HasColumnType("bit");
@@ -242,9 +295,7 @@ namespace Spots.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfilePicFileName")
                         .HasMaxLength(50)
@@ -333,6 +384,13 @@ namespace Spots.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Spots.Domain.Ad", b =>
+                {
+                    b.HasOne("Spots.Domain.Vendor", null)
+                        .WithMany("Ads")
+                        .HasForeignKey("VendorId");
+                });
+
             modelBuilder.Entity("Spots.Domain.Category", b =>
                 {
                     b.HasOne("Spots.Domain.Category", null)
@@ -367,6 +425,15 @@ namespace Spots.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Spots.Domain.OfferUse", b =>
+                {
+                    b.HasOne("Spots.Domain.Offer", null)
+                        .WithMany("OfferUses")
+                        .HasForeignKey("OfferId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Spots.Domain.VendorGallery", b =>
                 {
                     b.HasOne("Spots.Domain.Vendor", null)
@@ -392,8 +459,15 @@ namespace Spots.Data.Migrations
                     b.Navigation("Names");
                 });
 
+            modelBuilder.Entity("Spots.Domain.Offer", b =>
+                {
+                    b.Navigation("OfferUses");
+                });
+
             modelBuilder.Entity("Spots.Domain.Vendor", b =>
                 {
+                    b.Navigation("Ads");
+
                     b.Navigation("Follows");
 
                     b.Navigation("GalleryFileNames");

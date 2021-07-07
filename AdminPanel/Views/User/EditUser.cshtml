@@ -1,5 +1,18 @@
 ﻿@model AdminPanel.ViewModels.UserEditViewModel
 
+@if (TempData.ContainsKey("CUD"))
+{
+    if ((bool)TempData["CUD"] == true)
+    {
+        <div class="alert @TempData["Type"] alert-dismissible fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            @TempData["Message"]
+        </div>
+    }
+}
+
 <main class="main-container">
     <div class="main-content">
         <form class="card" method="post" asp-action="EditUser" asp-route-id=@Model.Id role="form" enctype="multipart/form-data">
@@ -18,13 +31,13 @@
 
                         <div class="form-group">
                             <label asp-for="GivenName"></label>
-                            <input type="text" class="form-control" asp-for="GivenName" >
+                            <input type="text" class="form-control" asp-for="GivenName">
                             <span asp-validation-for="GivenName" class="text-danger invalid-feedback"></span>
                         </div>
 
                         <div class="form-group">
                             <label asp-for="FamilyName"></label>
-                            <input type="text" class="form-control" asp-for="FamilyName" >
+                            <input type="text" class="form-control" asp-for="FamilyName">
                             <span asp-validation-for="FamilyName" class="text-danger invalid-feedback"></span>
                         </div>
 
@@ -37,13 +50,13 @@
                             </div>
 
                             @*<div class="form-group">
-                                <label asp-for="Role" class="require"></label>
-                                <select asp-for="Role" asp-items=@Model.Roles required
-                                        data-provide="selectpicker" data-live-search="true"
-                                        class="chzn-select form-control multiselect">
-                                </select>
-                                <span asp-validation-for="Role" class="text-danger invalid-feedback"></span>
-                            </div>*@
+                                    <label asp-for="Role" class="require"></label>
+                                    <select asp-for="Role" asp-items=@Model.Roles required
+                                            data-provide="selectpicker" data-live-search="true"
+                                            class="chzn-select form-control multiselect">
+                                    </select>
+                                    <span asp-validation-for="Role" class="text-danger invalid-feedback"></span>
+                                </div>*@
 
                             <label class="switch switch-lg">
                                 <label></label>
@@ -52,34 +65,45 @@
                                 <span class="switch-description" asp-validation-for="Active">Active Status</span>
                             </label>
                         }
+                        else
+                        {
+                            <label class="switch switch-lg" hidden>
+                                <label></label>
+                                <input asp-for="Active" type="checkbox" />
+                                <span class="switch-indicator"></span>
+                                <span class="switch-description" asp-validation-for="Active">Active Status</span>
+                            </label>
+                        }
                         @*<div class="form-group">
-            <label class="require">Ad Image</label>
-            <div class="input-group file-group">
-                <div class="input-group-input do-float">
-                    <input type="text" class="form-control file-value" readonly="">
-                    <input asp-for="Files" type="file" class="form-control" multiple="" accept=".jpg,.jpeg" required>
-                    <label>Choose file...</label>
-                </div>
-                <span class="input-group-append">
-                    <button class="btn btn-light file-browser" type="button"><i class="fa fa-upload"></i></button>
-                </span>
-            </div>
-        </div>*@
+                                <label class="require">Ad Image</label>
+                                <div class="input-group file-group">
+                                    <div class="input-group-input do-float">
+                                        <input type="text" class="form-control file-value" readonly="">
+                                        <input asp-for="Files" type="file" class="form-control" multiple="" accept=".jpg,.jpeg" required>
+                                        <label>Choose file...</label>
+                                    </div>
+                                    <span class="input-group-append">
+                                        <button class="btn btn-light file-browser" type="button"><i class="fa fa-upload"></i></button>
+                                    </span>
+                                </div>
+                            </div>*@
                     </div>
                 </div>
             </div>
 
 
             <footer class="card-footer text-right">
+                <button class="btn btn-primary" type="submit">Submit</button>
                 @if (User.IsInRole("Admin"))
                 {
                     <a class="btn btn-secondary" asp-action="Index">Cancel</a>
-                    <button class="btn btn-primary" type="submit">Submit</button>
                 }
                 else
                 {
-                    <a class="btn btn-primary" asp-action="ChangePassword">Change Password</a>
-                    <a class="btn btn-secondary" asp-controller="Dashboard" asp-action="Index">Return</a>
+
+
+                    <a class="btn btn-primary btn-danger" asp-action="ChangePassword">Change Password</a>
+                    <a class="btn btn-secondary" asp-controller="Vendor" asp-action="Index">Return</a>
                 }
 
 

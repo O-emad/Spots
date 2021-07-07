@@ -48,7 +48,6 @@ namespace AdminPanel
             //            policyBuilder.RequireClaim("level", "Admin");
             //        });
             //});
-
             services.AddHttpContextAccessor();
             services.AddTransient<BearerTokenHandler>();
             services.AddHttpClient("APIClient", client =>
@@ -96,12 +95,14 @@ namespace AdminPanel
                 //o.Scope.Add("openid");
                 //o.Scope.Add("profile");
                 o.Scope.Add("roles");
+                o.Scope.Add("vendors");
                 o.Scope.Add("categoryapi");
                 o.Scope.Add("idpapi");
                 o.Scope.Add("offline_access");
                 //o.UsePkce = true;
                 //o.ClaimActions.Remove("nbf");
                 o.ClaimActions.MapUniqueJsonKey("role", "role");
+                o.ClaimActions.MapUniqueJsonKey("vendor", "vendor");
                 //o.ClaimActions.DeleteClaim("sid");
                 //o.ClaimActions.DeleteClaim("idp");
                 //o.ClaimActions.DeleteClaim("s_hash");

@@ -21,6 +21,7 @@ namespace Spots.Services
 
         PagedList<Vendor> GetVendors(VendorResourceParameters vendorParameters);
         Vendor GetVendorById(Guid vendorId, bool includeOffer);
+        Guid GetVendorIdByOwner(string ownerId);
         Vendor GetVendorByName(string name);
         void AddVendor(Vendor vendor);
         void UpdateVendor(Guid vendorId, Vendor vendor, IEnumerable<Category> categories);
@@ -30,10 +31,12 @@ namespace Spots.Services
         IEnumerable<Offer> GetOffersForVendor(Guid vendorId);
         IEnumerable<Offer> GetPendingOffers();
         Offer GetSingleOfferById(Guid id);
-        Offer GetOfferById(Guid vendorId, Guid offerId);
+        Offer GetOfferById(Guid vendorId, Guid offerId, bool includeOfferUses = false);
         void AddOffer(Guid vendorId, Offer offer);
         void DeleteOffer(Offer offer);
         bool OfferExists(Guid offerId);
+        bool EligibleOfferUse(Guid offerId, string userSubject);
+        void AddOfferUse(OfferUse offerUse);
 
         IEnumerable<Review> GetReviewsForVendor(Guid vendorId);
         Review GetReviewById(Guid vendorId, Guid reviewId);

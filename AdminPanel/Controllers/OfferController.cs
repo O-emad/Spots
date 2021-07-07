@@ -1,4 +1,5 @@
-﻿using AdminPanel.Models;
+﻿using AdminPanel.Base;
+using AdminPanel.Models;
 using AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,18 +20,38 @@ using System.Threading.Tasks;
 namespace AdminPanel.Controllers
 {
     [Authorize]
-    public class OfferController : Controller
+    public class OfferController : BaseController
     {
         private readonly IHttpClientFactory clientFactory;
-
+        private VendorModel VendorModel;
         public OfferController(IHttpClientFactory clientFactory)
         {
+            this.VendorModel = VendorModel.Instance;
             this.clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
         }
 
         public async Task<IActionResult> ListOffer(Guid id)
         {
-            ViewData["vendor"] = "active";
+            if (User.IsInRole("Vendor"))
+            {
+                //var vendorId = await VendorModel.GetVendorId(clientFactory);
+                //if (vendorId == null)
+                //{
+                //    TempData["Type"] = "alert-danger";
+                //    TempData["CUD"] = true;
+                //    TempData["Message"] = "No vendor is linked to this user";
+                //    return RedirectToAction("index", "Dashboard");
+                //}
+                ViewData["offer"] = "active";
+                if (VendorId != id)
+                {
+                    return RedirectToAction("ListOffer", new { id = VendorId });
+                }
+            }
+            else
+            {
+                ViewData["vendor"] = "active";
+            }
             var httpClient = clientFactory.CreateClient("APIClient");
 
             var request = new HttpRequestMessage(
@@ -50,12 +71,21 @@ namespace AdminPanel.Controllers
         {
 
                 TempData["todash"] = toDash;
-
-            ViewData["vendor"] = "active";
+            bool includeOfferUses = false;
+            if (User.IsInRole("Vendor"))
+            {
+                includeOfferUses = true;
+                ViewData["offer"] = "active";
+            }
+            else
+            {
+                ViewData["vendor"] = "active";
+            }
+            
             var httpClient = clientFactory.CreateClient("APIClient");
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
-                $"api/vendor/{vendorId}/offer/{id}");
+                $"api/vendor/{vendorId}/offer/{id}?includeOfferUses={includeOfferUses}");
             var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
             using(var responseStream = await response.Content.ReadAsStreamAsync())
@@ -68,7 +98,14 @@ namespace AdminPanel.Controllers
 
         public IActionResult CreateOffer(Guid id, string vendorName)
         {
-            ViewData["vendor"] = "active";
+            if (User.IsInRole("Vendor"))
+            {
+                ViewData["offer"] = "active";
+            }
+            else
+            {
+                ViewData["vendor"] = "active";
+            }
             return View(new OfferCreateViewModel(id,vendorName));
         }
 
@@ -85,6 +122,8 @@ namespace AdminPanel.Controllers
             offerForCreation.Description = offerCreate.Offer.Description;
             offerForCreation.Value = offerCreate.Offer.Value;
             offerForCreation.Type = (offerCreate.Offer.Type == "1") ? OfferValueType.Percentage : OfferValueType.Value;
+            offerForCreation.AllowedUses = offerCreate.Offer.AllowedUses;
+            offerForCreation.Enabled = true;
 
             var imageFile = offerCreate.Files.FirstOrDefault();
 

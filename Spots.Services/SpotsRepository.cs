@@ -168,6 +168,10 @@ namespace Spots.Services
             //vendor.Categories = GetCategoriesForVendor(vendorId).ToList();
             //return vendor;
         }
+        public Guid GetVendorIdByOwner(string ownerId)
+        {
+            return context.Vendors.Where(v => v.OwnerId == ownerId).Select(v => v.Id).FirstOrDefault();
+        }
 
         public IEnumerable<Category> GetCategoriesForVendor(Guid vendorId)
         {
@@ -206,6 +210,11 @@ namespace Spots.Services
                 var trusted = vendorParameters.Trusted;
                 collection = collection.Where(v => v.Trusted == trusted) ;
             }
+            if (vendorParameters.Enabled)
+            {
+                var enabled = vendorParameters.Enabled;
+                collection = collection.Where(v => v.Enabled == enabled);
+            }
 
             #region Searching
             if (!string.IsNullOrWhiteSpace(vendorParameters.SearchQuery))
@@ -220,8 +229,8 @@ namespace Spots.Services
             collection = collection.Include(v=>v.Follows)
                                    .Include(v=>v.Offers)
                                    .OrderBy(c => c.SortOrder);
-      //          .Include(v=>v.Categories);
 
+            collection = collection.AsSplitQuery();
             return PagedList<Vendor>.Create(collection, vendorParameters.PageNumber
                 , vendorParameters.PageSize,vendorParameters.IncludeAll);
         }
@@ -271,17 +280,25 @@ namespace Spots.Services
             return context.Offers.FirstOrDefault(o => o.Id == id);
         }
 
-        public Offer GetOfferById(Guid vendorId, Guid offerId)
+        public Offer GetOfferById(Guid vendorId, Guid offerId, bool includeOfferUses = false)
         {
-            return context.Offers.Where(o => o.VendorId == vendorId && o.Id == offerId).FirstOrDefault();
+            var collection = context.Offers as IQueryable<Offer>;
+            collection = collection.Where(o => o.VendorId == vendorId && o.Id == offerId);
+            if (includeOfferUses)
+            {
+                collection = collection.Include(o => o.OfferUses);
+            }
+            return collection.FirstOrDefault();
         }
 
         public void AddOffer(Guid vendorId, Offer offer)
         {
-            if(VendorExists(vendorId) && offer != null)
+            var vendor = context.Vendors.FirstOrDefault(v => v.Id == vendorId);
+            if (vendor is not null && offer != null)
             {
+
                 offer.VendorId = vendorId;
-                if (GetSetting().AutomaticOfferApproval)
+                if (GetSetting().AutomaticOfferApproval || vendor.AutoAcceptOffer)
                 {
                     offer.OfferApproved = true;
                 }
@@ -289,7 +306,7 @@ namespace Spots.Services
                 {
                     offer.OfferApproved = false;
                 }
-                context.Add<Offer>(offer);
+                context.Add(offer);
             }
         }
 
@@ -301,6 +318,19 @@ namespace Spots.Services
         public bool OfferExists(Guid offerId)
         {
             return context.Offers.Where(o => o.Id == offerId).Any();
+        }
+
+        public bool EligibleOfferUse(Guid offerId, string userSubject)
+        {
+            var offer = context.Offers
+                .Include(o=>o.OfferUses)
+                .FirstOrDefault(o => o.Id == offerId);
+            return offer.OfferUses.Count(u => u.UserSubject == userSubject) < offer.AllowedUses;
+        }
+
+        public void AddOfferUse(OfferUse offerUse)
+        {
+            context.Add(offerUse);
         }
 
         #endregion
